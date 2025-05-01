@@ -1,0 +1,21 @@
+.student_branch {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+
+    .title-hello {
+        display: flex;
+        justify-content: start;
+    }
+
+    .h1-hello {
+        margin-left: 15px;
+        margin-top: 55px;
+        font-size: 27px;
+        display: flex;
+        justify-content: start;
+        width: 100%;
+    }
+
+
+}

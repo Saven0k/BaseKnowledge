@@ -1,0 +1,53 @@
+/* @font-face {
+    font-family: "Hexlet";
+    src: url("./fonts/");
+} */
+
+:root {
+    --color-text: #fff;
+    --color-bacground: #fff;
+    --input-font-size: 16px;
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+button {
+    outline: none;
+    transition: 0.5s;
+}
+
+a {
+    text-decoration: none;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main_color {
+    color: #9803d3;
+}
+
+.text_color {
+    color: #000000;
+}
+
+.background_color {
+    color: #fff;
+}
+
+input {
+    outline: none;
+}

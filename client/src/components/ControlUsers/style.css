@@ -1,0 +1,189 @@
+    .account {
+    display: flex;
+    flex-direction: column;
+    
+    .newuser {
+        .form {
+            flex-wrap: wrap;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+
+            .subs {
+                display: flex;
+                gap: 10px;
+                flex-direction: column;
+
+                h2{
+                    font-size: 22px;
+                }
+                .sub {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                    
+                    span {
+                        font-size: 21px;
+                        font-weight: 600;
+                        font-style: italic;
+                    }
+                    .input {
+                        padding: 5px 10px;
+                        border-radius: 5px;
+                        outline: none;
+                        font-size: 14px;
+                        border: 1px solid #000;
+                        min-width: 20vw;
+                    }
+                    .inputLike {
+                        max-height: 500px;
+                        min-height: 50px;
+                        max-width: 600px;
+                    }
+                    .inputLike::-webkit-scrollbar {
+                        width: 0px;
+                    }
+                }
+            }            
+        }
+
+    }
+}
+.Main {
+    flex-direction: column;
+}
+.users {
+    gap: 50px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    display: flex;
+    
+
+    .user {
+        max-width: 350px;
+        width: 80%;
+        position: relative;
+        padding: 15px 35px 15px 35px;
+        box-shadow: 4px 8px 50px 5px rgba(0,0,0,0.37);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+
+        .inputs {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+        }
+
+        .input {
+            border: none;
+            color: #000;
+            padding: 4px 7px;
+            outline: none;
+            min-width: 80%;
+            flex-wrap: wrap;
+            text-wrap: wrap;
+            font-size: 14px;
+            font-weight: 400;
+            font-style: normal;
+            border-radius: 15px;
+        }
+
+        .inputText {
+            padding-top: 15px;
+            padding-left: 5px;
+            padding: 10px 15px;
+        }
+
+        .inputText::-webkit-scrollbar {
+            width: 0px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .visitsCount {
+            justify-content: end;
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+            .visit_img {
+                width: 20px;
+                height: 20px;
+            }
+        }
+        .visitsCount:hover:after {
+            content: 'посещения';
+            font-size: 13px;
+            top: 125px;
+            right: 20px;
+            position: absolute;
+        }
+        .name {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .text {
+            font-weight: 400;
+            font-size: 18px;
+        }
+
+        .img {
+            width: 15px;
+            position: absolute;
+            top: 7px;
+            right: 10px;
+            transition: 1s;
+        }
+        .img:hover {
+            transform: scale(1.1) rotate(-180deg) ;
+        }
+
+        .change {
+            margin-top: 15px;
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 3px 5px;
+            color: #000;
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        .change:hover {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+
+        .save {
+            margin-top: 15px;
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 3px 5px;
+            color: #07d333;
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        .save:hover {
+            transform: scale(1.1);
+        }
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .account .newuser .form .subs  {
+        h2 {
+            font-size: 14px;
+        }
+        .sub span {
+            font-size: 16px;
+        }
+    }
+}

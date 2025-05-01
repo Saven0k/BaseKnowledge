@@ -1,0 +1,12 @@
+.change {
+    margin-top: 15px;
+    border-radius: 15px;
+    padding: 3px 5px;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.change:hover {
+    transform: scale(1.1);
+    opacity: 1;
+}

@@ -1,0 +1,29 @@
+.all {
+    width: 100vw;
+    height: 100vh;
+}
+
+.er {
+    display: flex;
+    gap: 100px;
+    flex-direction: column;
+
+    .h1 {
+        font-size: 244px;
+        text-shadow: 31px 5px rgba(146, 55, 206, 0.91);
+    }
+
+    .h2 {
+        font-size: 56px;
+        color: rgba(146, 55, 206, 0.91);
+    }
+
+    .h3 {
+        font-size: 26px;
+        color: rgba(146, 55, 206, 0.91);
+        margin-right: 250px;
+    }
+    .h3:hover {
+        box-shadow: 2px 5px 15px rgba(146, 55, 206, 0.91);
+    }
+}

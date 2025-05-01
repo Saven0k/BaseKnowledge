@@ -1,0 +1,19 @@
+.specialties {
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.specialti_item {
+    padding: 10px 15px;
+    font-size: 17px;
+    border: 1px solid #000;
+    background-color: #fff;
+    color: var(--color-text);
+    border-radius: 15px;
+    box-shadow: 2px 3px 7px #000;
+    outline: none;
+}

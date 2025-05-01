@@ -1,0 +1,109 @@
+.addPost_component {
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.photo_input input {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 14px;
+    margin: 15px 0;
+}
+
+.title_input {
+    font-size: var(--input-font-size);
+    padding: 3px 5px;
+    width: 80%;
+}
+
+
+.content_input {
+    border: 1px solid #ccc;
+    min-height: 100px;
+    padding: 10px;
+    margin: 10px 0;
+    width: 80%;
+    white-space: pre-wrap;
+    direction: ltr;
+}
+
+.style_component {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .styles_buttons {
+        gap: 5px;
+        /* flex-direction: column; */
+        display: flex;
+
+    }
+
+    button,
+    select {
+        font-size: 14px;
+        padding: 2px 4px;
+        background-color: #fff;
+        border: none;
+    }
+
+    button:hover,
+    select:hover {
+        border: 1px solid #000;
+    }
+}
+
+.selection_component {
+    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+
+    .visible_select,
+    .group_select {
+        padding: 2px 4px;
+        font-size: 14px;
+    }
+
+}
+
+.button_save_post {
+    padding: 2px 4px;
+    font-size: 14px;
+    background-color: #fff;
+    border-radius: 5px;
+
+}
+
+.publicPost {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+    .visible-img,
+    .unvisible-img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .visible-img:hover::after {
+        content: 'опубликован';
+        font-size: 12px;
+    }
+
+    .unvisible-img:hover::after {
+        content: 'неопубликован';
+        font-size: 12px;
+    }
+}

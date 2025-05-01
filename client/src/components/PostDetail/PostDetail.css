@@ -1,0 +1,15 @@
+.detail_box {
+    height: 80vh;
+    /* margin-top: 150px; */
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    gap:10px;
+    flex-direction: column;
+    padding: 0px 5%;
+}
+
+.content {
+    max-width: 60%;
+    text-wrap: wrap;
+}

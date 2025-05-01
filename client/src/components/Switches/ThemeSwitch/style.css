@@ -1,0 +1,15 @@
+.button_change_themes {
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
+    border: none;
+    outline: none;
+    transition: 0.5s;
+    background-size: 25px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.change_themes:hover {
+    transform: scale(1.3);
+}

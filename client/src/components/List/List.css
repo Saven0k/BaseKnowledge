@@ -1,0 +1,9 @@
+.account {
+    /* padding: 10vh 10vw; */
+    display: flex;
+    flex-direction: column;
+}
+
+.posts {
+    flex-direction: column;
+}   
