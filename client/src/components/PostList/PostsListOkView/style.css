@@ -34,7 +34,6 @@
     transition: max-height 0.3s ease-out, padding 0.3s ease-out;
     padding: 0 10px;
     font-size: 16px;
-    background-color: #f9f9f9;
 }
 
 .accordion_posts-content.open {

@@ -13,7 +13,7 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
     publicPost: false,
     group: 'none'
   });
-
+1
   const navigate = useNavigate()
 
   const [styles, setStyles] = useState({
@@ -36,10 +36,10 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
         const postData = await getPost(postId); // Ваш метод для получения поста по ID
         setIdPost(postId)
         setEditedPost({
-          title: postData[0].name || '',
-          content: postData[0].text || '',
-          typeVisible: postData[0].for || '',
-          publicPost: postData[0].visible  || false,
+          title: postData[0].title || '',
+          content: postData[0].content || '',
+          typeVisible: postData[0].role || '',
+          publicPost: postData[0].public_post === "1" ? true : false,
           group: postData[0].student_group || 'none'
         });
 
@@ -117,7 +117,7 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
     const { name, value, type, checked } = e.target;
     setEditedPost(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? "checked" : value
     }));
   };
 

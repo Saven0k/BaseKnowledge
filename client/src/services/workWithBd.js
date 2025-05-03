@@ -71,6 +71,35 @@ export async function getPostFor(forField) {
  *  Retrieves all records from the database.
  * @returns list: A list of dictionaries, where each dictionary represents a record from the database.
  */
+export async function getPublicPostOfRole(role) {
+	try {
+		const res = await fetch("/api/posts/public/role", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				forField: role,
+			}),
+		});
+		const data = await res.json();
+
+		if (!res.ok) {
+			throw new Error(
+				data.message || "Не удалось получить список постов"
+			);
+		}
+
+		// console.log("Список постов получен:", data.posts);
+		return data.posts;
+	} catch (error) {
+		console.error("Ошибка при получении списка постов:", error);
+	}
+}
+/**
+ *  Retrieves all records from the database.
+ * @returns list: A list of dictionaries, where each dictionary represents a record from the database.
+ */
 export async function getPostForStudent(group) {
 	try {
 		const res = await fetch("/api/posts/group", {
@@ -181,6 +210,16 @@ export async function addPost(newName, newText, forField, visible, group) {
 	})
 		.then((response) => response.json())
 	// .then((data) => console.log(data));
+}
+export async function addPostWithImage(data) {
+	fetch("/api/posts/addWithImage", {
+		method: "POST",
+		// headers: {
+		// 	"Content-Type": "multipart/form-data",
+		// },
+		body: data
+	})
+		.then((response) => response.json())
 }
 export async function addVisitor() {
 	fetch("/api/visitors/add", {

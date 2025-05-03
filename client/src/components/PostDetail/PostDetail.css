@@ -13,3 +13,19 @@
     max-width: 60%;
     text-wrap: wrap;
 }
+
+.button_back {
+    font-size: 14px;
+    font-weight: 600;
+    color: #000;
+    background-color: #fff;
+    padding: 3px 4px;
+    border-radius: 10px;
+    border:none;
+    transition: 0.5s;
+    box-shadow: 0 2px 2px #000;
+}
+.button_back:hover {
+    transform: scale(1.05);
+    box-shadow: 2px 2px 2px #000;
+}

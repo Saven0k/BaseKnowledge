@@ -80,14 +80,14 @@ const PostsListOkView = ({ filteredPostsList, setFilteredPostsLists }) => {
                         onClick={() => handleClick(index)}
                         style={{ backgroundColor: activeIndex === index ? "#3739dd" : "red", position: activeIndex === index ? "static" : "relative" }}
                     >
-                        {post.name}
+                        {post.title}
                     </button>
                     <div
                         className={`accordion_posts-content ${activeIndex === index ? 'open' : ''
                             }`}
                     >
 
-                        <div dangerouslySetInnerHTML={{ __html: post.text }} />
+                        <div dangerouslySetInnerHTML={{ __html: post.content }} />
                         <p style={{ fontSize: '12px' }}>{post.date_created}</p>
                         {
                             localStorage.getItem('role') === 'admin' &&

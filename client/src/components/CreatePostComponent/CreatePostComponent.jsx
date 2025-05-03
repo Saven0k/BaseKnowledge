@@ -1,6 +1,6 @@
 import './CreatePostComponent.css'
 import React, { useState, useRef, useEffect } from 'react';
-import { addPost, getStudentGroups } from '../../services/workWithBd';
+import { addPost, addPostWithImage, getStudentGroups } from '../../services/workWithBd';
 
 
 const CreatePostComponent = () => {
@@ -18,8 +18,8 @@ const CreatePostComponent = () => {
 
     const editorRef = useRef(null); // UseRef for edit content
     const lastSelectionRef = useRef(null); // Сохраняем последнюю позицию курсора
-    // const [image, setImage] = useState(null); // Для хранения файла изображения
-    const [imagePreview, setImagePreview] = useState(''); // Для превью изображения
+    // const [imagePreview, setImagePreview] = useState(null); // Для превью изображения
+    // const [image, setImage] = useState(null)
 
     const [groupList, setGroupList] = useState([])
 
@@ -69,6 +69,19 @@ const CreatePostComponent = () => {
 
     };
 
+    // const handleFileChange = (e) => {
+    //     if (e.target.files[0]) {
+    //         const selectedFile = e.target.files[0];
+    //         setImage(e.target.files[0])
+    //         const reader = new FileReader();
+    //         reader.onload = (event) => {
+    //             // setImage(event.target.result)
+    //             setImagePreview(event.target.result); // Сохраняем Data URL для превью
+    //         };
+    //         reader.readAsDataURL(selectedFile);
+    //     }
+    // }
+
     const sectionHandleClick = async () => {
         if (groupList.length !== 0) {
             return ''
@@ -84,20 +97,46 @@ const CreatePostComponent = () => {
         applyStyleToSelection();
     }, [styles.color, styles.fontSize, styles.fontWeight, styles.fontStyle]);
 
-
-
     // Сохраняем пост на сервер
     const savePost = () => {
+
+        // if (image !== null) {
+        //     const data = new FormData();
+        //     data.append('title', title);
+        //     data.append('content', content);
+        //     data.append('typeVisible', typeVisible);
+        //     data.append('student_group', group);
+        //     data.append('public_post', publicPost);
+        //     // data.append('image', image);
+        //     addPostWithImage(data)
+        // }
+        // else {
         addPost(title, content, typeVisible, publicPost, group)
+        // }
         setTitle('');
         setContent('');
         // setImage(null);
         // setImagePreview('');
         setGroup("none")
     };
+    const handleContentChange = () => {
+        setContent(editorRef.current)
+    }
 
     return (
         <div className='addPost_component'>
+            {/* <div>
+                <label htmlFor="">Image</label>
+                <input
+                    type="file"
+                    name="image"
+                    id="image"
+                    onChange={(e) => handleFileChange(e)}
+                    accept="image/*"
+                />
+                {imagePreview &&
+                    <img src={imagePreview} alt="dadada" />}
+            </div> */}
             <input
                 type="text"
                 placeholder="Заголовок поста"
@@ -107,13 +146,13 @@ const CreatePostComponent = () => {
             />
             <div
                 ref={editorRef}
+                onChange={handleContentChange}
                 contentEditable
                 onBlur={saveSelection} // Сохраняем позицию при потере фокуса
                 onMouseUp={saveSelection} // Сохраняем позицию при выделении мышью
                 onKeyUp={saveSelection} // Сохраняем позицию при вводе с клавиатуры
                 dangerouslySetInnerHTML={{ __html: content }}
                 className='content_input'
-                suppressContentEditableWarning={true}
             />
             <div className='style_component'>
                 <h3>Стили:</h3>

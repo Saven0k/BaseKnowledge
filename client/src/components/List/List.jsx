@@ -4,7 +4,7 @@ import { filterPost } from "../../services/filterFunc";
 import SearchComponent from "../SearchComponent/SearchComponent";
 import NothingNot from '../PostList/NothingNot/NothingNot'
 import PostsListOkView from "../PostList/PostsListOkView/PostsListOkView";
-import { getPostFor, getPostForStudent, getPosts, getPostsForVisible } from "../../services/workWithBd";
+import { getPostFor, getPostForStudent, getPosts, getPostsForVisible, getPublicPostOfRole } from "../../services/workWithBd";
 
 /**
  * React component, which creates a platform for working with student posts.
@@ -28,19 +28,19 @@ const List = ({ ready, type }) => {
 			return ''
 		} if (localStorage.getItem('role') == 'admin') {
 			if (type === 'student') {
-				const posts = await getPostsForVisible("student");
+				const posts = await getPostFor("student");
 				setPostsLists(posts);
 				setFilteredPostsLists(posts);
 				return ''
 			}
 			if (type === 'teacher') {
-				const posts = await getPostsForVisible("teacher");
+				const posts = await getPostFor("teacher");
 				setPostsLists(posts);
 				setFilteredPostsLists(posts);
 				return ''
 			}
 		} if (localStorage.getItem('role') === "teacher") {
-			const posts = await getPostFor('teacher');
+			const posts = await getPublicPostOfRole('teacher');
 			setPostsLists(posts);
 			setFilteredPostsLists(posts);
 			return ''

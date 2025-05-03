@@ -4,12 +4,12 @@ import './style.css'
 const Header = () => {
     return (
         <header className="header">
-            <Link>
+            <Link to={'/'}>
                 <img src="" alt="Тут будет иконка" />
             </Link>
             {/* Реализовать поиск по сайту */}
-            <Link className='header_link'>Преподавателям</Link>
-            <Link className='header_link'>Пример</Link>
+            <Link to={'/login'}  className='header_link'>Преподавателям</Link>
+            <Link to={'/teacher'} className='header_link'>Пример</Link>
         </header>
     )
 }

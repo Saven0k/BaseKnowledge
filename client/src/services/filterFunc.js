@@ -3,7 +3,7 @@ export const filterPost = (text, posts) => {
         return posts;
     }
     const regex = new RegExp(`(^|\\s)${text}`, "iu");
-    return posts.filter(({ name }) => regex.test(name.toLowerCase()));
+    return posts.filter(({ title }) => regex.test(title.toLowerCase()));
 };
 export const filterUser = (text, users) => {
     if (!text) {

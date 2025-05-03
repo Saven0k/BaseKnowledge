@@ -8,18 +8,17 @@ import { useEffect, useState } from 'react';
  * @returns brach with students post
  */
 const StudentBranch = () => {
-    const [ready, setReady] = useState(false)
 
-    useEffect(() => {
-        setReady(true)
-    }, [])
+    // useEffect(() => {
+    //     setReady(true)
+    // }, [])
     return (
         <div className='student_branch'>
             <Header />
             <div className="title-hello">
                 <h1 className='h1-hello'>Добро пожаловать в базу знаний!</h1>
             </div>
-            <PostList ready={ready}/>
+            <PostList ready={true}/>
         </div>
     );
 };

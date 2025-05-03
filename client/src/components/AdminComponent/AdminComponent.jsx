@@ -2,7 +2,7 @@ import "./style.css";
 
 import ControlUsers from "../ControlUsers/ControlUsers";
 import Statistics from "../Statistics/Statistics";
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Header from '../header/Header'
 import CreatePostComponent from "../CreatePostComponent/CreatePostComponent";
 import PostList from "../List/List";
@@ -23,9 +23,9 @@ const AdminComponent = () => {
 	})
 
 	const handleClick = (index, type) => {
-			// setLoadedComponents({...loadedComponents, teachersPosts: false, studentsPosts: false })
-			setActiveIndex(activeIndex === index ? null : index);
-			setLoadedComponents({...loadedComponents, [type]:true})
+		// setLoadedComponents({...loadedComponents, teachersPosts: false, studentsPosts: false })
+		setActiveIndex(activeIndex === index ? null : index);
+		setLoadedComponents({ ...loadedComponents, [type]: true })
 
 	};
 	return (
@@ -74,7 +74,7 @@ const AdminComponent = () => {
 						className={`accordion-content ${activeIndex === 2 ? 'open' : ''
 							}`}
 					>
-						<PostList ready={loadedComponents.studentsPosts} type={"student"}/>
+						<PostList ready={loadedComponents.studentsPosts} type={"student"} />
 					</div>
 				</div>
 				<div className="accordion-item">
@@ -83,7 +83,7 @@ const AdminComponent = () => {
 						onClick={() => handleClick(3, "teachersPosts")}
 						style={{ backgroundColor: activeIndex === 3 ? "#3739dd" : "#f1f1f1", position: activeIndex === 3 ? "sticky" : "relative" }}
 					>
-						Посты преподавателей 
+						Посты преподавателей
 					</button>
 					<div
 						className={`accordion-content ${activeIndex === 3 ? 'open' : ''
@@ -118,7 +118,7 @@ const AdminComponent = () => {
 						className={`accordion-content ${activeIndex === 5 ? 'open' : ''
 							}`}
 					>
-						<Statistics  ready={loadedComponents.staticstic}/>
+						<Statistics ready={loadedComponents.staticstic} />
 					</div>
 				</div>
 			</div>

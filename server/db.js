@@ -1,5 +1,15 @@
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
+const fs = require('fs');
+
+
+const UPLOAD_DIR = path.join(__dirname, 'uploads');
+
+// Создаем директорию для загрузок, если ее нет
+if (!fs.existsSync(UPLOAD_DIR)) {
+  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+}
+
 
 // Database path
 const dbPath = path.join(__dirname, "db", "posts.db");
@@ -64,21 +74,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
 				}
 			}
 		);
-		db.run(`
-			CREATE TABLE IF NOT EXISTS photos (
-			  id INTEGER PRIMARY KEY AUTOINCREMENT,
-			  imagePath TEXT NOT NULL,
-			  uploadDate TEXT DEFAULT (datetime('now'))
-			)
-		  `, (err) => {
-			if (err) {
-				console.error("Ошибка при создании таблицы:", err.message);
-			} else {
-				console.log(
-					"Таблица photos успешно создана или уже существует."
-				);
-			}
-		});
+
 		db.run(
 			`CREATE TABLE IF NOT EXISTS visitors (
 		    id TEXT AUTO_INCREMENT PRIMARY KEY,
@@ -249,7 +245,7 @@ async function updateTeacherVisits(email, countVisit) {
  * @returns {string} ID
  */
 function generateUniqueIdForPost() {
-    return "post_" + Date.now();
+	return "post_" + Date.now();
 }
 /**
  * Function for creating a post
@@ -258,32 +254,87 @@ function generateUniqueIdForPost() {
  * @returns Returns a promise that resolves to true if the post was successfully updated, or false if the update failed.
  */
 async function createPost(title, content, role, public_post, student_group) {
-    const userId = generateUniqueIdForPost();
-    const sql = `INSERT INTO posts (id, title, content, role, student_group, public_post, date_created) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+	const userId = generateUniqueIdForPost();
+	const sql = `INSERT INTO posts (id, title, content, role, student_group, public_post, date_created) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
-    return new Promise((resolve, reject) => {
-        const today = new Date();
-        const formattedDate = [
-            String(today.getDate()).padStart(2, '0'),
-            String(today.getMonth() + 1).padStart(2, '0'),
-            today.getFullYear()
-        ].join('.');
+	return new Promise((resolve, reject) => {
+		const today = new Date();
+		const formattedDate = [
+			String(today.getDate()).padStart(2, '0'),
+			String(today.getMonth() + 1).padStart(2, '0'),
+			today.getFullYear()
+		].join('.');
 
-        db.run(sql, [userId, title, content, role, student_group, public_post, formattedDate], function (err) {
-            if (err) {
-                console.error("Ошибка базы данных:", err.message);
-                return reject(new Error("Ошибка регистрации поста"));
-            }
+		db.run(sql, [userId, title, content, role, student_group, public_post, formattedDate], function (err) {
+			if (err) {
+				console.error("Ошибка базы данных:", err.message);
+				return reject(new Error("Ошибка регистрации поста"));
+			}
 
-            console.log(
-                `Запись добавлена: ${userId}, ${title}`
-            ); // Добавлено для отладки
-            resolve({
-                userId,
-                message: "Запись успешно зарегистрирована",
-            });
-        });
-    });
+			console.log(
+				`Запись добавлена: ${userId}, ${title}`
+			); // Добавлено для отладки
+			resolve({
+				userId,
+				message: "Запись успешно зарегистрирована",
+			});
+		});
+	});
+}
+
+
+/**
+ * Function for creating a post
+ * @param {string} name
+ * @param {string} text
+ * @returns Returns a promise that resolves to true if the post was successfully updated, or false if the update failed.
+ */
+async function createPostWithImage(title, content, role, public_post, student_group, image) {
+	let image_path = null;
+	const userId = generateUniqueIdForPost();
+	try {
+		if (image) {
+			const ext = path.extname(image.originalname);
+			const filename = `${Date.now()}${ext}`;
+			image_path = path.join('uploads', filename);
+			await fs.promises.writeFile(path.join(__dirname, image_path), image.buffer);
+		}
+		const sql = `INSERT INTO posts (id, title, content, role, student_group, public_post, date_created,image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+		return new Promise((resolve, reject) => {
+			const today = new Date();
+			const formattedDate = [
+				String(today.getDate()).padStart(2, '0'),
+				String(today.getMonth() + 1).padStart(2, '0'),
+				today.getFullYear()
+			].join('.');
+	
+			db.run(sql, [userId, title, content, role, student_group, public_post, formattedDate, image_path], function (err) {
+				if (err) {
+					console.error("Ошибка базы данных:", err.message);
+					return reject(new Error("Ошибка регистрации поста"));
+				}
+	
+				console.log(
+					`Запись добавлена: ${userId}, с фотографией  ${title}`
+				); // Добавлено для отладки
+				resolve({
+					userId,
+					message: "Запись успешно зарегистрирована",
+				});
+			});
+		});
+	} catch (error) {
+		// Удаляем сохраненное изображение, если возникла ошибка
+		if (image_path) {
+		  try {
+			await fs.promises.unlink(path.join(__dirname, image_path));
+		  } catch (unlinkError) {
+			console.error('Failed to delete uploaded image:', unlinkError);
+		  }
+		}
+		throw error;
+	  }
+	
 }
 /**
  * // Function to display data from a table
@@ -321,7 +372,7 @@ async function getPostById(id) {
 		});
 	});
 }
-async function getPostsOfRole(role) {
+async function getPublicPostsOfRole(role) {
 	const sql = `SELECT * FROM posts WHERE role = ? AND public_post = ?`;
 
 	return new Promise((resolve, reject) => {
@@ -335,6 +386,21 @@ async function getPostsOfRole(role) {
 		});
 	});
 }
+async function getPostsOfRole(role) {
+	const sql = `SELECT * FROM posts WHERE role = ?`;
+
+	return new Promise((resolve, reject) => {
+		db.all(sql, [role], function (err, rows) {
+			if (err) {
+				console.error("Ошибка базы данных:", err.message);
+				return reject(new Error("Ошибка вывода всех постов"));
+			}
+			console.log("Записи выведены");
+			
+			resolve(rows);
+		});
+	});
+}
 /**
  * // Function to display data from a table
  * @returns list: A list of dictionaries, where each dictionary represents a record from the database.
@@ -343,7 +409,7 @@ async function getPostsForStudent(student_group) {
 	const sql = `SELECT * FROM posts WHERE role = ? AND (student_group = ? OR student_group = ?) AND public_post = ?`;
 
 	return new Promise((resolve, reject) => {
-		db.all(sql, ['student', student_group, 'all',  '1'], function (err, rows) {
+		db.all(sql, ['student', student_group, 'all', '1'], function (err, rows) {
 			if (err) {
 				console.error("Ошибка базы данных:", err.message);
 				return reject(new Error("Ошибка вывода всех постов"));
@@ -372,40 +438,40 @@ async function getPostsForVisible(role) {
 	});
 }
 async function updatePost(id, title, content, role, public_post, student_group) {
-    // Сначала обновляем пост
-    const updateSql = `UPDATE posts SET title = ?, content = ?, role = ?, student_group = ?, public_post = ?, date_created = ? WHERE id = ?`;
-    const today = new Date();
-    const formattedDate = [
-        String(today.getDate()).padStart(2, '0'),
-        String(today.getMonth() + 1).padStart(2, '0'),
-        today.getFullYear()
-    ].join('.');
+	// Сначала обновляем пост
+	const updateSql = `UPDATE posts SET title = ?, content = ?, role = ?, student_group = ?, public_post = ?, date_created = ? WHERE id = ?`;
+	const today = new Date();
+	const formattedDate = [
+		String(today.getDate()).padStart(2, '0'),
+		String(today.getMonth() + 1).padStart(2, '0'),
+		today.getFullYear()
+	].join('.');
 
-    // Обновляем пост и затем получаем обновленные данные
-    return new Promise((resolve, reject) => {
-        db.serialize(() => {
-            // Выполняем обновление
-            db.run(updateSql, [title, content, role, student_group, public_post, formattedDate, id], function (err) {
-                if (err) {
-                    console.error("Ошибка базы данных при обновлении:", err.message);
-                    return reject(new Error("Ошибка обновления поста"));
-                }
+	// Обновляем пост и затем получаем обновленные данные
+	return new Promise((resolve, reject) => {
+		db.serialize(() => {
+			// Выполняем обновление
+			db.run(updateSql, [title, content, role, student_group, public_post, formattedDate, id], function (err) {
+				if (err) {
+					console.error("Ошибка базы данных при обновлении:", err.message);
+					return reject(new Error("Ошибка обновления поста"));
+				}
 
-                // После успешного обновления получаем обновленный пост
-                db.get(`SELECT * FROM posts WHERE id = ?`, [id], (err, row) => {
-                    if (err) {
-                        console.error("Ошибка базы данных при получении обновленного поста:", err.message);
-                        return reject(new Error("Ошибка при получении обновленного поста"));
-                    }
-                    if (!row) {
-                        return reject(new Error("Пост не найден после обновления"));
-                    }
-                    console.log("Пост обновлен и возвращен");
-                    resolve(row);
-                });
-            });
-        });
-    });
+				// После успешного обновления получаем обновленный пост
+				db.get(`SELECT * FROM posts WHERE id = ?`, [id], (err, row) => {
+					if (err) {
+						console.error("Ошибка базы данных при получении обновленного поста:", err.message);
+						return reject(new Error("Ошибка при получении обновленного поста"));
+					}
+					if (!row) {
+						return reject(new Error("Пост не найден после обновления"));
+					}
+					console.log("Пост обновлен и возвращен");
+					resolve(row);
+				});
+			});
+		});
+	});
 }
 /**
  * Deletes a post from the database.
@@ -428,80 +494,82 @@ async function deletePost(id) {
 	});
 }
 function generateUniqueIdForVisitor() {
-    return "visitor_" + Date.now();
+	return "visitor_" + Date.now();
 }
 async function getCountAllStudentVisitors() {
-    const sql = `SELECT COUNT(*) as count FROM visitors`;
+	const sql = `SELECT COUNT(*) as count FROM visitors`;
 
-    return new Promise((resolve, reject) => {
-        db.get(sql, function (err, rows) {
-            if (err) {
-                console.error("Ошибка базы данных:", err.message);
-                return reject(new Error("Ошибка вывода всех пользователей"));
-            }
-            // console.log("Пользователи выведены");
-            resolve(rows.count);
-        });
-    });
+	return new Promise((resolve, reject) => {
+		db.get(sql, function (err, rows) {
+			if (err) {
+				console.error("Ошибка базы данных:", err.message);
+				return reject(new Error("Ошибка вывода всех пользователей"));
+			}
+			// console.log("Пользователи выведены");
+			resolve(rows.count);
+		});
+	});
 }
 async function addStudentVisitors() {
-    const visitorId = generateUniqueIdForVisitor();
-    const sql = `INSERT INTO visitors (id, date_visit) VALUES (?,  ?)`;
+	const visitorId = generateUniqueIdForVisitor();
+	const sql = `INSERT INTO visitors (id, date_visit) VALUES (?,  ?)`;
 
-    const today = new Date();
-    const formattedDate = [
-        String(today.getDate()).padStart(2, '0'),
-        String(today.getMonth() + 1).padStart(2, '0'),
-        today.getFullYear()
-    ].join('.');
+	const today = new Date();
+	const formattedDate = [
+		String(today.getDate()).padStart(2, '0'),
+		String(today.getMonth() + 1).padStart(2, '0'),
+		today.getFullYear()
+	].join('.');
 
-    return new Promise((resolve, reject) => {
-        db.run(sql, [visitorId, formattedDate], function (err) {
-            if (err) {
-                console.error("Ошибка базы данных:", err.message);
-                return reject(new Error("Ошибка добавления посетителя"));
-            }
+	return new Promise((resolve, reject) => {
+		db.run(sql, [visitorId, formattedDate], function (err) {
+			if (err) {
+				console.error("Ошибка базы данных:", err.message);
+				return reject(new Error("Ошибка добавления посетителя"));
+			}
 			console.log("Visitor added")
-            resolve({
-                visitorId,
-            });
-        });
-    });
+			resolve({
+				visitorId,
+			});
+		});
+	});
 }
 async function getStudentGroups() {
-    const sql = `SELECT * FROM groups`;
+	const sql = `SELECT * FROM groups`;
 
-    return new Promise((resolve, reject) => {
-        db.all(sql, function (err, rows) {
-            if (err) {
-                console.error("Ошибка базы данных:", err.message);
-                return reject(new Error("Ошибка вывода всех постов"));
-            }
-            resolve(rows);
-        });
-    });
+	return new Promise((resolve, reject) => {
+		db.all(sql, function (err, rows) {
+			if (err) {
+				console.error("Ошибка базы данных:", err.message);
+				return reject(new Error("Ошибка вывода всех постов"));
+			}
+			resolve(rows);
+		});
+	});
 }
 module.exports = {
-    updateUser,
-    deleteUser,
-    findUser,
-    getAllUsers,
-    createUser,
-    generateUniqueIdForUser,
-    getAllTeacherVisits,
+	updateUser,
+	deleteUser,
+	findUser,
+	getAllUsers,
+	createUser,
+	generateUniqueIdForUser,
+	getAllTeacherVisits,
 	updateTeacherVisits,
 	getTeacherVisits,
 	db,
 	getCountAllStudentVisitors,
 	addStudentVisitors,
 	generateUniqueIdForPost,
-    createPost,
-    getAllPosts,
-    getPostById,
-    getPostsOfRole,
-    getPostsForStudent,
-    getPostsForVisible,
-    updatePost,
-    deletePost,
-	getStudentGroups
+	createPost,
+	getAllPosts,
+	getPostById,
+	getPostsOfRole,
+	getPostsForStudent,
+	getPostsForVisible,
+	updatePost,
+	deletePost,
+	getStudentGroups,
+	getPublicPostsOfRole,
+	createPostWithImage,	
 };

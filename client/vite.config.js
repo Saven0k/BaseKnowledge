@@ -22,6 +22,7 @@ export default defineConfig({
 			'/api/teacher/visitors':  "http://localhost:5000",
 			'/api/visitors':  "http://localhost:5000",
 			'/api/visitors/add':  "http://localhost:5000",
+			'/api/posts/public/role':  "http://localhost:5000",
 			'/api/visitors/all':  "http://localhost:5000",
 		},
 	},

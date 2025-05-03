@@ -25,16 +25,20 @@ const PostDetail = ({ id }) => {
     if (!post) return <div>Пост не найден</div>;
     if (error) return <div>Ошибка: {error}</div>;
 
+
+    const previusPage = document.referrer;
+
+
     return (
         <div className='detail_box'>
-            <h1>{post[0].name}</h1>
-            <div className='content' dangerouslySetInnerHTML={{ __html: post[0].text }} />
+            <h1>{post[0].title}</h1>
+            <div className='content' dangerouslySetInnerHTML={{ __html: post[0].content }} />
             <p>{post[0].date_created}</p>
             {
-                localStorage.getItem('role') === "teacher" ?
-                    <Link to="/teacher">Вернуться к списку</Link>
+                localStorage.getItem('role') === null ?
+                    <Link to="/student">Перейти к записям</Link>
                     :
-                    <Link to="/student">Вернуться к списку</Link>
+                <button className='button_back' onClick={() => window.history.back()}>Назад</button>
             }
         </div>
     );
