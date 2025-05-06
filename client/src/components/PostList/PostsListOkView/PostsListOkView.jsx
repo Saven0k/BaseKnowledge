@@ -88,7 +88,7 @@ const PostsListOkView = ({ filteredPostsList, setFilteredPostsLists }) => {
                     >
 
                         <div dangerouslySetInnerHTML={{ __html: post.content }} />
-                        <p style={{ fontSize: '12px' }}>{post.date_created}</p>
+                        <p style={{ fontSize: '12px', marginTop: '10px' }}>{post.date_created}</p>
                         {
                             localStorage.getItem('role') === 'admin' &&
                             <div className="button_box">

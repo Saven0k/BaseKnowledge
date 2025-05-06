@@ -20,6 +20,9 @@ const SelectionRoleComponent = () => {
         prepareData();
         const startRole = localStorage.getItem('role')
     }, []);
+    useEffect(() => {
+        localStorage.setItem('role', role)
+    }, [role]);
 
     // Фильтрация специальностей при изменении поискового запроса
     useEffect(() => {
