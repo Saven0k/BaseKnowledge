@@ -1,6 +1,7 @@
 import './CreatePostComponent.css'
 import React, { useState, useRef, useEffect } from 'react';
 import { addPost, addPostWithImage, getStudentGroups } from '../../services/workWithBd';
+import GroupSelector from '../Selectors/GroupSelector/GroupSelector';
 
 
 const CreatePostComponent = () => {
@@ -23,7 +24,10 @@ const CreatePostComponent = () => {
 
     const [groupList, setGroupList] = useState([])
 
-    const [group, setGroup] = useState('none')
+    const [citiesList, setCitiesList] = useState([])
+
+    // const [group, setGroup] = useState('none')
+    const [groups, setGroups] = useState(null)
 
     // Сохраняем выделение (курсор)
     const saveSelection = () => {
@@ -111,13 +115,14 @@ const CreatePostComponent = () => {
         //     addPostWithImage(data)
         // }
         // else {
-        addPost(title, content, typeVisible, publicPost, group)
+        addPost(title, content, typeVisible, publicPost, groups)
         // }
         setTitle('');
         setContent('');
         // setImage(null);
         // setImagePreview('');
-        setGroup("none")
+        // setGroup("none")
+        setGroups(null)
     };
     const handleContentChange = () => {
         setContent(editorRef.current)
@@ -203,23 +208,14 @@ const CreatePostComponent = () => {
                     <option value="none">Не выбрано</option>
                     <option value="student">Студентам</option>
                     <option value="teacher">Учителям</option>
+                    <option value="all">Всем</option>
+                    <option value="city">Городу</option>
                 </select>
                 {typeVisible === 'student' &&
-                    <select
-                        className='group_select'
-                        value={group}
-                        onChange={(e) => setGroup(e.target.value)}
-                        onClick={() => sectionHandleClick()}
-                    >
-                        <option value="none">Не выбрано</option>
-                        <option value="all">Всем</option>
-                        {
-                            groupList.map((group, index) => (
-                                <option key={index} value={group.toString()}>{group}</option>
-                            ))
-                        }
-
-                    </select>
+                    <GroupSelector saveGroupList={setGroups} />
+                }
+                {typeVisible === 'city' && 
+                    <CitySelector saveCitiesList={setCitiesList} />
                 }
             </div>
             <div className="modal-form-group">

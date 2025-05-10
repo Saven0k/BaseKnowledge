@@ -1,4 +1,4 @@
-const { db, getPublicPostsOfRole, createPostWithImage } = require("./db"); // Importing the createPost function and the db object
+const { db, getPublicPostsOfRole, createPostWithImage, addStudentGroup, deleteGroup, UpdateGroup, getCities, addCity, UpdateCity, deleteCity } = require("./db"); // Importing the createPost function and the db object
 const express = require("express");
 const path = require('path');
 const app = express();
@@ -144,7 +144,7 @@ app.post("/api/posts/addWithImage", upload.single('image'), async (req, res) => 
 	try {
 		const { title, content, typeVisible, group, publicPost } = req.body;
 		const imagePath = req.file ? req.file.path : null;
-		
+
 		const post = await createPostWithImage({
 			title,
 			content,
@@ -213,7 +213,7 @@ app.get("/api/users", async (req, res) => {
 	}
 });
 
-	
+
 
 app.get('/api/teacher/visit/all', async (req, res) => {
 	try {
@@ -285,7 +285,6 @@ app.delete("/api/users/delete/:id", async (req, res) => {
 		res.status(500).send("Error deleting user");
 	}
 });
-
 /**
  * Find user by email, password, api
  */
@@ -299,7 +298,6 @@ app.post("/api/users/find", async (req, res) => {
 	}
 });
 
-
 app.get('/api/visitors/all', async (req, res) => {
 	try {
 		const data = await getCountAllStudentVisitors();
@@ -307,8 +305,7 @@ app.get('/api/visitors/all', async (req, res) => {
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
-})
-
+});
 app.post('/api/visitors/add', async (req, res) => {
 	try {
 		data = await addStudentVisitors();
@@ -316,7 +313,8 @@ app.post('/api/visitors/add', async (req, res) => {
 	} catch (error) {
 		res.status(500).json({ message: error.message })
 	}
-})
+});
+
 app.get("/api/student/groups", async (req, res) => {
 	try {
 		const groups = await getStudentGroups();
@@ -326,6 +324,74 @@ app.get("/api/student/groups", async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 });
+app.post("/api/student/groups/new", async (req, res) => {
+	const { groupName } = req.body;
+	try {
+		const response = await addStudentGroup(groupName);
+		res.json({ response });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+});
+app.post("/api/student/groups/delete/:id", async (req, res) => {
+	try {
+		const { id: groupId } = req.params;
+		await deleteGroup(groupId);
+		res.json({ message: "Group deleted successfully", status: 'ok' });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+});
+app.put("/api/student/groups/update", async (req, res) => {
+	const { id, name } = req.body;
+	try {
+		await UpdateGroup(id, name);
+		res.json({ message: "Группа обновлена" });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+});
+
+app.get('/api/cities', async (req, res) => {
+	try {
+		const cities = await getCities();
+		res.json({ cities: cities });
+	} catch (error) {
+		console.log("ошибка");
+		res.status(500).json({ message: error.message });
+	}
+});
+app.post('/api/cities/new', async (req, res) => {
+	const {name} = req.body;
+	try {
+		const response = await addCity(name);
+		res.json({ response });
+	} catch (error) {
+		console.log("ошибка");
+		res.status(500).json({ message: error.message });
+	}
+});
+app.put('/api/cities/update', async (req, res) => {
+	const {id,name} = req.body;
+	try {
+		await UpdateCity(id, name);
+		res.json({ message:"Данные о городе изменены" });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+});
+app.post("/api/cities/delete/:id", async (req, res) => {
+	try {
+		const { id: cityId } = req.params;
+		await deleteCity(cityId);
+		res.json({ message: "City deleted successfully", status: 'ok' });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+});
+
+
+
 
 
 // Для обслуживания загруженных изображений

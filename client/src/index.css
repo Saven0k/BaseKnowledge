@@ -1,7 +1,7 @@
-/* @font-face {
+@font-face {
     font-family: "Hexlet";
-    src: url("./fonts/");
-} */
+    src: url("./fonts/Mulish.ttf");
+}
 
 :root {
     --color-text: #fff;
@@ -14,7 +14,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-family: 'Hexlet';
 }
 
 a {

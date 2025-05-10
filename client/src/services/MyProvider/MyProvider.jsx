@@ -6,14 +6,17 @@ export const useMyContext = () => {
   return useContext(MyContext);
 };
 export const MyProvider = ({ children }) => {
-  const [contextState, setContextState] = useState();
+  const [contextState, setContextState] = useState({
+    role:'',
+    city:'',
+    email:''
+  });
 
-  const updateContextState = (newValue) => {
-    setContextState(newValue);
-    localStorage.setItem("contextState", newValue);
+  const updateContextState = (name, newValue) => {
+    setContextState({...contextState, [name]: newValue});
   };
 
-  // console.log(contextState)
+  console.log(contextState)
 
   return (
     <MyContext.Provider value={{ contextState, updateContextState }}>

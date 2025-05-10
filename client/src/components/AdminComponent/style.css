@@ -27,8 +27,7 @@
     position: relative;
     border: none;
     cursor: pointer;
-    top: 0px;
-    z-index: 100;
+    top: 15px;
     outline: none;
     font-size: 19px;
     border-radius: 15px;
@@ -48,7 +47,9 @@
 }
 
 .accordion-content.open {
-    max-height: 2550px; 
+    max-height: 2950px; 
+    position: relative;
+    z-index: 1;
     padding: 10px;
     width: 90%;
 }

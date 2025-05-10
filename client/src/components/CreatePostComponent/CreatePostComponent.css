@@ -1,5 +1,7 @@
 .addPost_component {
     width: 90%;
+    position: relative;
+    z-index: 100;
     display: flex;
     justify-content: center;
     align-items: start;

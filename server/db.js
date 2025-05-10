@@ -7,7 +7,7 @@ const UPLOAD_DIR = path.join(__dirname, 'uploads');
 
 // Создаем директорию для загрузок, если ее нет
 if (!fs.existsSync(UPLOAD_DIR)) {
-  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+	fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
 
@@ -45,7 +45,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
 			title TEXT,
 			content TEXT,
 			role TEXT,
-			student_group TEXT,
+			student_groups TEXT,
 			public_post TEXT,
 			date_created DATE
 		)`,
@@ -70,6 +70,36 @@ const db = new sqlite3.Database(dbPath, (err) => {
 				} else {
 					console.log(
 						"Таблица groups успешно создана или уже существует."
+					);
+				}
+			}
+		);
+		db.run(
+			`CREATE TABLE IF NOT EXISTS cities (
+				id TEXT PRIMARY KEY,
+				name TEXT
+		)`,
+			(err) => {
+				if (err) {
+					console.error("Ошибка при создании таблицы:", err.message);
+				} else {
+					console.log(
+						"Таблица cities успешно создана или уже существует."
+					);
+				}
+			}
+		);
+		db.run(
+			`CREATE TABLE IF NOT EXISTS roles (
+				id TEXT PRIMARY KEY,
+				name TEXT
+		)`,
+			(err) => {
+				if (err) {
+					console.error("Ошибка при создании таблицы:", err.message);
+				} else {
+					console.log(
+						"Таблица roles успешно создана или уже существует."
 					);
 				}
 			}
@@ -204,58 +234,113 @@ async function findUser(email, password) {
 		});
 	});
 }
-async function getAllTeacherVisits() {
-	const sql = `SELECT SUM(COALESCE(countVisit, 0)) as totalVisits FROM users`;
-	return new Promise((resolve, reject) => {
-		db.get(sql, function (err, row) {
-			if (err) {
-				console.error("Ошибка базы данных:", err.message);
-				return reject(new Error("Ошибка получения просмотров преподавателей"));
-			}
-			resolve(row);
-		});
-	});
-}
-async function getTeacherVisits(email) {
-	const sql = `SELECT countVisit FROM users WHERE email = ?`;
-	return new Promise((resolve, reject) => {
-		db.get(sql, [email], function (err, row) {
-			if (err) {
-				console.error("Ошибка базы данных:", err.message);
-				return reject(new Error("Ошибка получения просмотров преподавателя с id  =  ", id));
-			}
-			resolve(row);
-		});
-	});
-}
-async function updateTeacherVisits(email, countVisit) {
-	const sql = `UPDATE users SET countVisit = ? WHERE email = ?`;
-	return new Promise((resolve, reject) => {
-		db.get(sql, [countVisit, email], function (err, row) {
-			if (err) {
-				console.error("Ошибка базы данных:", err.message);
-				return reject(new Error("Ошибка увеличения колличества посещений"));
-			}
-			resolve(row);
-		});
-	});
-}
+
+
 /**
- * Function to create id for post
- * @returns {string} ID
+ * Получает общее количество посещений всех преподавателей.
+ * Использует SUM для агрегации значений из всех записей.
+ * COALESCE обеспечивает обработку NULL значений как 0.
+ * 
+ * @returns {Promise<{totalVisits: number}>} 
+ *    Промис с объектом, содержащим общее количество посещений
+ * @throws {Error} Если произошла ошибка при выполнении SQL-запроса
+ * 
+ * @example
+ * const visits = await getAllTeacherVisits();
+ * console.log(`Общее количество посещений: ${visits.totalVisits}`);
+ */
+async function getAllTeacherVisits() {
+    const sql = `SELECT SUM(COALESCE(countVisit, 0)) as totalVisits FROM users`;
+    
+    return new Promise((resolve, reject) => {
+        db.get(sql, function (err, row) {
+            if (err) {
+                console.error("Ошибка базы данных:", err.message);
+                return reject(new Error("Ошибка получения статистики посещений преподавателей"));
+            }
+            resolve(row);
+        });
+    });
+}
+
+/**
+ * Получает количество посещений для конкретного преподавателя по email.
+ * 
+ * @param {string} email - Электронная почта преподавателя
+ * @returns {Promise<{countVisit: number}>} 
+ *    Промис с объектом, содержащим количество посещений
+ * @throws {Error} Если преподаватель не найден или произошла ошибка запроса
+ * 
+ * @example
+ * const visits = await getTeacherVisits('professor@university.edu');
+ * console.log(`Посещения: ${visits.countVisit}`);
+ */
+async function getTeacherVisits(email) {
+    const sql = `SELECT countVisit FROM users WHERE email = ?`;
+    
+    return new Promise((resolve, reject) => {
+        db.get(sql, [email], function (err, row) {
+            if (err) {
+                console.error("Ошибка базы данных:", err.message);
+                return reject(new Error(`Ошибка получения данных преподавателя ${email}`));
+            }
+            resolve(row);
+        });
+    });
+}
+
+/**
+ * Обновляет счетчик посещений для преподавателя.
+ * 
+ * @param {string} email - Электронная почта преподавателя
+ * @param {number} countVisit - Новое значение счетчика посещений
+ * @returns {Promise<Object>} Промис с результатом операции
+ * @throws {Error} Если обновление не удалось
+ * 
+ * @example
+ * // Увеличить счетчик посещений на 1
+ * const current = await getTeacherVisits('professor@university.edu');
+ * await updateTeacherVisits('professor@university.edu', current.countVisit + 1);
+ */
+async function updateTeacherVisits(email, countVisit) {
+    const sql = `UPDATE users SET countVisit = ? WHERE email = ?`;
+    
+    return new Promise((resolve, reject) => {
+        db.run(sql, [countVisit, email], function (err) {
+            if (err) {
+                console.error("Ошибка базы данных:", err.message);
+                return reject(new Error("Ошибка обновления счетчика посещений"));
+            }
+            resolve({ success: true, changes: this.changes });
+        });
+    });
+}
+
+
+
+
+/**
+ * Генерирует уникальный идентификатор для поста.
+ * Использует временную метку для гарантии уникальности.
+ * @returns {string} ID поста в формате "post_<timestamp>"
  */
 function generateUniqueIdForPost() {
 	return "post_" + Date.now();
 }
+
 /**
- * Function for creating a post
- * @param {string} name
- * @param {string} text
- * @returns Returns a promise that resolves to true if the post was successfully updated, or false if the update failed.
+ * Создает новый пост в базе данных.
+ * @param {string} title - Заголовок поста
+ * @param {string} content - Содержание поста
+ * @param {string} role - Роль, для которой предназначен пост
+ * @param {boolean} public_post - Флаг публичности поста
+ * @param {Array<string>} student_groups - Массив групп студентов
+ * @returns {Promise<Object>} Объект с ID поста и сообщением об успехе
+ * @throws {Error} При ошибке записи в базу данных
  */
-async function createPost(title, content, role, public_post, student_group) {
+async function createPost(title, content, role, public_post, student_groups) {
 	const userId = generateUniqueIdForPost();
-	const sql = `INSERT INTO posts (id, title, content, role, student_group, public_post, date_created) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+	const sql = `INSERT INTO posts (id, title, content, role, student_groups, public_post, date_created) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
 	return new Promise((resolve, reject) => {
 		const today = new Date();
@@ -265,15 +350,11 @@ async function createPost(title, content, role, public_post, student_group) {
 			today.getFullYear()
 		].join('.');
 
-		db.run(sql, [userId, title, content, role, student_group, public_post, formattedDate], function (err) {
+		db.run(sql, [userId, title, content, role, JSON.stringify(student_groups), public_post, formattedDate], function (err) {
 			if (err) {
 				console.error("Ошибка базы данных:", err.message);
 				return reject(new Error("Ошибка регистрации поста"));
 			}
-
-			console.log(
-				`Запись добавлена: ${userId}, ${title}`
-			); // Добавлено для отладки
 			resolve({
 				userId,
 				message: "Запись успешно зарегистрирована",
@@ -282,14 +363,18 @@ async function createPost(title, content, role, public_post, student_group) {
 	});
 }
 
-
 /**
- * Function for creating a post
- * @param {string} name
- * @param {string} text
- * @returns Returns a promise that resolves to true if the post was successfully updated, or false if the update failed.
+ * Создает пост с прикрепленным изображением.
+ * @param {string} title - Заголовок поста
+ * @param {string} content - Содержание поста
+ * @param {string} role - Роль, для которой предназначен пост
+ * @param {boolean} public_post - Флаг публичности поста
+ * @param {Array<string>} student_groups - Массив групп студентов
+ * @param {Object} image - Объект изображения (multer)
+ * @returns {Promise<Object>} Объект с ID поста и сообщением об успехе
+ * @throws {Error} При ошибке загрузки изображения или записи в БД
  */
-async function createPostWithImage(title, content, role, public_post, student_group, image) {
+async function createPostWithImage(title, content, role, public_post, student_groups, image) {
 	let image_path = null;
 	const userId = generateUniqueIdForPost();
 	try {
@@ -299,7 +384,9 @@ async function createPostWithImage(title, content, role, public_post, student_gr
 			image_path = path.join('uploads', filename);
 			await fs.promises.writeFile(path.join(__dirname, image_path), image.buffer);
 		}
-		const sql = `INSERT INTO posts (id, title, content, role, student_group, public_post, date_created,image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+
+		const sql = `INSERT INTO posts (id, title, content, role, student_groups, public_post, date_created, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+
 		return new Promise((resolve, reject) => {
 			const today = new Date();
 			const formattedDate = [
@@ -307,16 +394,12 @@ async function createPostWithImage(title, content, role, public_post, student_gr
 				String(today.getMonth() + 1).padStart(2, '0'),
 				today.getFullYear()
 			].join('.');
-	
-			db.run(sql, [userId, title, content, role, student_group, public_post, formattedDate, image_path], function (err) {
+
+			db.run(sql, [userId, title, content, role, JSON.stringify(student_groups), public_post, formattedDate, image_path], function (err) {
 				if (err) {
 					console.error("Ошибка базы данных:", err.message);
 					return reject(new Error("Ошибка регистрации поста"));
 				}
-	
-				console.log(
-					`Запись добавлена: ${userId}, с фотографией  ${title}`
-				); // Добавлено для отладки
 				resolve({
 					userId,
 					message: "Запись успешно зарегистрирована",
@@ -324,122 +407,159 @@ async function createPostWithImage(title, content, role, public_post, student_gr
 			});
 		});
 	} catch (error) {
-		// Удаляем сохраненное изображение, если возникла ошибка
 		if (image_path) {
-		  try {
-			await fs.promises.unlink(path.join(__dirname, image_path));
-		  } catch (unlinkError) {
-			console.error('Failed to delete uploaded image:', unlinkError);
-		  }
+			try {
+				await fs.promises.unlink(path.join(__dirname, image_path));
+			} catch (unlinkError) {
+				console.error('Ошибка удаления изображения:', unlinkError);
+			}
 		}
 		throw error;
-	  }
-	
+	}
 }
+
 /**
- * // Function to display data from a table
- * @returns list: A list of dictionaries, where each dictionary represents a record from the database.
+ * Получает все посты из базы данных.
+ * @returns {Promise<Array>} Массив всех постов
+ * @throws {Error} При ошибке запроса к базе данных
  */
 async function getAllPosts() {
 	const sql = `SELECT * FROM posts`;
-
 	return new Promise((resolve, reject) => {
 		db.all(sql, function (err, rows) {
-			if (err) {
-				console.error("Ошибка базы данных:", err.message);
-				return reject(new Error("Ошибка вывода всех постов"));
-			}
-			console.log("Записи выведены");
+			if (err) return reject(new Error("Ошибка вывода всех постов"));
 			resolve(rows);
 		});
 	});
 }
+
 /**
- * // Function to display data from a table
- * @returns list: A list of dictionaries, where each dictionary represents a record from the database.
+ * Находит пост по его идентификатору.
+ * @param {string} id - ID поста
+ * @returns {Promise<Object>} Объект поста
+ * @throws {Error} При ошибке запроса или если пост не найден
  */
 async function getPostById(id) {
 	const sql = `SELECT * FROM posts WHERE id = ?`;
-
 	return new Promise((resolve, reject) => {
 		db.all(sql, [id], function (err, rows) {
-			if (err) {
-				console.error("Ошибка базы данных:", err.message);
-				return reject(new Error("Ошибка вывода всех постов"));
-			}
-			console.log("Записи выведены");
-			resolve(rows);
+			if (err) return reject(new Error("Ошибка вывода поста"));
+			resolve(rows[0] || null);
 		});
 	});
 }
+
+/**
+ * Получает публичные посты для определенной роли.
+ * @param {string} role - Роль пользователя
+ * @returns {Promise<Array>} Массив публичных постов
+ * @throws {Error} При ошибке запроса к базе данных
+ */
 async function getPublicPostsOfRole(role) {
 	const sql = `SELECT * FROM posts WHERE role = ? AND public_post = ?`;
-
 	return new Promise((resolve, reject) => {
 		db.all(sql, [role, "1"], function (err, rows) {
-			if (err) {
-				console.error("Ошибка базы данных:", err.message);
-				return reject(new Error("Ошибка вывода всех постов"));
-			}
-			console.log("Записи выведены");
+			if (err) return reject(new Error("Ошибка вывода публичных постов"));
 			resolve(rows);
 		});
 	});
 }
+
+/**
+ * Получает все посты для определенной роли.
+ * @param {string} role - Роль пользователя
+ * @returns {Promise<Array>} Массив постов
+ * @throws {Error} При ошибке запроса к базе данных
+ */
 async function getPostsOfRole(role) {
 	const sql = `SELECT * FROM posts WHERE role = ?`;
-
 	return new Promise((resolve, reject) => {
 		db.all(sql, [role], function (err, rows) {
-			if (err) {
-				console.error("Ошибка базы данных:", err.message);
-				return reject(new Error("Ошибка вывода всех постов"));
-			}
-			console.log("Записи выведены");
-			
+			if (err) return reject(new Error("Ошибка вывода постов роли"));
 			resolve(rows);
 		});
 	});
 }
-/**
- * // Function to display data from a table
- * @returns list: A list of dictionaries, where each dictionary represents a record from the database.
- */
-async function getPostsForStudent(student_group) {
-	const sql = `SELECT * FROM posts WHERE role = ? AND (student_group = ? OR student_group = ?) AND public_post = ?`;
 
-	return new Promise((resolve, reject) => {
-		db.all(sql, ['student', student_group, 'all', '1'], function (err, rows) {
-			if (err) {
-				console.error("Ошибка базы данных:", err.message);
-				return reject(new Error("Ошибка вывода всех постов"));
-			}
-			console.log("Записи выведены");
-			resolve(rows);
-		});
-	});
-}
 /**
- * // Function to display data from a table
- * @returns list: A list of dictionaries, where each dictionary represents a record from the database.
+ * Получает посты, доступные для студентов указанной группы.
+ * Фильтрует публичные студенческие посты, проверяя принадлежность к группе.
+ * 
+ * @param {string} groupToFind - Идентификатор группы студентов для фильтрации
+ * @returns {Promise<Array<Object>>} Промис с массивом подходящих постов
+ * @throws {Error} Если произошла ошибка при выполнении запроса к БД
+ * 
+ * @example
+ * // Получить посты для группы "CS-101"
+ * const posts = await getPostsForStudent("CS-101");
  */
-async function getPostsForVisible(role) {
-	const sql = `SELECT * FROM posts WHERE role = ?`;
+async function getPostsForStudent(groupToFind) {
+    return new Promise((resolve, reject) => {
+        db.all(
+            "SELECT * FROM posts WHERE role = ? AND public_post = ?", 
+            ['student', '1'], 
+            (err, rows) => {
+                if (err) {
+                    console.error("Ошибка базы данных:", err.message);
+                    return reject(new Error("Ошибка получения студенческих постов"));
+                }
 
-	return new Promise((resolve, reject) => {
-		db.all(sql, [role], function (err, rows) {
-			if (err) {
-				console.error("Ошибка базы данных:", err.message);
-				return reject(new Error("Ошибка вывода всех постов"));
-			}
-			console.log("Записи выведены");
-			resolve(rows);
-		});
-	});
+                const matchingPosts = rows.filter(post => {
+                    try {
+                        if (!post.student_groups) return false;
+                        const groups = JSON.parse(post.student_groups);
+                        return groups.includes(groupToFind);
+                    } catch (e) {
+                        console.error(`Ошибка обработки групп для поста ${post.id}:`, e);
+                        return false;
+                    }
+                });
+                
+                resolve(matchingPosts);
+            }
+        );
+    });
 }
-async function updatePost(id, title, content, role, public_post, student_group) {
-	// Сначала обновляем пост
-	const updateSql = `UPDATE posts SET title = ?, content = ?, role = ?, student_group = ?, public_post = ?, date_created = ? WHERE id = ?`;
+
+/**
+ * Получает все посты, предназначенные для определенной роли.
+ * Включает как публичные, так и приватные посты для указанной роли.
+ * 
+ * @param {string} role - Роль пользователя (например: 'student', 'teacher')
+ * @returns {Promise<Array<Object>>} Промис с массивом постов для указанной роли
+ * @throws {Error} Если произошла ошибка при выполнении запроса к БД
+ * 
+ * @example
+ * // Получить все посты для преподавателей
+ * const teacherPosts = await getPostByRole("teacher");
+ */
+async function getPostByRole(role) {
+    const sql = `SELECT * FROM posts WHERE role = ?`;
+
+    return new Promise((resolve, reject) => {
+        db.all(sql, [role], function (err, rows) {
+            if (err) {
+                console.error("Ошибка базы данных:", err.message);
+                return reject(new Error("Ошибка получения постов по роли"));
+            }
+            resolve(rows);
+        });
+    });
+}
+
+/**
+ * Обновляет существующий пост.
+ * @param {string} id - ID поста
+ * @param {string} title - Новый заголовок
+ * @param {string} content - Новое содержание
+ * @param {string} role - Новая роль
+ * @param {boolean} public_post - Новый флаг публичности
+ * @param {Array<string>} student_groups - Новый массив групп
+ * @returns {Promise<Object>} Обновленный объект поста
+ * @throws {Error} При ошибке обновления или если пост не найден
+ */
+async function updatePost(id, title, content, role, public_post, student_groups) {
+	const updateSql = `UPDATE posts SET title = ?, content = ?, role = ?, student_groups = ?, public_post = ?, date_created = ? WHERE id = ?`;
 	const today = new Date();
 	const formattedDate = [
 		String(today.getDate()).padStart(2, '0'),
@@ -447,56 +567,65 @@ async function updatePost(id, title, content, role, public_post, student_group) 
 		today.getFullYear()
 	].join('.');
 
-	// Обновляем пост и затем получаем обновленные данные
 	return new Promise((resolve, reject) => {
 		db.serialize(() => {
-			// Выполняем обновление
-			db.run(updateSql, [title, content, role, student_group, public_post, formattedDate, id], function (err) {
-				if (err) {
-					console.error("Ошибка базы данных при обновлении:", err.message);
-					return reject(new Error("Ошибка обновления поста"));
-				}
+			db.run(updateSql, [title, content, role, JSON.stringify(student_groups), public_post, formattedDate, id], function (err) {
+				if (err) return reject(new Error("Ошибка обновления поста"));
 
-				// После успешного обновления получаем обновленный пост
 				db.get(`SELECT * FROM posts WHERE id = ?`, [id], (err, row) => {
-					if (err) {
-						console.error("Ошибка базы данных при получении обновленного поста:", err.message);
-						return reject(new Error("Ошибка при получении обновленного поста"));
-					}
-					if (!row) {
-						return reject(new Error("Пост не найден после обновления"));
-					}
-					console.log("Пост обновлен и возвращен");
+					if (err) return reject(new Error("Ошибка получения обновленного поста"));
+					if (!row) return reject(new Error("Пост не найден"));
 					resolve(row);
 				});
 			});
 		});
 	});
 }
+
 /**
- * Deletes a post from the database.
- * @param {string} id
- * @returns bool: True if the post was successfully deleted, False otherwise.
+ * Удаляет пост по его идентификатору.
+ * @param {string} id - ID поста для удаления
+ * @returns {Promise<string>} Сообщение об успешном удалении
+ * @throws {Error} При ошибке удаления
  */
 async function deletePost(id) {
 	const sql = "DELETE FROM posts WHERE id = ?";
-
 	return new Promise((resolve, reject) => {
 		db.run(sql, [id], (err) => {
-			if (err) {
-				console.error("Ошибка базы данных:", err.message);
-				reject(new Error("Ошибка удаление поста с id: ", id));
-			} else {
-				console.log(`Пост с id ${id} удален`);
-				resolve("OK");
-			}
+			if (err) return reject(new Error(`Ошибка удаления поста с id: ${id}`));
+			resolve("OK");
 		});
 	});
 }
+
+
+
+/**
+ * Генерирует уникальный идентификатор для посетителя.
+ * Использует текущую метку времени для гарантии уникальности.
+ * 
+ * @returns {string} Уникальный ID в формате "visitor_<timestamp>"
+ * 
+ * @example
+ * const visitorId = generateUniqueIdForVisitor();
+ * // visitor_1620000000000
+ */
 function generateUniqueIdForVisitor() {
 	return "visitor_" + Date.now();
 }
-async function getCountAllStudentVisitors() {
+
+/**
+ * Получает общее количество посещений студентов из базы данных.
+ * Использует COUNT(*) для оптимизированного подсчета записей.
+ * 
+ * @returns {Promise<number>} Промис с количеством посещений
+ * @throws {Error} В случае ошибки SQL-запроса
+ * 
+ * @example
+ * const visitsCount = await getAllStudentVisits();
+ * console.log(`Всего посещений: ${visitsCount}`);
+ */
+async function getAllStudentVisits() {
 	const sql = `SELECT COUNT(*) as count FROM visitors`;
 
 	return new Promise((resolve, reject) => {
@@ -505,15 +634,27 @@ async function getCountAllStudentVisitors() {
 				console.error("Ошибка базы данных:", err.message);
 				return reject(new Error("Ошибка вывода всех пользователей"));
 			}
-			// console.log("Пользователи выведены");
 			resolve(rows.count);
 		});
 	});
 }
-async function addStudentVisitors() {
-	const visitorId = generateUniqueIdForVisitor();
-	const sql = `INSERT INTO visitors (id, date_visit) VALUES (?,  ?)`;
 
+/**
+ * Добавляет новую запись о посещении студента.
+ * Автоматически генерирует ID и устанавливает текущую дату.
+ * 
+ * @returns {Promise<Object>} Промис с объектом содержащим visitorId
+ * @throws {Error} При ошибке вставки записи
+ * 
+ * @example
+ * const { visitorId } = await addStudentVisitor();
+ * console.log(`Добавлено посещение с ID: ${visitorId}`);
+ */
+async function addStudentVisitor() {
+	const visitorId = generateUniqueIdForVisitor();
+	const sql = `INSERT INTO visitors (id, date_visit) VALUES (?, ?)`;
+
+	// Форматирование даты в формате DD.MM.YYYY
 	const today = new Date();
 	const formattedDate = [
 		String(today.getDate()).padStart(2, '0'),
@@ -534,6 +675,16 @@ async function addStudentVisitors() {
 		});
 	});
 }
+
+
+
+
+
+/**
+ * Асинхронно получает список всех студенческих групп из базы данных.
+ * @returns {Promise<Array>} Промис, который разрешается массивом объектов групп
+ * @throws {Error} Если произошла ошибка при выполнении запроса к базе данных
+ */
 async function getStudentGroups() {
 	const sql = `SELECT * FROM groups`;
 
@@ -547,29 +698,358 @@ async function getStudentGroups() {
 		});
 	});
 }
+
+/**
+ * Генерирует уникальный идентификатор для студенческой группы.
+ * @returns {string} Уникальный ID группы в формате "group_<timestamp>"
+ */
+function generateUniqueIdForGroup() {
+	return "group_" + Date.now();
+}
+
+/**
+ * Добавляет новую студенческую группу в базу данных.
+ * @param {string} groupName - Название группы для добавления
+ * @returns {Promise<Object>} Промис, который разрешается объектом с ID созданной группы {groupId: string}
+ * @throws {Error} Если произошла ошибка при добавлении группы
+ */
+async function addStudentGroup(groupName) {
+	const groupId = generateUniqueIdForGroup();
+	const sql = 'INSERT INTO groups (id, name) VALUES ( ?, ? )'
+	return new Promise((resolve, reject) => {
+		db.run(sql, [groupId, groupName], function (err) {
+			if (err) {
+				console.error('Ошибка базы данных:', err.message);
+				return reject(new Error('Ошибка добавления группы'));
+			}
+			console.log("Group added");
+			resolve({
+				groupId,
+			})
+		})
+	})
+}
+
+/**
+ * Обновляет информацию о студенческой группе в базе данных.
+ * @param {string} id - ID группы для обновления
+ * @param {string} groupName - Новое название группы
+ * @returns {Promise<Object>} Промис, который разрешается обновленным объектом группы
+ * @throws {Error} Если произошла ошибка при обновлении или группа не найдена
+ */
+async function UpdateGroup(id, groupName) {
+	const updateSql = `UPDATE groups SET name = ? WHERE id = ?`;
+
+	// Обновляем пост и затем получаем обновленные данные
+	return new Promise((resolve, reject) => {
+		db.serialize(() => {
+			// Выполняем обновление
+			db.run(updateSql, [groupName, id], function (err) {
+				if (err) {
+					console.error("Ошибка базы данных при обновлении:", err.message);
+					return reject(new Error("Ошибка обновления группы"));
+				}
+
+				// После успешного обновления получаем обновленный пост
+				db.get(`SELECT * FROM groups WHERE id = ?`, [id], (err, row) => {
+					if (err) {
+						console.error("Ошибка базы данных при получении обновленной группы:", err.message);
+						return reject(new Error("Ошибка при получении обновленной группы"));
+					}
+					if (!row) {
+						return reject(new Error("Группа не найдена после обновления"));
+					}
+					console.log("Группа обновлена и возвращена");
+					resolve(row);
+				});
+			});
+		});
+	});
+}
+
+/**
+ * Удаляет студенческую группу из базы данных по указанному ID.
+ * @param {string} id - ID группы для удаления
+ * @returns {Promise<string>} Промис, который разрешается строкой "OK" при успешном удалении
+ * @throws {Error} Если произошла ошибка при удалении группы
+ */
+async function deleteGroup(id) {
+	const sql = "DELETE FROM groups WHERE id = ?";
+
+	return new Promise((resolve, reject) => {
+		db.run(sql, [id], (err) => {
+			if (err) {
+				console.error("Ошибка базы данных:", err.message);
+				reject(new Error("Ошибка удаление группы с id: ", id));
+			} else {
+				console.log(`Группа с id ${id} удалена`);
+				resolve("OK");
+			}
+		});
+	});
+}
+
+
+
+
+
+/**
+ * Асинхронно получает список всех городов из базы данных.
+ * @returns {Promise<Array>} Промис, который разрешается массивом объектов городов
+ * @throws {Error} Если произошла ошибка при выполнении запроса к базе данных
+ */
+async function getCities() {
+	const sql = `SELECT * FROM cities`;
+
+	return new Promise((resolve, reject) => {
+		db.all(sql, function (err, rows) {
+			if (err) {
+				console.error("Ошибка базы данных:", err.message);
+				return reject(new Error("Ошибка вывода всех городов"));
+			}
+			resolve(rows);
+		});
+	});
+}
+
+/**
+ * Генерирует уникальный идентификатор для города.
+ * @returns {string} Уникальный ID города в формате "city_<timestamp>"
+ */
+function generateUniqueIdForRole() {
+	return "city_" + Date.now();
+}
+
+/**
+ * Добавляет новый город в базу данных.
+ * @param {string} cityName - Название города для добавления
+ * @returns {Promise<Object>} Промис, который разрешается объектом с ID созданного города {cityId: string}
+ * @throws {Error} Если произошла ошибка при добавлении города
+ */
+async function addCity(cityName) {
+	const cityId = generateUniqueIdForRole();
+	const sql = 'INSERT INTO cities (id, name) VALUES ( ?, ? )'
+	return new Promise((resolve, reject) => {
+		db.run(sql, [cityId, cityName], function (err) {
+			if (err) {
+				console.error('Ошибка базы данных:', err.message);
+				return reject(new Error('Ошибка добавления города'));
+			}
+			console.log("City added");
+			resolve({
+				cityId,
+			})
+		})
+	})
+}
+
+/**
+ * Обновляет информацию о городе в базе данных.
+ * @param {string} id - ID города для обновления
+ * @param {string} cityName - Новое название города
+ * @returns {Promise<Object>} Промис, который разрешается обновленным объектом города
+ * @throws {Error} Если произошла ошибка при обновлении или город не найден
+ */
+async function updateCity(id, cityName) {
+	const updateSql = `UPDATE cities SET name = ? WHERE id = ?`;
+
+	// Обновляем пост и затем получаем обновленные данные
+	return new Promise((resolve, reject) => {
+		db.serialize(() => {
+			// Выполняем обновление
+			db.run(updateSql, [cityName, id], function (err) {
+				if (err) {
+					console.error("Ошибка базы данных при обновлении:", err.message);
+					return reject(new Error("Ошибка обновления города"));
+				}
+
+				// После успешного обновления получаем обновленный пост
+				db.get(`SELECT * FROM cities WHERE id = ?`, [id], (err, row) => {
+					if (err) {
+						console.error("Ошибка базы данных при получении обновленного города:", err.message);
+						return reject(new Error("Ошибка при получении обновленного города"));
+					}
+					if (!row) {
+						return reject(new Error("Город не найден после обновления"));
+					}
+					console.log("Город обновлен и возвращен");
+					resolve(row);
+				});
+			});
+		});
+	});
+}
+
+/**
+ * Удаляет город из базы данных по указанному ID.
+ * @param {string} id - ID города для удаления
+ * @returns {Promise<string>} Промис, который разрешается строкой "OK" при успешном удалении
+ * @throws {Error} Если произошла ошибка при удалении города
+ */
+async function deleteCity(id) {
+	const sql = "DELETE FROM cities WHERE id = ?";
+
+	return new Promise((resolve, reject) => {
+		db.run(sql, [id], (err) => {
+			if (err) {
+				console.error("Ошибка базы данных:", err.message);
+				reject(new Error("Ошибка удаление города с id: ", id));
+			} else {
+				console.log(`Город с id ${id} удален`);
+				resolve("OK");
+			}
+		});
+	});
+}
+
+
+
+
+
+/**
+ * Асинхронно получает все роли из базы данных.
+ * @returns {Promise<Array>} Промис, который разрешается массивом объектов ролей
+ * @throws {Error} Если произошла ошибка при запросе к базе данных
+ */
+async function getRoles() {
+	const sql = `SELECT * FROM roles`;
+
+	return new Promise((resolve, reject) => {
+		db.all(sql, function (err, rows) {
+			if (err) {
+				console.error("Ошибка базы данных:", err.message);
+				return reject(new Error("Ошибка вывода всех ролей"));
+			}
+			resolve(rows);
+		});
+	});
+}
+
+/**
+ * Генерирует уникальный идентификатор для новой роли.
+ * @returns {string} Уникальный ID роли в формате "role_<timestamp>"
+ */
+function generateUniqueIdForRole() {
+	return "role_" + Date.now();
+}
+
+/**
+ * Добавляет новую роль в базу данных.
+ * @param {string} role - Название новой роли
+ * @returns {Promise<Object>} Промис, который разрешается объектом с ID созданной роли
+ * @throws {Error} Если произошла ошибка при добавлении роли
+ */
+async function addRole(role) {
+	const roleId = generateUniqueIdForRole();
+	const sql = 'INSERT INTO roles (id, name) VALUES ( ?, ? )'
+	return new Promise((resolve, reject) => {
+		db.run(sql, [roleId, role], function (err) {
+			if (err) {
+				console.error('Ошибка базы данных:', err.message);
+				return reject(new Error('Ошибка добавления роли'));
+			}
+			console.log("Role added");
+			resolve({
+				roleId: roleId,
+			})
+		})
+	})
+}
+
+/**
+ * Обновляет существующую роль в базе данных.
+ * @param {string} id - ID роли для обновления
+ * @param {string} role - Новое название роли
+ * @returns {Promise<Object>} Промис, который разрешается обновленным объектом роли
+ * @throws {Error} Если произошла ошибка при обновлении или роль не найдена
+ */
+async function updateRole(id, role) {
+	const updateSql = `UPDATE roles SET name = ? WHERE id = ?`;
+
+	// Обновляем пост и затем получаем обновленные данные
+	return new Promise((resolve, reject) => {
+		db.serialize(() => {
+			// Выполняем обновление
+			db.run(updateSql, [role, id], function (err) {
+				if (err) {
+					console.error("Ошибка базы данных при обновлении:", err.message);
+					return reject(new Error("Ошибка обновления роли"));
+				}
+
+				// После успешного обновления получаем обновленный пост
+				db.get(`SELECT * FROM roles WHERE id = ?`, [id], (err, row) => {
+					if (err) {
+						console.error("Ошибка базы данных при получении обновленной роли:", err.message);
+						return reject(new Error("Ошибка при получении обновленной роли"));
+					}
+					if (!row) {
+						return reject(new Error("Роль не найдена после обновления"));
+					}
+					console.log("Роль обновлена и возвращена");
+					resolve(row);
+				});
+			});
+		});
+	});
+}
+
+/**
+ * Удаляет роль из базы данных по указанному ID.
+ * @param {string} id - ID роли для удаления
+ * @returns {Promise<string>} Промис, который разрешается строкой "OK" при успешном удалении
+ * @throws {Error} Если произошла ошибка при удалении роли
+ */
+async function deleteRole(id) {
+	const sql = "DELETE FROM roles WHERE id = ?";
+
+	return new Promise((resolve, reject) => {
+		db.run(sql, [id], (err) => {
+			if (err) {
+				console.error("Ошибка базы данных:", err.message);
+				reject(new Error("Ошибка удаление роли с id: ", id));
+			} else {
+				console.log(`РОль с id ${id} удалена`);
+				resolve("OK");
+			}
+		});
+	});
+}
+
+
 module.exports = {
+	addRole,
+	updateRole,
+	deleteRole,
+	getRoles,
+	addCity,
+	deleteCity,
+	getCities,
+	UpdateCity: updateCity,
 	updateUser,
 	deleteUser,
 	findUser,
+	addStudentGroup,
 	getAllUsers,
 	createUser,
+	UpdateGroup,
 	generateUniqueIdForUser,
 	getAllTeacherVisits,
+	deleteGroup,
 	updateTeacherVisits,
 	getTeacherVisits,
 	db,
-	getCountAllStudentVisitors,
-	addStudentVisitors,
+	getCountAllStudentVisitors: getAllStudentVisits,
+	addStudentVisitors: addStudentVisitor,
 	generateUniqueIdForPost,
 	createPost,
 	getAllPosts,
 	getPostById,
 	getPostsOfRole,
 	getPostsForStudent,
-	getPostsForVisible,
+	getPostsForVisible: getPostByRole,
 	updatePost,
 	deletePost,
 	getStudentGroups,
 	getPublicPostsOfRole,
-	createPostWithImage,	
+	createPostWithImage,
 };

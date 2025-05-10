@@ -26,8 +26,7 @@ function App() {
 						<Route path="*" element={<SelectionPage />} />
 						<Route path="/404" element={<ErrorPage />} />
 						<Route path="/parentsPage" element={<ParentsPage />} />
-						<Route path="/curatorPage" element={<CuratorPage />} />
-					</Routes>
+						<Route path="/curatorPage" element={<CuratorPage />} />					</Routes>
 				</BrowserRouter>
 			</MyProvider>
 		</MyTheme>

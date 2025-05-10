@@ -370,24 +370,6 @@ export async function findUser(email, password) {
 	}
 }
 
-export async function getStudentGroups() {
-	try {
-		const response = await fetch("/api/student/groups");
-		const data = await response.json();
-		// console.log("Список пользователей получен:", typeof data.groups);
-
-		if (!response.ok) {
-			throw new Error(
-				data.message || "Не удалось получить  колличество посетителей"
-			);
-		};
-
-		return data.groups;
-	} catch (error) {
-		console.error("Ошибка при получении колличества ст:", error);
-	}
-}
-
 export async function getVisitorsCount() {
 	try {
 		const response = await fetch("/api/visitors/all");
@@ -461,3 +443,137 @@ export const updateTeacherVisit = async (emailTeacher, countVisit) => {
 		return false;
 	}
 };
+
+export async function getCities() {
+	try {
+		const response = await fetch("/api/cities");
+		const data = await response.json();
+		if (!response.ok) {
+			throw new Error(
+				data.message || "Не удалось получить города"
+			);
+		};
+
+		return data.cities;
+	} catch (error) {
+		console.error("Ошибка при получении городов:", error);
+	}
+}
+
+export async function addCity(name) {
+	fetch("/api/cities/add", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			name:name
+		}),
+	})
+		.then((response) => response.json())
+}
+
+export const updateCity = async (id,name) => {
+	try {
+		const res = await fetch(`/api/cities/update/${id}`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				id: id,
+				name: name,
+			}),
+		});
+		const data = await res.json();
+		if (!res.ok) throw new Error(data.message || "put error");
+		return true;
+	} catch (err) {
+		console.log(err);
+		return false;
+	}
+};
+
+export async function deleteCity(id) {
+	try {
+		const response = await fetch(`/api/cities/delete/${id}`, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+		const data = await response.json();
+		if (!response.ok) throw new Error(data.message || "put error");
+		return true;
+	} catch (err) {
+		console.log(err);
+		return false;
+	}
+}
+
+export async function getStudentGroups() {
+	try {
+		const response = await fetch("/api/student/groups");
+		const data = await response.json();
+		if (!response.ok) {
+			throw new Error(
+				data.message || "Не удалось получить  колличество посетителей"
+			);
+		};
+
+		return data.groups;
+	} catch (error) {
+		console.error("Ошибка при получении колличества ст:", error);
+	}
+}
+
+export async function addGroup(name) {
+	fetch("/api/student/groups/new", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			name:name
+		}),
+	})
+		.then((response) => response.json())
+}
+
+export const updateGroup = async (id,name) => {
+	try {
+		const res = await fetch(`/api/student/groups/update`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				id: id,
+				name: name,
+			}),
+		});
+		const data = await res.json();
+		if (!res.ok) throw new Error(data.message || "put error");
+		return true;
+	} catch (err) {
+		console.log(err);
+		return false;
+	}
+};
+
+export async function deleteGroup(id) {
+	try {
+		const response = await fetch(`/api/student/groups/delete/${id}`, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+		const data = await response.json();
+		if (!response.ok) throw new Error(data.message || "put error");
+		return true;
+	} catch (err) {
+		console.log(err);
+		return false;
+	}
+}
