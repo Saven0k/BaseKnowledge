@@ -1,4 +1,4 @@
-const { db, getPublicPostsOfRole, createPostWithImage, addStudentGroup, deleteGroup, UpdateGroup, getCities, addCity, UpdateCity, deleteCity } = require("./db"); // Importing the createPost function and the db object
+const { db, getPublicPostsOfRole, createPostWithImage, addStudentGroup, deleteGroup, UpdateGroup, getCities, addCity, UpdateCity, deleteCity, getRoles, addRole, updateRole, deleteRole } = require("./db"); // Importing the createPost function and the db object
 const express = require("express");
 const path = require('path');
 const app = express();
@@ -390,6 +390,43 @@ app.post("/api/cities/delete/:id", async (req, res) => {
 	}
 });
 
+app.get('/api/roles', async (req, res) => {
+	try {
+		const roles = await getRoles();
+		res.json({ roles:roles });
+	} catch (error) {
+		console.log("Ошибка отправки списка ролей");
+		res.status(500).json({ message: error.message });
+	}
+});
+app.post('/api/roles/new', async (req, res) => {
+	const {name} = req.body;
+	try {
+		const response = await addRole(name);
+		res.json({ response });
+	} catch (error) {
+		console.log("Ошибка добавления новой роли в таблицу");
+		res.status(500).json({ message: error.message });
+	}
+});
+app.put('/api/roles/update', async (req, res) => {
+	const {id,name} = req.body;
+	try {
+		await updateRole(id, name);
+		res.json({ message:"Данные о роли изменены" });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+});
+app.post("/api/roles/delete/:id", async (req, res) => {
+	try {
+		const { id: roleId } = req.params;
+		await deleteRole(roleId);
+		res.json({ message: "Роль успешно удалена", status: 'ok' });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+});
 
 
 

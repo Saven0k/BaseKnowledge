@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './CityChanger.css'
+import { getCities } from '../../services/workWithBd';
 
 
 const CityChanger = () => {
@@ -10,8 +11,8 @@ const CityChanger = () => {
     // const [searchTerm, setSearchTerm] = useState('')
 
     const loadCities = async () => {
-        // const downloadCities = await getCitie
-        // setCities(downloadCities)
+        const downloadCities = await getCities()
+        setCities(downloadCities)
     }
     const selectCity = (city) => {
         setIsOpen(false)
