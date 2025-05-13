@@ -1,5 +1,4 @@
-
-import { getStudentGroups } from '../../../services/workWithBd';
+import { getStudentGroups } from '../../../services/ApiToServer/groups';
 import './groupSelector.css'
 import React, { useState, useEffect } from 'react';
 

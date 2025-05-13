@@ -7,7 +7,6 @@ import StudentPage from "./pages/StudentPage";
 import SelectionPage from "./pages/SelectionPage";
 import { MyProvider } from "./services/MyProvider/MyProvider";
 import { MyTheme } from "./services/MyThemeProvider/MyThemeProvider";
-import { ParentsPage } from './pages/ParentsPage';
 import { CuratorPage } from './pages/CuratorPage';
 import PostPage from "./pages/PostPage";
 
@@ -25,8 +24,8 @@ function App() {
 						<Route path="/selection" element={<SelectionPage />} />
 						<Route path="*" element={<SelectionPage />} />
 						<Route path="/404" element={<ErrorPage />} />
-						<Route path="/parentsPage" element={<ParentsPage />} />
-						<Route path="/curatorPage" element={<CuratorPage />} />					</Routes>
+						<Route path="/curatorPage" element={<CuratorPage />} />						
+					</Routes>
 				</BrowserRouter>
 			</MyProvider>
 		</MyTheme>

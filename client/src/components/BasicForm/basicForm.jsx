@@ -2,8 +2,8 @@ import { useForm } from 'react-hook-form'
 import { useState } from 'react';
 import './style.css'
 import MediumTitle from '../CustomTitles/MediumTitle/MediumTitle';
-import { findUser } from '../../services/workWithBd';
 import { useMyContext } from '../../services/MyProvider/MyProvider';
+import { findUser } from '../../services/ApiToServer/users';
 
 const BasicForm = () => {
     const [attempts, setAttempts] = useState(5);

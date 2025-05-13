@@ -50,15 +50,15 @@ export async function getPost(id) {
 
 /**
  * 🔍 Получает посты для указанного поля
- * @param {string} forField - Поле для фильтрации
+ * @param {string} role - Поле для фильтрации
  * @returns {Promise<Array>} Отфильтрованные посты
  */
-export async function getPostFor(forField) {
+export async function getPostFor(role) {
     try {
-        const response = await fetch("/api/posts/for", {
+        const response = await fetch("/api/posts/role", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ forField })
+            body: JSON.stringify({ role })
         });
 
         const data = await response.json();

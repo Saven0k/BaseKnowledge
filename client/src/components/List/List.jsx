@@ -4,7 +4,7 @@ import { filterPost } from "../../services/filterFunc";
 import SearchComponent from "../SearchComponent/SearchComponent";
 import NothingNot from '../PostList/NothingNot/NothingNot'
 import PostsListOkView from "../PostList/PostsListOkView/PostsListOkView";
-import { getPostFor, getPostForStudent, getPosts, getPostsForVisible, getPublicPostOfRole } from "../../services/workWithBd";
+import { getPostFor, getPostForStudent, getPublicPostOfRole } from "../../services/ApiToServer/posts";
 
 /**
  * React component, which creates a platform for working with student posts.

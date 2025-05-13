@@ -27,7 +27,8 @@ const db = new sqlite3.Database(dbPath, (err) => {
             id TEXT AUTO_INCREMENT PRIMARY KEY,
             email TEXT,
             password TEXT,
-			countVisit INTEGER
+			countVisit INTEGER,
+			role TEXT
         )`,
 			(err) => {
 				if (err) {
@@ -135,12 +136,12 @@ function generateUniqueIdForUser() {
  * @param {string} text
  * @returns Returns a promise that resolves to true if the post was successfully updated, or false if the update failed.
  */
-async function createUser(email, password) {
+async function createUser(email, password, role) {
 	const userId = generateUniqueIdForUser();
-	const sql = `INSERT INTO users (id, email, password, countVisit) VALUES (?, ?, ?, ?)`;
+	const sql = `INSERT INTO users (id, email, password, countVisit, role) VALUES (?, ?, ?, ?, ?)`;
 
 	return new Promise((resolve, reject) => {
-		db.run(sql, [userId, email, password, 0], function (err) {
+		db.run(sql, [userId, email, password, 0, role ], function (err) {
 			if (err) {
 				console.error("Ошибка базы данных:", err.message);
 				return reject(new Error("Ошибка регистрации пользователя"));
@@ -179,11 +180,11 @@ async function getAllUsers() {
  * @param {string} password
  * @returns Returns a promise that resolves to true if the post was successfully updated, or false if the update failed.
  */
-async function updateUser(id, email, password) {
-	const sql = `UPDATE users SET email = ?, password = ?, countVisit = ? WHERE id = ?`;
+async function updateUser(id, email, password, countVisit, role) {
+	const sql = `UPDATE users SET email = ?, password = ?, countVisit = ?, role = ? WHERE id = ?`;
 
 	return new Promise((resolve, reject) => {
-		db.run(sql, [email, password, 0, id], function (err) {
+		db.run(sql, [email, password, countVisit, role, id], function (err) {
 			if (err) {
 				console.error("Ошибка базы данных:", err.message);
 				return reject(new Error("Ошибка обновления пользователя"));

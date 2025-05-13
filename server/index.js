@@ -62,10 +62,10 @@ app.get("/api/posts/:id", async (req, res) => {
 /**
  * Get posts FOR `item`, api
  */
-app.post("/api/posts/for", async (req, res) => {
-	const { forField } = req.body;
+app.post("/api/posts/role", async (req, res) => {
+	const { role } = req.body;
 	try {
-		const posts = await getPostsOfRole(forField);
+		const posts = await getPostsOfRole(role);
 		res.json({ posts }); // Отправляем список постов в формате JSON
 	} catch (error) {
 		res.status(500).json({ message: error.message });
@@ -215,7 +215,7 @@ app.get("/api/users", async (req, res) => {
 
 
 
-app.get('/api/teacher/visit/all', async (req, res) => {
+app.get('/api/users/visit/all', async (req, res) => {
 	try {
 		const totalVisits = await getAllTeacherVisits();
 		res.json(totalVisits);
@@ -225,7 +225,7 @@ app.get('/api/teacher/visit/all', async (req, res) => {
 	}
 });
 
-app.post('/api/teacher/visitors', async (req, res) => {
+app.post('/api/users/visitors', async (req, res) => {
 	const { email } = req.body;
 	try {
 		const visitCount = await getTeacherVisits(email);
@@ -236,7 +236,7 @@ app.post('/api/teacher/visitors', async (req, res) => {
 	}
 });
 
-app.put('/api/teacher/visit/update', async (req, res) => {
+app.put('/api/users/visit/update', async (req, res) => {
 	const { email, countVisit } = req.body;
 	try {
 		await updateTeacherVisits(email, countVisit);
@@ -249,10 +249,10 @@ app.put('/api/teacher/visit/update', async (req, res) => {
 /**
  * Add user, api
  */
-app.post("/api/users/add", async (req, res) => {
-	const { email, password } = req.body;
+app.post("/api/users/new", async (req, res) => {
+	const { email, password, role  } = req.body;
 	try {
-		const result = await createUser(email, password);
+		const result = await createUser(email, password, role);
 		res.json(result);
 	} catch (error) {
 		res.status(500).json({ message: error.message });
@@ -263,9 +263,9 @@ app.post("/api/users/add", async (req, res) => {
  * Update post, api
  */
 app.put("/api/users/update/:id", async (req, res) => {
-	const { id, email, password } = req.body;
+	const { id, email, password, countVisit, role } = req.body;
 	try {
-		await updateUser(id, email, password);
+		await updateUser(id, email, password, countVisit, role);
 		res.json({ message: "Пользователь обновлен" });
 	} catch (error) {
 		res.status(500).json({ message: error.message });

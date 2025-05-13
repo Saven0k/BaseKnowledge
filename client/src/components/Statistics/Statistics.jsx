@@ -1,7 +1,7 @@
-import { getVisitorsCount, getVisitsTeacher } from '../../services/workWithBd';
 import { useEffect, useState } from "react";
 
 import './style.css'
+import { getVisitorsCount } from "../../services/ApiToServer/visitors";
 
 const Statistics = ({ready}) => {
     const [studentCount, setStudentCount] = useState()

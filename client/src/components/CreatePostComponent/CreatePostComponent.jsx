@@ -1,7 +1,8 @@
 import './CreatePostComponent.css'
 import React, { useState, useRef, useEffect } from 'react';
-import { addPost, addPostWithImage, getStudentGroups } from '../../services/workWithBd';
 import GroupSelector from '../Selectors/GroupSelector/GroupSelector';
+import { addPost } from '../../services/ApiToServer/posts';
+import { getStudentGroups } from '../../services/ApiToServer/groups';
 
 
 const CreatePostComponent = () => {

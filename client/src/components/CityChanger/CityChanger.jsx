@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
-import './CityChanger.css'
-import { getCities } from '../../services/workWithBd';
+import './CityChanger.css';
+import { getCities } from '../../services/ApiToServer/cities';
+import { useMyContext } from '../../services/MyProvider/MyProvider';
 
 
 const CityChanger = () => {
+    const {contextState, updateContextState} = useMyContext();
+    
     const [selectedCity, setSelectedCity] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [cities, setCities] = useState([])
-    // const [filteredCities, setFilteredCities] = useState([])
-    // const [searchTerm, setSearchTerm] = useState('')
 
     const loadCities = async () => {
         const downloadCities = await getCities()
@@ -17,18 +18,11 @@ const CityChanger = () => {
     const selectCity = (city) => {
         setIsOpen(false)
         setSelectedCity(city)
-        localStorage.setItem('city', city)
     }
-    // useEffect(() => {
-    //     if (searchTerm === '') {
-    //         setFilteredCities(cities);
-    //     } else {
-    //         const filtered = cities.filter(city =>
-    //             city.name.toLowerCase().includes(searchTerm.toLowerCase())
-    //         );
-    //         setFilteredCities(filtered);
-    //     }
-    // }, [searchTerm, cities]);
+
+    useEffect(() => {
+        setSelectedCity(localStorage.getItem('city'))
+    }, [])
 
     useEffect(() => {
         if (isOpen) {
@@ -39,15 +33,14 @@ const CityChanger = () => {
     const menuSelect = () => {
         return (
             <div className="menu_select">
-                <select className='select_city'>
-                    <option value="Не выбрано">Не выбрано</option>
+                <select className='select_city' onChange={(e) => selectCity(e.target.value)}>
+                    <option value="none">Не выбрано</option>
                     {
                         cities.map(city => (
                             <option
                                 value={city.name}
                                 className='city_name'
                                 key={city.id}
-                                onClick={selectCity(city.name)}
                             >{city.name}</option>
                         ))
                     }
@@ -55,36 +48,45 @@ const CityChanger = () => {
             </div>
         )
     }
+    useEffect(() => {
+        if (selectedCity.length !== 0) {
+            updateContextState('city', selectedCity)
+        }
+    }, [selectedCity])
 
 
     return (
         <div className="info_block">
             <h2>Информация для города: </h2>
             {
-                selectedCity.length !== 0 ?
+                selectedCity ?
                     <div className="city_block">
                         <h3>{selectedCity}</h3>
-                        <button
-                            className='change_city_button'
-                            onClick={() => setIsOpen(true)}
-                        >
-                            Изменить город
-                        </button>
                         {
-                            isOpen && menuSelect()
+                            isOpen === false ?
+                                <button
+                                    className='change_city_button button_city'
+                                    onClick={() => setIsOpen(!isOpen)}
+                                >
+                                    Изменить город
+                                </button>
+                                :
+                                menuSelect()
                         }
                     </div>
                     :
                     <div className="city_block">
                         <h3>Город не выбран</h3>
-                        <button
-                            className="select_city_button"
-                            onClick={() => setIsOpen(true)}
-                        >
-                            Выбрать город
-                        </button>
                         {
-                            isOpen && menuSelect()
+                            isOpen === false ?
+                                <button
+                                    className="select_city_button button_city"
+                                    onClick={() => setIsOpen(!isOpen)}
+                                >
+                                    Выбрать город
+                                </button>
+                                : menuSelect()
+
                         }
                     </div>
             }

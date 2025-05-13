@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { getPost } from '../../services/workWithBd';
 import './PostDetail.css'
 import { Link } from 'react-router-dom';
+import { getPost } from '../../services/ApiToServer/posts';
 const PostDetail = ({ id }) => {
     const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);

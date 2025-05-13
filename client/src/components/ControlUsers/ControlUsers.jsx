@@ -2,16 +2,11 @@ import { useState, useEffect } from "react";
 import "./style.css";
 import eyes from './images/eyes-svg.svg'
 import esc from "./images/delete.svg";
-import {
-	addUser,
-	deleteUser,
-	getUsers,
-	updateUser,
-} from "../../services/workWithBd";
 import { filterUser } from "../../services/filterFunc";
 import AddButton from "../CustomButtons/AddButton/AddButton";
 import NothingNot from "../PostList/NothingNot/NothingNot";
 import SearchComponent from "../SearchComponent/SearchComponent";
+import { addUser, deleteUser, getUsers, updateUser } from "../../services/ApiToServer/users";
 
 /**
  * React component, which creates a platform for control  users.
@@ -25,6 +20,7 @@ const ControlUsers = ({ready}) => {
 	// States for new user {email, password}
 	const [emailNewUser, setEmailNewUser] = useState("");
 	const [passwordNewUser, setPasswordNewUser] = useState("");
+	const [role, setRole] = useState('')
 
 	// State for filtered users list.
 	const [filteredUsersList, setFilteredUsersLists] = useState([]);
@@ -47,14 +43,14 @@ const ControlUsers = ({ready}) => {
 	}
 
 	// Function for save update user.
-	async function handleSaveUserBtnPress(userId, newEmail, newPassword) {
-		const res = await updateUser(userId, newEmail, newPassword);
+	async function handleSaveUserBtnPress(userId, newEmail, newPassword, countVisit, role) {
+		const res = await updateUser(userId, newEmail, newPassword, countVisit, role);
 		if (!res) return false;
 		setIdActiveuser(null);
 		setUsersLists(
 			usersList.map((user) => {
 				return user.id === userId
-					? { ...user, email: newEmail, password: newPassword }
+					? { ...user, email: newEmail, password: newPassword,countVisit: countVisit, role: role }
 					: user;
 			})
 		);
@@ -62,7 +58,7 @@ const ControlUsers = ({ready}) => {
 		setFilteredUsersLists(
 			filteredUsersList.map((user) => {
 				return user.id === userId
-					? { ...user, email: newEmail, password: newPassword }
+					? { ...user, email: newEmail, password: newPassword,countVisit: countVisit, role: role }
 					: user;
 			})
 		);
@@ -85,7 +81,7 @@ const ControlUsers = ({ready}) => {
 	// Function for recording a new user
 	const RecordingNewUser = (e) => {
 		e.preventDefault();
-		addUser(emailNewUser, passwordNewUser);
+		addUser(emailNewUser, passwordNewUser, role);
 		setEmailNewUser("");
 		setPasswordNewUser("");
 		prepareData();
@@ -155,7 +151,9 @@ const ControlUsers = ({ready}) => {
 								handleSaveUserBtnPress(
 									user.id,
 									newEmail,
-									newPassword
+									newPassword,
+									user.countVisit,
+									user.role
 								);
 							}}
 							style={{

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import StudentBranch from "../components/StudentBranch/StudentBranch";
-import { addVisitor } from "../services/workWithBd";
+import { addVisitor } from "../services/ApiToServer/visitors";
+
 
 /**
  * Main (index) page. 

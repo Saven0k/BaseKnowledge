@@ -26,12 +26,12 @@ export async function getUsers() {
  * @param {string} password - Новый пароль
  * @returns {Promise<boolean>} true при успешном обновлении
  */
-export const updateUser = async (userId, email, password) => {
+export const updateUser = async (userId, email, password, countVisit, role) => {
     try {
         const response = await fetch(`/api/users/update/${userId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: userId, email, password })
+            body: JSON.stringify({ id: userId, email, password, countVisit, role })
         });
 
         const data = await response.json();
@@ -51,12 +51,12 @@ export const updateUser = async (userId, email, password) => {
  * @returns {Promise<Object>} Данные созданного пользователя
  * @throws {Error} Если не удалось создать пользователя
  */
-export async function addUser(email, password) {
+export async function addUser(email, password, role) {
     try {
-        const response = await fetch("/api/users/add", {
+        const response = await fetch("/api/users/new", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email, password, role })
         });
 
         const data = await response.json();
@@ -122,7 +122,7 @@ export async function findUser(email, password) {
  */
 export async function getTotalVisits() {
     try {
-        const response = await fetch("/api/teacher/visit/all");
+        const response = await fetch("/api/users/visit/all");
         const data = await response.json();
 
         if (!response.ok) {
@@ -144,7 +144,7 @@ export async function getTotalVisits() {
  */
 export async function getTeacherVisits(teacherEmail) {
     try {
-        const response = await fetch("/api/teacher/visitors", {
+        const response = await fetch("/api/users/visitors", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: teacherEmail })
@@ -170,7 +170,7 @@ export async function getTeacherVisits(teacherEmail) {
  */
 export const updateTeacherVisits = async (teacherEmail, countVisit) => {
     try {
-        const response = await fetch(`/api/teacher/visit/update`, {
+        const response = await fetch(`/api/users/visit/update`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: teacherEmail, countVisit })

@@ -1,7 +1,8 @@
 import './SelectionRoleComponent.css'
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getStudentGroups } from '../../services/workWithBd';
+import { getStudentGroups } from '../../services/ApiToServer/groups';
+
 const SelectionRoleComponent = () => {
     const [role, setRole] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');

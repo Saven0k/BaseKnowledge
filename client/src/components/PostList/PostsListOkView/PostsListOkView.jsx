@@ -2,8 +2,8 @@ import { useState } from "react";
 import "./style.css";
 import { Link, useNavigate } from "react-router-dom";
 import EditPostModal from "../../EditPostModal/EditPostModel";
-import { deletePost } from "../../../services/workWithBd";
 import TimerNotification from '../../TimerNotification/TimerNotification';
+import { deletePost } from "../../../services/ApiToServer/posts";
 
 
 /**

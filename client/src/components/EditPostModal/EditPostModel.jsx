@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './EditPostModal.css';
-import { getPost, getStudentGroups, updatePost } from '../../services/workWithBd';
 import { useNavigate } from 'react-router-dom';
+import { getPost, updatePost } from '../../services/ApiToServer/posts';
+import { getStudentGroups } from '../../services/ApiToServer/groups';
 
 const EditPostModal = ({ postId, onClose, onSave }) => {
   const [isLoading, setIsLoading] = useState(true);
