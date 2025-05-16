@@ -5,8 +5,8 @@ import { useMyContext } from '../../services/MyProvider/MyProvider';
 
 
 const CityChanger = () => {
-    const {contextState, updateContextState} = useMyContext();
-    
+    const { contextState, updateContextState } = useMyContext();
+
     const [selectedCity, setSelectedCity] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [cities, setCities] = useState([])
@@ -57,39 +57,19 @@ const CityChanger = () => {
 
     return (
         <div className="info_block">
-            <h2>Информация для города: </h2>
-            {
-                selectedCity ?
-                    <div className="city_block">
-                        <h3>{selectedCity}</h3>
-                        {
-                            isOpen === false ?
-                                <button
-                                    className='change_city_button button_city'
-                                    onClick={() => setIsOpen(!isOpen)}
-                                >
-                                    Изменить город
-                                </button>
-                                :
-                                menuSelect()
-                        }
-                    </div>
-                    :
-                    <div className="city_block">
-                        <h3>Город не выбран</h3>
-                        {
-                            isOpen === false ?
-                                <button
-                                    className="select_city_button button_city"
-                                    onClick={() => setIsOpen(!isOpen)}
-                                >
-                                    Выбрать город
-                                </button>
-                                : menuSelect()
-
-                        }
-                    </div>
-            }
+            <div className="city_block">
+                {
+                    isOpen === false ?
+                        <button
+                            className='change_city_button button_city'
+                            onClick={() => setIsOpen(!isOpen)}
+                        >
+                            Изменить город
+                        </button>
+                        :
+                        menuSelect()
+                }
+            </div>
         </div>
     )
 }

@@ -7,7 +7,7 @@ import { findUser } from '../../services/ApiToServer/users';
 
 const BasicForm = () => {
     const [attempts, setAttempts] = useState(5);
-    const { contextState, updateContextState } = useMyContext();
+    const { contextState,  updateContextState} = useMyContext();
     const [viewPassword, setViewPassword] = useState(false)
 
     // UseForm, use tags
@@ -32,7 +32,7 @@ const BasicForm = () => {
         const password = data.password;
         if (email == "admin", password == "admin") {
             window.location.href = '/admin/a'
-            updateContextState("admin");
+            updateContextState('role', "admin");
             localStorage.setItem('role', 'admin')
         } else {
             const res = await findUser(email, password);

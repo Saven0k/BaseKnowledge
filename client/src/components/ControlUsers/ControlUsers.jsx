@@ -7,6 +7,7 @@ import AddButton from "../CustomButtons/AddButton/AddButton";
 import NothingNot from "../PostList/NothingNot/NothingNot";
 import SearchComponent from "../SearchComponent/SearchComponent";
 import { addUser, deleteUser, getUsers, updateUser } from "../../services/ApiToServer/users";
+import RoleSelector from "../Selectors/RoleSelector/RoleSelector";
 
 /**
  * React component, which creates a platform for control  users.
@@ -102,7 +103,6 @@ const ControlUsers = ({ready}) => {
 						maxLength={25}
 						id={user.id + 1}
 						name="newEmail"
-						// pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
 						type={user.id === idActiveuser ? "text" : "email"}
 						disabled={user.id === idActiveuser ? false : true}
 						style={{
@@ -224,7 +224,11 @@ const ControlUsers = ({ready}) => {
 							/>
 						</div>
 					</div>
-					<AddButton text="Добавить пользователя" />
+					<div className="buttons_us">
+						<RoleSelector saveRole={setRole} />
+						<AddButton text="Добавить" />
+
+					</div>
 				</form>
 			</div>
 			<div className="Main center">

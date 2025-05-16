@@ -11,11 +11,14 @@ export const MyProvider = ({ children }) => {
     const savedRole = localStorage.getItem('role') || '';
     const savedCity = localStorage.getItem('city') || '';
     const savedEmail = localStorage.getItem('email') || '';
+    const savedGroup = localStorage.getItem('group') || '';
+
 
     return {
       role: savedRole,
       city: savedCity,
-      email: savedEmail
+      email: savedEmail,
+      group: savedGroup,
     };
   });
 
@@ -31,10 +34,10 @@ export const MyProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    setContextState({...contextState, role: localStorage.getItem('role'), city: localStorage.getItem('city'), email: localStorage.getItem('email')})
+    setContextState({ ...contextState, role: localStorage.getItem('role'), city: localStorage.getItem('city'), email: localStorage.getItem('email'), group: localStorage.getItem('group') })
   }, [])
 
-  console.log(contextState)
+  // console.log(contextState)
 
   return (
     <MyContext.Provider value={{ contextState, updateContextState }}>

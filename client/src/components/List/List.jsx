@@ -5,6 +5,7 @@ import SearchComponent from "../SearchComponent/SearchComponent";
 import NothingNot from '../PostList/NothingNot/NothingNot'
 import PostsListOkView from "../PostList/PostsListOkView/PostsListOkView";
 import { getPostFor, getPostForStudent, getPublicPostOfRole } from "../../services/ApiToServer/posts";
+import { useMyContext } from "../../services/MyProvider/MyProvider";
 
 /**
  * React component, which creates a platform for working with student posts.
@@ -14,6 +15,8 @@ const List = ({ ready, type }) => {
 	// State for posts list
 	const [postsList, setPostsLists] = useState([]);
 
+	const { contextState, updateContextState } = useMyContext();
+
 	// State for filtered posts list.
 	const [filteredPostsList, setFilteredPostsLists] = useState([]);
 
@@ -21,31 +24,49 @@ const List = ({ ready, type }) => {
 	const [searchItem, setSearchItem] = useState("");
 
 	const prepareData = async () => {
-		if (localStorage.getItem('role') === "student") {
+		if (type === 'city') {
+			const posts = await getPostFor(contextState.city)
+			setPostsLists(posts)
+			setFilteredPostsLists(posts)
+			return ''
+		}
+		if (type === 'student') {
 			const posts = await getPostForStudent(localStorage.getItem('group'))
 			setPostsLists(posts);
 			setFilteredPostsLists(posts);
 			return ''
-		} if (localStorage.getItem('role') == 'admin') {
+		}
+		if (type === 'teacher') {
+			const posts = await getPublicPostOfRole("teacher");
+			setPostsLists(posts);
+			setFilteredPostsLists(posts);
+			return ''
+		}
+		if (type === 'all') {
+			const posts = await getPublicPostOfRole("all");
+			setPostsLists(posts);
+			setFilteredPostsLists(posts);
+			return ''
+		}
+		if (localStorage.getItem('role') == 'admin') {
 			if (type === 'student') {
 				const posts = await getPostFor("student");
 				setPostsLists(posts);
 				setFilteredPostsLists(posts);
 				return ''
 			}
-			if (type === 'teacher') {
+			if (type === 'techer') {
 				const posts = await getPostFor("teacher");
 				setPostsLists(posts);
 				setFilteredPostsLists(posts);
 				return ''
 			}
-		} if (localStorage.getItem('role') === "teacher") {
-			const posts = await getPublicPostOfRole('teacher');
-			setPostsLists(posts);
-			setFilteredPostsLists(posts);
-			return ''
 		}
 	}
+
+	useEffect(() => {
+		prepareData()
+	}, [contextState.city])
 
 	// After the page loads, return prepareData()
 	useEffect(() => {

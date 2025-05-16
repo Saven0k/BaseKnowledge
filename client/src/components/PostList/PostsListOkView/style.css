@@ -15,17 +15,17 @@
     padding: 10px;
     text-align: left;
     position: relative;
-    color: #fff;
-    border: none;
+    color: #000;
+    border: 1px solid #212121;
+    background-color: #fff;
     cursor: pointer;
     outline: none;
     font-size: 19px;
-    border-radius: 15px;
     transition: background-color 0.3s ease;
 }
 
 .accordion_posts-button:hover {
-    background-color: #ddd;
+    background-color: #dcdad2;
 }
 
 .accordion_posts-content {

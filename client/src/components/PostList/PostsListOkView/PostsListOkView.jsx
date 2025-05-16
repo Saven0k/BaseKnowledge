@@ -76,9 +76,10 @@ const PostsListOkView = ({ filteredPostsList, setFilteredPostsLists }) => {
 
                 <div className="accordion_posts-item" key={index}>
                     <button
+                    // backgroundColor: activeIndex === index ? "#92918b" : "#fff"
                         className="accordion_posts-button"
                         onClick={() => handleClick(index)}
-                        style={{ backgroundColor: activeIndex === index ? "#3739dd" : "red", position: activeIndex === index ? "static" : "relative" }}
+                        style={{ position: activeIndex === index ? "static" : "relative" }}
                     >
                         {post.title}
                     </button>

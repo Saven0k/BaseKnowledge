@@ -3,6 +3,24 @@
     flex-direction: column;
     height: 100vh;
 
+    .menu_navigatio {
+        margin: 20px 0 30px 20px;
+        display: flex;
+        gap: 5px;
+
+        .button__swipe {
+            padding: 3px 4px;
+            border: 0px solid #fff;
+            color: #000;
+            transition: border 0.5s easy;
+            background-color: #fff;
+            font-size: 15px;
+        }
+        .button__swipe.border {
+            border: 1px solid #000;
+        }
+    }
+
     .general_inforamtion {
         margin-top: 25px;
         margin-left: 20px;

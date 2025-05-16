@@ -43,7 +43,7 @@ const RoleSelector = ({ saveRole }) => {
         }
     }, [searchTerm, roles]);
 
-    // Обновление режима выбора при изменении selectedGroups
+    // Обновление режима выбора при изменении 
     useEffect(() => {
         if (selectedRole.length === 0) {
             setSelectionMode('none');
@@ -55,7 +55,7 @@ const RoleSelector = ({ saveRole }) => {
     const handleSave = async () => {
         try {
             console.log('Роль выбрана:', selectedRole);
-            addRole(selectedRole)
+            saveRole(selectedRole)
             setIsOpen(false);
         } catch (error) {
             console.error('Ошибка при сохранении:', error);
@@ -66,7 +66,7 @@ const RoleSelector = ({ saveRole }) => {
         <div className="role-selector-container" style={{ position: 'relative', width: '200px' }}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="toggle-button"
+                className="role_toggle-button"
             >
                 {selectedRole.length > 0
                     ? `Выбрано: ${selectedRole}`

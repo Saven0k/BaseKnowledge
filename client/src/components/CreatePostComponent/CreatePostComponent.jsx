@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import GroupSelector from '../Selectors/GroupSelector/GroupSelector';
 import { addPost } from '../../services/ApiToServer/posts';
 import { getStudentGroups } from '../../services/ApiToServer/groups';
+import CitySelector from '../Selectors/CitySelector/CitySelector';
 
 
 const CreatePostComponent = () => {
@@ -25,7 +26,7 @@ const CreatePostComponent = () => {
 
     const [groupList, setGroupList] = useState([])
 
-    const [citiesList, setCitiesList] = useState([])
+    const [city, setCity] = useState([])
 
     // const [group, setGroup] = useState('none')
     const [groups, setGroups] = useState(null)
@@ -116,7 +117,12 @@ const CreatePostComponent = () => {
         //     addPostWithImage(data)
         // }
         // else {
-        addPost(title, content, typeVisible, publicPost, groups)
+        if (typeVisible === 'city') {
+            addPost(title, content, city, publicPost, groups)
+        } else {
+
+            addPost(title, content, typeVisible, publicPost, groups)
+        }
         // }
         setTitle('');
         setContent('');
@@ -215,8 +221,8 @@ const CreatePostComponent = () => {
                 {typeVisible === 'student' &&
                     <GroupSelector saveGroupList={setGroups} />
                 }
-                {typeVisible === 'city' && 
-                    <CitySelector saveCitiesList={setCitiesList} />
+                {typeVisible === 'city' &&
+                    <CitySelector saveCity={setCity} />
                 }
             </div>
             <div className="modal-form-group">

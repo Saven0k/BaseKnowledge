@@ -1,11 +1,13 @@
+import { useEffect, useState } from 'react';
 import './CitySelector.css'
+import { getCities } from '../../../services/ApiToServer/cities';
 
 
-const CitySelector = ({ saveCitiesList }) => {
+const CitySelector = ({ saveCity }) => {
     const [cities, setCities] = useState([]);
     const [filteredCities, setFilteredCities] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCities, setSelectedCities] = useState([]);
+    const [selectedCity, setSelectedCity] = useState([]);
     const [selectionMode, setSelectionMode] = useState('none'); // 'none', 'some', 'all'
     const [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -16,7 +18,7 @@ const CitySelector = ({ saveCitiesList }) => {
             const fetchCities = async () => {
                 try {
                     setIsLoading(true);
-                    const cities = await getStudentGroups()
+                    const cities = await getCities()
                     setCities(cities);
                     setFilteredCities(cities);
                     setIsLoading(false);
@@ -43,57 +45,34 @@ const CitySelector = ({ saveCitiesList }) => {
 
     // Обновление режима выбора при изменении selectedGroups
     useEffect(() => {
-        if (selectedCities.length === 0) {
+        if (selectedCity.length === 0) {
             setSelectionMode('none');
-        } else if (selectedCities.length === cities.length && cities.length > 0) {
-            setSelectionMode('all');
-        } else {
+        }  else {
             setSelectionMode('some');
         }
-    }, [selectedCities, cities.length]);
-
-    const toggleCitySelection = (cityName) => {
-        setSelectedCities(prev =>
-            prev.includes(groupName)
-                ? prev.filter(name => name !== cityName)
-                : [...prev, cityName]
-        );
-    };
-
-    const selectAllCities = () => {
-        if (selectionMode === 'all') {
-            setSelectedCities([]);
-            setSelectionMode('none');
-        } else {
-            setSelectedCities(cities.map(city => city.name));
-            setSelectionMode('all');
-        }
-    };
+    }, [selectedCity, cities.length]);
 
     const handleSave = async () => {
         try {
-            let CitiesToSave = selectedCities;
-            if (selectionMode === 'all') {
-                CitiesToSave = 'all'; // Отправляем специальное значение
-            }
-            console.log('Сохраненные города:', CitiesToSave);
-            saveCitiesList(CitiesToSave)
+            console.log('Город выбран: ', selectedCity)
+            saveCity(selectedCity)
             setIsOpen(false);
         } catch (error) {
             console.error('Ошибка при сохранении:', error);
         }
     };
 
+
     return (
         <div className="city-selector-container" style={{ position: 'relative', width: '200px' }}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="toggle-button"
+                className="city_toggle-button"
             >
                 {selectionMode === 'all'
                     ? 'Все города'
-                    : selectedGroups.length > 0
-                        ? `Выбрано: ${selectedCities.length}`
+                    : selectedCity.length > 0
+                        ? `Выбрано: ${selectedCity}`
                         : 'Выбрать города'}
             </button>
 
@@ -108,31 +87,21 @@ const CitySelector = ({ saveCitiesList }) => {
                             autoFocus
                         />
                     </div>
-
-                    <div className="all-cities-button">
-                        <button
-                            onClick={selectAllCities}
-                            className={selectionMode === 'all' ? 'selected' : ''}
-                        >
-                            {selectionMode === 'all' ? '✓ Все города' : 'Все города'}
-                        </button>
-                    </div>
-
                     <div className="cities-list">
                         {isLoading ? (
                             <div className="loading">Загрузка...</div>
-                        ) : filteredGroups.length === 0 ? (
+                        ) : filteredCities.length === 0 ? (
                             <div className="no-results">Ничего не найдено</div>
                         ) : (
                             <ul>
                                 {filteredCities.map(city => (
                                     <li
                                         key={city.id}
-                                        className={`city-item ${selectedCities.includes(city.name) ? 'selected' : ''}`}
-                                        onClick={() => toggleCitySelection(city.name)}
+                                        className={`city-item ${selectedCity.includes(city.name) ? 'selected' : ''}`}
+                                        onClick={() => setSelectedCity(city.name)}
                                     >
                                         <span className="city-name">{city.name}</span>
-                                        {selectedCities.includes(city.name) && (
+                                        {selectedCity.includes(city.name) && (
                                             <span className="checkmark">✓</span>
                                         )}
                                     </li>

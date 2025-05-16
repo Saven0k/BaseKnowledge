@@ -1,5 +1,4 @@
 .role-selector-container {
-    margin-top: 50px;x`
     display: inline-block;
     font-family: Arial, sans-serif;
     font-size: 13px;
@@ -7,7 +6,7 @@
     z-index: 1;
 }
 
-.toggle-button {
+.role_toggle-button {
     padding: 5px 10px;
     background-color: #f0f0f0;
     border: 1px solid #ccc;
@@ -16,7 +15,7 @@
     font-size: 13px;
 }
 
-.toggle-button:hover {
+.role_toggle-button:hover {
     background-color: #e0e0e0;
 }
 

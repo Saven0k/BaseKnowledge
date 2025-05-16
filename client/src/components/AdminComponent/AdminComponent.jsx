@@ -13,14 +13,26 @@ import PostList from "../List/List";
  */
 const AdminComponent = () => {
 	const [activeIndex, setActiveIndex] = useState(null);
+	const [page, setPage] = useState(0);
 
 	const [loadedComponents, setLoadedComponents] = useState({
-		createPost: false,
+		staticstic: true,
 		users: false,
-		teachersPosts: false,
-		studentsPosts: false,
-		staticstic: false,
+		createPost: false,
+		posts: false,
+		roles: false,
+		cities: false,
+		groups: false,
 	})
+
+	useEffect(() => {
+		loadedComponents
+	}, [page])
+
+	const setReady = (page, name) => {
+		setPage(page)
+		setLoadedComponents({ ...loadedComponents, name: true })
+	}
 
 	const handleClick = (index, type) => {
 		// setLoadedComponents({...loadedComponents, teachersPosts: false, studentsPosts: false })
@@ -31,7 +43,56 @@ const AdminComponent = () => {
 	return (
 		<div className="admin_comp">
 			<Header />
-			<div className="accordion">
+			<div className="menu_pages">
+				<button
+					onClick={() => setReady(0, "staticstic")}
+					className={`menu__button ${page == 0 ? 'active' : ' '}`}
+				> Статистика
+				</button>
+				<button
+					onClick={() => setReady(1, "users")}
+					className={`menu__button ${page == 1 ? 'active' : ' '}`}
+				> Пользователи
+				</button>
+				<button
+					onClick={() => setReady(2, "createPost")}
+					className={`menu__button ${page == 2 ? 'active' : ' '}`}
+				> Добавление поста
+				</button>
+				<button
+					onClick={() => setReady(3, "posts")}
+					className={`menu__button ${page == 3 ? 'active' : ' '}`}
+				> Посты
+				</button>
+				<button
+					onClick={() => setReady(4, 'roles')}
+					className={`menu__button ${page == 4 ? 'active' : ' '}`}
+				> Роли
+				</button>
+				<button
+					onClick={() => setReady(5, 'cities')}
+					className={`menu__button ${page == 5 ? 'active' : ' '}`}
+				> Города
+				</button>
+				<button
+					onClick={() => setReady(6, 'groups')}
+					className={`menu__button ${page == 6 ? 'active' : ' '}`}
+				> Группы
+				</button>
+			</div>
+			<div className="slider_block">
+				<div className="slide">
+					{page === 0 && <Statistics ready={loadedComponents.staticstic} />}
+					{page === 1 && <ControlUsers ready={loadedComponents.users} />}
+					{page === 2 && <CreatePostComponent />}
+					{page === 3 && <PostList ready={loadedComponents.posts} type={'admin'} />}
+					{page === 4 && <CreatePostComponent />}
+					{page === 5 && <CreatePostComponent />}
+					{page === 6 && <CreatePostComponent />}
+				</div>
+			</div>
+
+			{/* <div className="accordion">
 				<div className="accordion-item">
 					<button
 						className="accordion-button"
@@ -92,36 +153,9 @@ const AdminComponent = () => {
 						<PostList ready={loadedComponents.teachersPosts} type={"teacher"} />
 					</div>
 				</div>
-				{/* <div className="accordion-item">
-					<button
-						className="accordion-button"
-						onClick={() => handleClick(4)}
-						style={{ backgroundColor: activeIndex === 4 ? "#3739dd" : "#f1f1f1", position: activeIndex === 4 ? "sticky" : "relative" }}
-					>
-						Работа с постами родителей
-					</button>
-					<div
-						className={`accordion-content ${activeIndex === 4 ? 'open' : ''
-							}`}
-					>
-					{/* </div> */}
-				{/* </div> }  */}
-				<div className="accordion-item">
-					<button
-						className="accordion-button"
-						onClick={() => handleClick(5, "staticstic")}
-						style={{ backgroundColor: activeIndex === 5 ? "#3739dd" : "#f1f1f1", position: activeIndex === 5 ? "sticky" : "relative" }}
-					>
-						Статистика базы знаний
-					</button>
-					<div
-						className={`accordion-content ${activeIndex === 5 ? 'open' : ''
-							}`}
-					>
-						<Statistics ready={loadedComponents.staticstic} />
-					</div>
-				</div>
-			</div>
+				
+				
+			</div> */}
 		</div>
 
 	);

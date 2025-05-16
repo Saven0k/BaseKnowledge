@@ -1,13 +1,13 @@
 .inputTab {
     min-width: 250px;
     margin-top: 25px;
-    width: 65vw;
+    max-width: 350px;
+    width: auto;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    /* justify-content: center;
+    align-items: center; */
     gap: 15px;
-    padding: 5px;
-    margin-bottom: 8vh;
+    margin-bottom: 10px;
     height: 24px;
 
     input {

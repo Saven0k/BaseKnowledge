@@ -90,7 +90,7 @@ const GroupSelector = ({ saveGroupList }) => {
         <div className="group-selector-container" style={{ position: 'relative', width: '200px' }}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="toggle-button"
+                className="group_toggle-button"
             >
                 {selectionMode === 'all'
                     ? 'Все группы'

@@ -3,10 +3,14 @@ import './EditPostModal.css';
 import { useNavigate } from 'react-router-dom';
 import { getPost, updatePost } from '../../services/ApiToServer/posts';
 import { getStudentGroups } from '../../services/ApiToServer/groups';
+import GroupSelector from '../Selectors/GroupSelector/GroupSelector';
+import CitySelector from '../Selectors/CitySelector/CitySelector';
 
 const EditPostModal = ({ postId, onClose, onSave }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [IdPost, setIdPost] = useState()
+  const [typeVisible, setTypeVisible] = useState(''); //UseState for type of visible
+
   const [editedPost, setEditedPost] = useState({
     title: '',
     content: '',
@@ -14,7 +18,13 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
     publicPost: false,
     group: 'none'
   });
-1
+
+
+  const [city, setCity] = useState([])
+
+  // const [group, setGroup] = useState('none')
+  const [groups, setGroups] = useState(null)
+  1
   const navigate = useNavigate()
 
   const [styles, setStyles] = useState({
@@ -37,11 +47,11 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
         const postData = await getPost(postId); // Ваш метод для получения поста по ID
         setIdPost(postId)
         setEditedPost({
-          title: postData[0].title || '',
-          content: postData[0].content || '',
-          typeVisible: postData[0].role || '',
-          publicPost: postData[0].public_post === "1" ? true : false,
-          group: postData[0].student_group || 'none'
+          title: postData.title || '',
+          content: postData.content || '',
+          typeVisible: postData.role || '',
+          publicPost: postData.public_post === "1" ? true : false,
+          group: postData.student_group || 'none'
         });
 
         setIsLoading(false);
@@ -124,8 +134,15 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
 
   // Обработчик сохранения поста
   const handleSave = async () => {
+    const updatedPost = null;
     try {
-      const updatedPost = await updatePost(IdPost, editedPost.title, editedPost.content, editedPost.typeVisible, editedPost.publicPost, editedPost.group);
+      if (typeVisible === 'city') {
+        const updatedPost = await updatePost(IdPost, editedPost.title, editedPost.content, city, editedPost.publicPost, editedPost.group);
+
+      } else {
+        const updatedPost = await updatePost(IdPost, editedPost.title, editedPost.content, editedPost.typeVisible, editedPost.publicPost, editedPost.group);
+
+      }
       if (updatePost) {
         // После успешного сохранения вызываем колбэк
         onSave(updatedPost);
@@ -220,38 +237,24 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
                 </button>
               </div>
             </div>
+            <select
+              className='visible_select'
+              value={typeVisible}
+              onChange={(e) => setTypeVisible(e.target.value)}
+            >
 
-            <div className="modal-form-group">
-              <label>Видимость:</label>
-              <select
-                name="typeVisible"
-                value={editedPost.typeVisible}
-                onChange={handleChange}
-                className="modal-select"
-              >
-                <option value="">Не выбрано</option>
-                <option value="student">Студентам</option>
-                <option value="teacher">Учителям</option>
-              </select>
-            </div>
-
-            {editedPost.typeVisible === 'student' && (
-              <div className="modal-form-group">
-                <label>Группа:</label>
-                <select
-                  name="group"
-                  value={editedPost.group}
-                  onChange={handleChange}
-                  className="modal-select"
-                >
-                  <option value="none">Не выбрано</option>
-                  <option value="all">Всем</option>
-                  {groupList.map((group, index) => (
-                    <option key={index} value={group}>{group}</option>
-                  ))}
-                </select>
-              </div>
-            )}
+              <option value="none">Не выбрано</option>
+              <option value="student">Студентам</option>
+              <option value="teacher">Учителям</option>
+              <option value="all">Всем</option>
+              <option value="city">Городу</option>
+            </select>
+            {typeVisible === 'student' &&
+              <GroupSelector saveGroupList={setGroups} />
+            }
+            {typeVisible === 'city' &&
+              <CitySelector saveCity={setCity} />
+            }
 
             <div className="modal-form-group">
               <label>
@@ -259,7 +262,7 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
                   type="checkbox"
                   name="publicPost"
                   checked={editedPost.publicPost}
-                  onChange={(e) => setEditedPost({...editedPost, publicPost: e.target.checked})}
+                  onChange={(e) => setEditedPost({ ...editedPost, publicPost: e.target.checked })}
                 />
                 Публичный пост
               </label>

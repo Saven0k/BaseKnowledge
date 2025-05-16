@@ -5,7 +5,7 @@ const Header = () => {
     return (
         <header className="header">
             <Link to={'/'}>
-                <img src="" alt="Тут будет иконка" />
+                <img height='24px' src="https://ru.hexlet.io/vite/assets/logo_ru_light-BpiEA1LT.svg" alt="Тут будет иконка" />
             </Link>
             {/* Реализовать поиск по сайту */}
             <Link to={'/login'}  className='header_link'>Преподавателям</Link>

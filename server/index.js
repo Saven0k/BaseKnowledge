@@ -36,83 +36,94 @@ const PORT = 5000;
  */
 app.use(express.json());
 
-
 /**
- * Get posts, api
+ * Получить все посты
+ * GET /api/posts
  */
 app.get("/api/posts", async (req, res) => {
 	try {
 		const posts = await getAllPosts();
-		res.json({ posts }); // Отправляем список постов в формате JSON
+		res.json({ posts });
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
 });
 
-app.get("/api/posts/:id", async (req, res) => {
-	const id = req.params.id
-	try {
-		const post = await getPostById(id);
-		res.json({ post }); // Отправляем список постов в формате JSON
-	} catch (error) {
-		res.status(500).json({ message: error.message });
-	}
-});
 
 /**
- * Get posts FOR `item`, api
+ * Получить пост по ID
+ * GET /api/posts/:id
+ */
+app.get("/api/posts/:id", async (req, res) => {
+	const id = req.params.id;
+	try {
+		const post = await getPostById(id);
+		res.json({ post });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+});
+
+
+/**
+ * Получить посты для определенной роли
+ * POST /api/posts/role
  */
 app.post("/api/posts/role", async (req, res) => {
 	const { role } = req.body;
 	try {
 		const posts = await getPostsOfRole(role);
-		res.json({ posts }); // Отправляем список постов в формате JSON
+		res.json({ posts });
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
 });
 
 /**
- * Get posts FOR `item`, api
+ * Получить публичные посты для роли
+ * POST /api/posts/public/role
  */
 app.post("/api/posts/public/role", async (req, res) => {
 	const { forField } = req.body;
 	try {
 		const posts = await getPublicPostsOfRole(forField);
-		res.json({ posts }); // Отправляем список постов в формате JSON
+		res.json({ posts });
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
 });
 
 /**
- * Get posts FOR `item`, api
+ * Получить посты для группы студентов
+ * POST /api/posts/group
  */
 app.post("/api/posts/group", async (req, res) => {
 	const { group } = req.body;
 	try {
 		const posts = await getPostsForStudent(group);
-		res.json({ posts }); // Отправляем список постов в формате JSON
+		res.json({ posts });
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
 });
 
 /**
- * Get posts FOR `item`, api
+ * Получить видимые посты
+ * POST /api/posts/visible
  */
 app.post("/api/posts/visible", async (req, res) => {
 	const { forField } = req.body;
 	try {
 		const posts = await getPostsForVisible(forField);
-		res.json({ posts }); // Отправляем список постов в формате JSON
+		res.json({ posts });
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
 });
 
 /**
- * Add post, api
+ * Создать новый пост
+ * POST /api/posts/add
  */
 app.post("/api/posts/add", async (req, res) => {
 	const { name, text, forField, visible, group } = req.body;
@@ -123,7 +134,6 @@ app.post("/api/posts/add", async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 });
-
 
 
 // Настройка multer для обработки multipart/form-data
@@ -137,10 +147,10 @@ const upload = multer({
 
 
 /**
- * Add post, api
+ * Создать пост с изображением
+ * POST /api/posts/addWithImage
  */
 app.post("/api/posts/addWithImage", upload.single('image'), async (req, res) => {
-	console.log(req.file)
 	try {
 		const { title, content, typeVisible, group, publicPost } = req.body;
 		const imagePath = req.file ? req.file.path : null;
@@ -174,6 +184,10 @@ app.post("/api/posts/addWithImage", upload.single('image'), async (req, res) => 
 // 	}
 // });
 
+/**
+ * Обновить пост
+ * PUT /api/posts/update/:id
+ */
 app.put("/api/posts/update/:id", async (req, res) => {
 	const { id, name, text, forField, visible, group } = req.body;
 	try {
@@ -185,7 +199,8 @@ app.put("/api/posts/update/:id", async (req, res) => {
 });
 
 /**
- * Remove post,  api
+ * Удалить пост
+ * DELETE /api/posts/delete/:id
  */
 app.delete("/api/posts/delete/:id", async (req, res) => {
 	try {
@@ -198,23 +213,26 @@ app.delete("/api/posts/delete/:id", async (req, res) => {
 	}
 });
 
-
-
+// Роуты для работы с пользователями
+// ==============================================
 
 /**
- * Get users, api
+ * Получить всех пользователей
+ * GET /api/users
  */
 app.get("/api/users", async (req, res) => {
 	try {
 		const users = await getAllUsers();
-		res.json({ users }); // Отправляем список пользователей в формате JSON
+		res.json({ users });
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
 });
 
-
-
+/**
+ * Получить общее количество посещений преподавателей
+ * GET /api/users/visit/all
+ */
 app.get('/api/users/visit/all', async (req, res) => {
 	try {
 		const totalVisits = await getAllTeacherVisits();
@@ -225,6 +243,10 @@ app.get('/api/users/visit/all', async (req, res) => {
 	}
 });
 
+/**
+ * Получить количество посещений конкретного преподавателя
+ * POST /api/users/visitors
+ */
 app.post('/api/users/visitors', async (req, res) => {
 	const { email } = req.body;
 	try {
@@ -236,6 +258,10 @@ app.post('/api/users/visitors', async (req, res) => {
 	}
 });
 
+/**
+ * Обновить количество посещений преподавателя
+ * PUT /api/users/visit/update
+ */
 app.put('/api/users/visit/update', async (req, res) => {
 	const { email, countVisit } = req.body;
 	try {
@@ -245,12 +271,12 @@ app.put('/api/users/visit/update', async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 });
-
 /**
- * Add user, api
+ * Создать нового пользователя
+ * POST /api/users/new
  */
 app.post("/api/users/new", async (req, res) => {
-	const { email, password, role  } = req.body;
+	const { email, password, role } = req.body;
 	try {
 		const result = await createUser(email, password, role);
 		res.json(result);
@@ -260,8 +286,10 @@ app.post("/api/users/new", async (req, res) => {
 });
 
 /**
- * Update post, api
+ * Обновить пользователя
+ * PUT /api/users/update/:id
  */
+
 app.put("/api/users/update/:id", async (req, res) => {
 	const { id, email, password, countVisit, role } = req.body;
 	try {
@@ -273,7 +301,8 @@ app.put("/api/users/update/:id", async (req, res) => {
 });
 
 /**
- * Remove user,  api
+ * Удалить пользователя
+ * DELETE /api/users/delete/:id
  */
 app.delete("/api/users/delete/:id", async (req, res) => {
 	try {
@@ -285,8 +314,10 @@ app.delete("/api/users/delete/:id", async (req, res) => {
 		res.status(500).send("Error deleting user");
 	}
 });
+
 /**
- * Find user by email, password, api
+ * Найти пользователя по email и паролю
+ * POST /api/users/find
  */
 app.post("/api/users/find", async (req, res) => {
 	const { email, password } = req.body;
@@ -298,6 +329,12 @@ app.post("/api/users/find", async (req, res) => {
 	}
 });
 
+// Роуты для работы с посещениями студентов
+// ==============================================
+/**
+ * Получить количество посещений всех студентов
+ * GET /api/visitors/all
+ */
 app.get('/api/visitors/all', async (req, res) => {
 	try {
 		const data = await getCountAllStudentVisitors();
@@ -306,6 +343,11 @@ app.get('/api/visitors/all', async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 });
+
+/**
+ * Добавить посещение студента
+ * POST /api/visitors/add
+ */
 app.post('/api/visitors/add', async (req, res) => {
 	try {
 		data = await addStudentVisitors();
@@ -315,6 +357,13 @@ app.post('/api/visitors/add', async (req, res) => {
 	}
 });
 
+// Роуты для работы с группами студентов
+// ==============================================
+
+/**
+ * Получить все группы студентов
+ * GET /api/student/groups
+ */
 app.get("/api/student/groups", async (req, res) => {
 	try {
 		const groups = await getStudentGroups();
@@ -324,6 +373,11 @@ app.get("/api/student/groups", async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 });
+
+/**
+ * Создать новую группу студентов
+ * POST /api/student/groups/new
+ */
 app.post("/api/student/groups/new", async (req, res) => {
 	const { groupName } = req.body;
 	try {
@@ -333,6 +387,11 @@ app.post("/api/student/groups/new", async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 });
+
+/**
+ * Удалить группу студентов
+ * POST /api/student/groups/delete/:id
+ */
 app.post("/api/student/groups/delete/:id", async (req, res) => {
 	try {
 		const { id: groupId } = req.params;
@@ -342,6 +401,11 @@ app.post("/api/student/groups/delete/:id", async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 });
+
+/**
+ * Обновить группу студентов
+ * PUT /api/student/groups/update
+ */
 app.put("/api/student/groups/update", async (req, res) => {
 	const { id, name } = req.body;
 	try {
@@ -351,7 +415,13 @@ app.put("/api/student/groups/update", async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 });
+// Роуты для работы с городами
+// ==============================================
 
+/**
+ * Получить все города
+ * GET /api/cities
+ */
 app.get('/api/cities', async (req, res) => {
 	try {
 		const cities = await getCities();
@@ -361,8 +431,13 @@ app.get('/api/cities', async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 });
+
+/**
+ * Добавить новый город
+ * POST /api/cities/new
+ */
 app.post('/api/cities/new', async (req, res) => {
-	const {name} = req.body;
+	const { name } = req.body;
 	try {
 		const response = await addCity(name);
 		res.json({ response });
@@ -371,15 +446,25 @@ app.post('/api/cities/new', async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 });
+
+/**
+ * Обновить город
+ * PUT /api/cities/update
+ */
 app.put('/api/cities/update', async (req, res) => {
-	const {id,name} = req.body;
+	const { id, name } = req.body;
 	try {
 		await UpdateCity(id, name);
-		res.json({ message:"Данные о городе изменены" });
+		res.json({ message: "Данные о городе изменены" });
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
 });
+
+/**
+ * Удалить город
+ * POST /api/cities/delete/:id
+ */
 app.post("/api/cities/delete/:id", async (req, res) => {
 	try {
 		const { id: cityId } = req.params;
@@ -390,17 +475,29 @@ app.post("/api/cities/delete/:id", async (req, res) => {
 	}
 });
 
+// Роуты для работы с ролями
+// ==============================================
+
+/**
+ * Получить все роли
+ * GET /api/roles
+ */
 app.get('/api/roles', async (req, res) => {
 	try {
 		const roles = await getRoles();
-		res.json({ roles:roles });
+		res.json({ roles: roles });
 	} catch (error) {
 		console.log("Ошибка отправки списка ролей");
 		res.status(500).json({ message: error.message });
 	}
 });
+
+/**
+ * Добавить новую роль
+ * POST /api/roles/new
+ */
 app.post('/api/roles/new', async (req, res) => {
-	const {name} = req.body;
+	const { name } = req.body;
 	try {
 		const response = await addRole(name);
 		res.json({ response });
@@ -409,15 +506,25 @@ app.post('/api/roles/new', async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 });
+
+/**
+ * Обновить роль
+ * PUT /api/roles/update
+ */
 app.put('/api/roles/update', async (req, res) => {
-	const {id,name} = req.body;
+	const { id, name } = req.body;
 	try {
 		await updateRole(id, name);
-		res.json({ message:"Данные о роли изменены" });
+		res.json({ message: "Данные о роли изменены" });
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}
 });
+
+/**
+ * Удалить роль
+ * POST /api/roles/delete/:id
+ */
 app.post("/api/roles/delete/:id", async (req, res) => {
 	try {
 		const { id: roleId } = req.params;
@@ -429,19 +536,18 @@ app.post("/api/roles/delete/:id", async (req, res) => {
 });
 
 
-
-
-// Для обслуживания загруженных изображений
+// Статическое обслуживание загруженных изображений
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 /**
- * Port listener
+ * Запуск сервера
  */
 const server = app.listen(PORT, () => {
 	console.log(`Сервер запущен на http://localhost:${PORT}`);
 });
 
 /**
- * Handling SIGINT to shut down the database gracefully
+ * Обработка SIGINT для корректного завершения работы базы данных
  */
 process.on("SIGINT", () => {
 	db.close((err) => {
