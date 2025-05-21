@@ -723,7 +723,7 @@ async function addStudentGroup(groupName) {
 				console.error('Ошибка базы данных:', err.message);
 				return reject(new Error('Ошибка добавления группы'));
 			}
-			console.log("Group added");
+			console.log("Group added with", groupName);
 			resolve({
 				groupId,
 			})

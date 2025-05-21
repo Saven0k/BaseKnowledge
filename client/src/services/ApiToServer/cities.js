@@ -29,7 +29,7 @@ export async function getCities() {
  */
 export async function addCity(name) {
     try {
-        const response = await fetch("/api/cities/add", {
+        const response = await fetch("/api/cities/new", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

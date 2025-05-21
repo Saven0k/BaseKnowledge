@@ -115,9 +115,6 @@ export async function deleteGroup(id) {
     try {
         const response = await fetch(`/api/student/groups/delete/${id}`, {
             method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            },
         });
         
         const data = await response.json();

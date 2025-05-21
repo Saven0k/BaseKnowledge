@@ -379,9 +379,9 @@ app.get("/api/student/groups", async (req, res) => {
  * POST /api/student/groups/new
  */
 app.post("/api/student/groups/new", async (req, res) => {
-	const { groupName } = req.body;
+	const { name } = req.body;
 	try {
-		const response = await addStudentGroup(groupName);
+		const response = await addStudentGroup(name);
 		res.json({ response });
 	} catch (error) {
 		res.status(500).json({ message: error.message });
@@ -392,10 +392,10 @@ app.post("/api/student/groups/new", async (req, res) => {
  * Удалить группу студентов
  * POST /api/student/groups/delete/:id
  */
-app.post("/api/student/groups/delete/:id", async (req, res) => {
+app.delete("/api/student/groups/delete/:id", async (req, res) => {
 	try {
-		const { id: groupId } = req.params;
-		await deleteGroup(groupId);
+		const { id: id } = req.params;
+		await deleteGroup(id);
 		res.json({ message: "Group deleted successfully", status: 'ok' });
 	} catch (error) {
 		res.status(500).json({ message: error.message });
@@ -465,7 +465,7 @@ app.put('/api/cities/update', async (req, res) => {
  * Удалить город
  * POST /api/cities/delete/:id
  */
-app.post("/api/cities/delete/:id", async (req, res) => {
+app.delete("/api/cities/delete/:id", async (req, res) => {
 	try {
 		const { id: cityId } = req.params;
 		await deleteCity(cityId);
@@ -525,10 +525,10 @@ app.put('/api/roles/update', async (req, res) => {
  * Удалить роль
  * POST /api/roles/delete/:id
  */
-app.post("/api/roles/delete/:id", async (req, res) => {
+app.delete("/api/roles/delete/:id", async (req, res) => {
 	try {
-		const { id: roleId } = req.params;
-		await deleteRole(roleId);
+		const { id: id } = req.params;
+		await deleteRole(id);
 		res.json({ message: "Роль успешно удалена", status: 'ok' });
 	} catch (error) {
 		res.status(500).json({ message: error.message });

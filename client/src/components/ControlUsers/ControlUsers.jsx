@@ -13,7 +13,7 @@ import RoleSelector from "../Selectors/RoleSelector/RoleSelector";
  * React component, which creates a platform for control  users.
  * @returns post board
 */
-const ControlUsers = ({ready}) => {
+const ControlUsers = ({ ready }) => {
 
 	// State for users list
 	const [usersList, setUsersLists] = useState([]);
@@ -35,6 +35,7 @@ const ControlUsers = ({ready}) => {
 	// State for editing user {email,password}
 	const [newEmail, setNewEmail] = useState("");
 	const [newPassword, setNewPassword] = useState("");
+	const [newRole, setNewRole] = useState('')
 
 	// Function to query data from a database.
 	async function prepareData() {
@@ -44,14 +45,17 @@ const ControlUsers = ({ready}) => {
 	}
 
 	// Function for save update user.
-	async function handleSaveUserBtnPress(userId, newEmail, newPassword, countVisit, role) {
+	async function handleSaveUserBtnPress(userId, newEmail, newPassword, countVisit, role, userRole) {
+		if (!role) {
+			role = userRole;
+		}
 		const res = await updateUser(userId, newEmail, newPassword, countVisit, role);
 		if (!res) return false;
 		setIdActiveuser(null);
 		setUsersLists(
 			usersList.map((user) => {
 				return user.id === userId
-					? { ...user, email: newEmail, password: newPassword,countVisit: countVisit, role: role }
+					? { ...user, email: newEmail, password: newPassword, countVisit: countVisit, role: role }
 					: user;
 			})
 		);
@@ -59,18 +63,15 @@ const ControlUsers = ({ready}) => {
 		setFilteredUsersLists(
 			filteredUsersList.map((user) => {
 				return user.id === userId
-					? { ...user, email: newEmail, password: newPassword,countVisit: countVisit, role: role }
+					? { ...user, email: newEmail, password: newPassword, countVisit: countVisit, role: role }
 					: user;
 			})
 		);
-		prepareData();
 	}
 
 	// After the page loads, return prepareData()
 	useEffect(() => {
-		if (ready) {
-			prepareData();
-		}
+		prepareData();
 	}, [ready]);
 
 	// Function to record the value, define and modify the filtered list.
@@ -86,6 +87,7 @@ const ControlUsers = ({ready}) => {
 		setEmailNewUser("");
 		setPasswordNewUser("");
 		prepareData();
+		setRole('')
 	};
 
 	// List with filtered users, if all ok.
@@ -134,30 +136,38 @@ const ControlUsers = ({ready}) => {
 						type={user.id === idActiveuser ? "text" : "password"}
 						disabled={user.id === idActiveuser ? false : true}
 					/>
+					<div className="role_block">
+						<h3 className={`role ${user.id === idActiveuser ? 'close' : 'open'}`}>
+							{user.role}
+						</h3>
+						<div className={`role_select ${user.id === idActiveuser ? 'open' : 'close'}`}>
+							<RoleSelector saveRole={setNewRole} />
+						</div>
+					</div>
+
 					<div className="buttons">
 						<button
-							className="change"
+							className={`change ${user.id === idActiveuser ? 'close' : 'open'}`}
 							onClick={() => {
 								setIdActiveuser(user.id);
 								setNewEmail(user.email);
 								setNewPassword(user.password);
+								setNewRole(user.role)
 							}}
 						>
 							Редактировать
 						</button>
 						<button
-							className="save"
+							className={`save ${user.id === idActiveuser ? 'open' : 'close'}`}
 							onClick={() => {
 								handleSaveUserBtnPress(
 									user.id,
 									newEmail,
 									newPassword,
 									user.countVisit,
+									newRole,
 									user.role
 								);
-							}}
-							style={{
-								display: idActiveuser != null ? "flex" : "none",
 							}}
 						>
 							Сохранить
@@ -203,7 +213,6 @@ const ControlUsers = ({ready}) => {
 								id="email"
 								name="email"
 								type="email"
-								pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
 								placeholder="Введите email"
 							/>
 						</div>
@@ -220,19 +229,17 @@ const ControlUsers = ({ready}) => {
 								name="password"
 								type="text"
 								placeholder="Введите пароль"
-								pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}$"
 							/>
 						</div>
 					</div>
 					<div className="buttons_us">
-						<RoleSelector saveRole={setRole} />
+						<RoleSelector role={role} saveRole={setRole} />
 						<AddButton text="Добавить" />
-
 					</div>
 				</form>
 			</div>
 			<div className="Main center">
-			<SearchComponent searchItem={searchItem} handleSearch={handleSearch} />
+				<SearchComponent searchItem={searchItem} handleSearch={handleSearch} />
 
 				<div className="users">
 					{filteredUsersList.length != 0 ? (

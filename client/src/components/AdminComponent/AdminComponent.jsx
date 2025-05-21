@@ -6,6 +6,9 @@ import { useEffect, useState } from "react";
 import Header from '../header/Header'
 import CreatePostComponent from "../CreatePostComponent/CreatePostComponent";
 import PostList from "../List/List";
+import ControlRoles from "../Controls/ControlRoles/ControlRoles";
+import ControlGroups from "../Controls/ControlGroups/ControlGroups";
+import ControlCitites from "../Controls/ControlCities/ControlCities";
 
 /**
  * React component, which creates AdminComponent with some details.
@@ -25,9 +28,9 @@ const AdminComponent = () => {
 		groups: false,
 	})
 
-	useEffect(() => {
-		loadedComponents
-	}, [page])
+	// useEffect(() => {
+	// 	loadedComponents
+	// }, [page])
 
 	const setReady = (page, name) => {
 		setPage(page)
@@ -86,9 +89,9 @@ const AdminComponent = () => {
 					{page === 1 && <ControlUsers ready={loadedComponents.users} />}
 					{page === 2 && <CreatePostComponent />}
 					{page === 3 && <PostList ready={loadedComponents.posts} type={'admin'} />}
-					{page === 4 && <CreatePostComponent />}
-					{page === 5 && <CreatePostComponent />}
-					{page === 6 && <CreatePostComponent />}
+					{page === 4 && <ControlRoles />}
+					{page === 5 && <ControlCitites />}
+					{page === 6 && <ControlGroups />}
 				</div>
 			</div>
 

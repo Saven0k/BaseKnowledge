@@ -55,7 +55,7 @@ const PostsListOkView = ({ filteredPostsList, setFilteredPostsLists }) => {
         <div className="accordion_posts">
             {isDelete && (
                 <TimerNotification
-                    text="Запись удалиьтся через"
+                    text="Запись удалится через"
                     func={deletePost}
                     id={postId}
                     setState={setIsDelete}

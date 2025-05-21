@@ -69,7 +69,7 @@
 
         .user {
             max-width: 350px;
-            width: 80%;
+            width: 100%;
             position: relative;
             padding: 15px 35px 15px 35px;
             box-shadow: 4px 8px 50px 5px rgba(0, 0, 0, 0.37);
@@ -82,6 +82,27 @@
                 display: flex;
                 flex-direction: column;
                 flex-wrap: wrap;
+
+                input:disabled {
+                    background-color: #fff;
+                }
+            }
+
+            .role_block {
+
+                .role.close {
+                    display: none;
+                }
+                .role.open {
+                    display: flex;
+                }
+
+                .role_select.open {
+                    display: flex;
+                }
+                .role_select.close {
+                    display: none;
+                }
             }
 
             .input {
@@ -146,7 +167,7 @@
                 transform: scale(1.1) rotate(-180deg);
             }
 
-            .change {
+            .change.open {
                 margin-top: 15px;
                 background-color: #fff;
                 padding: 3px 5px;
@@ -154,19 +175,25 @@
                 font-weight: bold;
                 font-style: italic;
             }
+            .change.close {
+                display: none;
+            }
 
             .change:hover {
                 transform: scale(1.1);
                 opacity: 1;
             }
 
-            .save {
+            .save.open {
                 margin-top: 15px;
                 background-color: #fff;
                 padding: 3px 5px;
                 color: #07d333;
                 font-weight: bold;
                 font-style: italic;
+            }
+            .save.close{
+                display: none;
             }
 
             .save:hover {

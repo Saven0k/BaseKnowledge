@@ -3,7 +3,7 @@ import './RoleSelector.css'
 import React, { useState, useEffect } from 'react';
 
 
-const RoleSelector = ({ saveRole }) => {
+const RoleSelector = ({ role, saveRole }) => {
     const [roles, setRoles] = useState([]);
     const [filteredRoles, setFilteredRoles] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -28,8 +28,16 @@ const RoleSelector = ({ saveRole }) => {
                 }
             };
             fetchRoles();
-        }
+        };
     }, [isOpen]);
+    
+    useEffect(() => {
+        if( role === '') {
+            setSelectedRole('')
+        }
+    }, [role])
+
+
 
     // Фильтрация ролей
     useEffect(() => {
@@ -54,9 +62,9 @@ const RoleSelector = ({ saveRole }) => {
 
     const handleSave = async () => {
         try {
-            console.log('Роль выбрана:', selectedRole);
             saveRole(selectedRole)
             setIsOpen(false);
+            console.log('Роль выбрана:', selectedRole);
         } catch (error) {
             console.error('Ошибка при сохранении:', error);
         }
@@ -65,10 +73,11 @@ const RoleSelector = ({ saveRole }) => {
     return (
         <div className="role-selector-container" style={{ position: 'relative', width: '200px' }}>
             <button
+                type='button'
                 onClick={() => setIsOpen(!isOpen)}
                 className="role_toggle-button"
             >
-                {selectedRole.length > 0
+                {selectedRole
                     ? `Выбрано: ${selectedRole}`
                     : 'Выбрать роль'}
             </button>

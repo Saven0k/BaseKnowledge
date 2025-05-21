@@ -115,9 +115,6 @@ export async function deleteRole(id) {
     try {
         const response = await fetch(`/api/roles/delete/${id}`, {
             method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            },
         });
 
         const data = await response.json();

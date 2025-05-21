@@ -69,9 +69,7 @@ const CitySelector = ({ saveCity }) => {
                 onClick={() => setIsOpen(!isOpen)}
                 className="city_toggle-button"
             >
-                {selectionMode === 'all'
-                    ? 'Все города'
-                    : selectedCity.length > 0
+                {selectedCity.length > 0
                         ? `Выбрано: ${selectedCity}`
                         : 'Выбрать города'}
             </button>
