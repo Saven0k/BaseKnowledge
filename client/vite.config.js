@@ -32,6 +32,8 @@ export default defineConfig({
 			'/api/roles/delete/:id':  "http://localhost:5000",
 			'/api/roles/new':  "http://localhost:5000",
 			'/api/roles':  "http://localhost:5000",
+			'api/posts/status/context':  "http://localhost:5000",
+			'api/posts/update/status':  "http://localhost:5000",
 		},
 	},
 });

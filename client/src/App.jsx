@@ -9,6 +9,7 @@ import { MyProvider } from "./services/MyProvider/MyProvider";
 import { MyTheme } from "./services/MyThemeProvider/MyThemeProvider";
 import { CuratorPage } from './pages/CuratorPage';
 import PostPage from "./pages/PostPage";
+import PostsSelector from "./components/Selectors/PostsSelector/PostsSelector";
 
 function App() {
 	return (
@@ -25,6 +26,7 @@ function App() {
 						<Route path="*" element={<SelectionPage />} />
 						<Route path="/404" element={<ErrorPage />} />
 						<Route path="/curatorPage" element={<CuratorPage />} />						
+						<Route path="/test" element={<PostsSelector />} />						
 					</Routes>
 				</BrowserRouter>
 			</MyProvider>

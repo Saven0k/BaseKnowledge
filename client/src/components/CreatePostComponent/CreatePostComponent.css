@@ -17,6 +17,21 @@
     margin: 15px 0;
 }
 
+.image_load {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+
+    input[type="file"] {
+        color: transparent;
+    }
+    .image_preview {
+        width: 100px;
+    }
+}
+
+
+
 .title_input {
     font-size: var(--input-font-size);
     padding: 3px 5px;

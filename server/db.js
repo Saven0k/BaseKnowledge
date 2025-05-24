@@ -3,6 +3,7 @@ const path = require("path");
 const fs = require('fs');
 
 
+
 const UPLOAD_DIR = path.join(__dirname, 'uploads');
 
 // Создаем директорию для загрузок, если ее нет
@@ -48,7 +49,8 @@ const db = new sqlite3.Database(dbPath, (err) => {
 			role TEXT,
 			student_groups TEXT,
 			public_post TEXT,
-			date_created DATE
+			date_created DATE,
+			image_path TEXT
 		)`,
 			(err) => {
 				if (err) {
@@ -235,8 +237,6 @@ async function findUser(email, password) {
 		});
 	});
 }
-
-
 /**
  * Получает общее количество посещений всех преподавателей.
  * Использует SUM для агрегации значений из всех записей.
@@ -263,7 +263,6 @@ async function getAllTeacherVisits() {
         });
     });
 }
-
 /**
  * Получает количество посещений для конкретного преподавателя по email.
  * 
@@ -289,7 +288,6 @@ async function getTeacherVisits(email) {
         });
     });
 }
-
 /**
  * Обновляет счетчик посещений для преподавателя.
  * 
@@ -376,13 +374,25 @@ async function createPost(title, content, role, public_post, student_groups) {
  * @throws {Error} При ошибке загрузки изображения или записи в БД
  */
 async function createPostWithImage(title, content, role, public_post, student_groups, image) {
+	console.log("creating Data with Image");
+	console.log(title);
+	console.log(content);
+	
+	console.log(image);
+	
 	let image_path = null;
 	const userId = generateUniqueIdForPost();
 	try {
 		if (image) {
+			console.log("request has image");
+			
 			const ext = path.extname(image.originalname);
 			const filename = `${Date.now()}${ext}`;
 			image_path = path.join('uploads', filename);
+			console.log(image_path);
+			console.log(image);
+			console.log(image.buffer);
+			
 			await fs.promises.writeFile(path.join(__dirname, image_path), image.buffer);
 		}
 
@@ -408,6 +418,8 @@ async function createPostWithImage(title, content, role, public_post, student_gr
 			});
 		});
 	} catch (error) {
+		console.log("some image error");
+		
 		if (image_path) {
 			try {
 				await fs.promises.unlink(path.join(__dirname, image_path));
@@ -425,6 +437,8 @@ async function createPostWithImage(title, content, role, public_post, student_gr
  * @throws {Error} При ошибке запроса к базе данных
  */
 async function getAllPosts() {
+	console.log("getting all posts");
+	
 	const sql = `SELECT * FROM posts`;
 	return new Promise((resolve, reject) => {
 		db.all(sql, function (err, rows) {
@@ -494,10 +508,37 @@ async function getPostsOfRole(role) {
  * // Получить посты для группы "CS-101"
  * const posts = await getPostsForStudent("CS-101");
  */
-async function getPostsForStudent(groupToFind) {
+async function getPublicPostsForStudentByGroup(groupToFind) {
     return new Promise((resolve, reject) => {
         db.all(
             "SELECT * FROM posts WHERE role = ? AND public_post = ?", 
+            ['student', '1'], 
+            (err, rows) => {
+                if (err) {
+                    console.error("Ошибка базы данных:", err.message);
+                    return reject(new Error("Ошибка получения студенческих постов"));
+                }
+
+                const matchingPosts = rows.filter(post => {
+                    try {
+                        if (!post.student_groups) return false;
+                        const groups = JSON.parse(post.student_groups);
+                        return groups.includes(groupToFind);
+                    } catch (e) {
+                        console.error(`Ошибка обработки групп для поста ${post.id}:`, e);
+                        return false;
+                    }
+                });
+                
+                resolve(matchingPosts);
+            }
+        );
+    });
+}
+async function getAllPostsForStudentByGroup(groupToFind) {
+    return new Promise((resolve, reject) => {
+        db.all(
+            "SELECT * FROM posts WHERE role = ?", 
             ['student', '1'], 
             (err, rows) => {
                 if (err) {
@@ -792,6 +833,13 @@ async function deleteGroup(id) {
 
 
 
+/**
+ * Генерирует уникальный идентификатор для города.
+ * @returns {string} Уникальный ID города в формате "city_<timestamp>"
+ */
+function generateUniqueIdForRole() {
+	return "city_" + Date.now();
+}
 
 
 /**
@@ -813,13 +861,6 @@ async function getCities() {
 	});
 }
 
-/**
- * Генерирует уникальный идентификатор для города.
- * @returns {string} Уникальный ID города в формате "city_<timestamp>"
- */
-function generateUniqueIdForRole() {
-	return "city_" + Date.now();
-}
 
 /**
  * Добавляет новый город в базу данных.
@@ -905,7 +946,13 @@ async function deleteCity(id) {
 
 
 
-
+/**
+ * Генерирует уникальный идентификатор для новой роли.
+ * @returns {string} Уникальный ID роли в формате "role_<timestamp>"
+ */
+function generateUniqueIdForRole() {
+	return "role_" + Date.now();
+}
 
 /**
  * Асинхронно получает все роли из базы данных.
@@ -926,13 +973,7 @@ async function getRoles() {
 	});
 }
 
-/**
- * Генерирует уникальный идентификатор для новой роли.
- * @returns {string} Уникальный ID роли в формате "role_<timestamp>"
- */
-function generateUniqueIdForRole() {
-	return "role_" + Date.now();
-}
+
 
 /**
  * Добавляет новую роль в базу данных.
@@ -1018,6 +1059,7 @@ async function deleteRole(id) {
 
 
 module.exports = {
+	getAllPostsForStudentByGroup,
 	addRole,
 	updateRole,
 	deleteRole,
@@ -1046,7 +1088,7 @@ module.exports = {
 	getAllPosts,
 	getPostById,
 	getPostsOfRole,
-	getPostsForStudent,
+	getPublicPostsForStudentByGroup,
 	getPostsForVisible: getPostByRole,
 	updatePost,
 	deletePost,

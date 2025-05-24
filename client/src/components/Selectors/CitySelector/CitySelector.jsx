@@ -64,14 +64,14 @@ const CitySelector = ({ saveCity }) => {
 
 
     return (
-        <div className="city-selector-container" style={{ position: 'relative', width: '200px' }}>
+        <div className="city-selector-container" style={{ position: 'relative' }}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="city_toggle-button"
             >
                 {selectedCity.length > 0
                         ? `Выбрано: ${selectedCity}`
-                        : 'Выбрать города'}
+                        : 'Выбрать город'}
             </button>
 
             {isOpen && (

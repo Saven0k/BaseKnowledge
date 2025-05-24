@@ -9,6 +9,7 @@ import PostList from "../List/List";
 import ControlRoles from "../Controls/ControlRoles/ControlRoles";
 import ControlGroups from "../Controls/ControlGroups/ControlGroups";
 import ControlCitites from "../Controls/ControlCities/ControlCities";
+import PostsSelector from "../Selectors/PostsSelector/PostsSelector";
 
 /**
  * React component, which creates AdminComponent with some details.
@@ -88,7 +89,7 @@ const AdminComponent = () => {
 					{page === 0 && <Statistics ready={loadedComponents.staticstic} />}
 					{page === 1 && <ControlUsers ready={loadedComponents.users} />}
 					{page === 2 && <CreatePostComponent />}
-					{page === 3 && <PostList ready={loadedComponents.posts} type={'admin'} />}
+					{page === 3 && <PostsSelector />}
 					{page === 4 && <ControlRoles />}
 					{page === 5 && <ControlCitites />}
 					{page === 6 && <ControlGroups />}

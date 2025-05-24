@@ -1,0 +1,48 @@
+.post_selector {
+    margin-bottom: 150px;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 5px 10px;
+
+    
+    .select_buttons {
+        width: 100%;
+        justify-content: center;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        
+        .select_button {
+            padding: 4px 5px;
+            background-color: #fff;
+            border: 1px solid #000;
+        }
+        .select_button.selected {
+            box-shadow: 1px 2px 5px #000;
+        }
+    }
+    .selectors {
+        display: flex;
+        justify-content: center;
+    }
+
+    .status_switch {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+
+        .button_sw {
+            padding: 4px 5px;
+            background-color: #fff;
+            border: none;
+            border-bottom: 1px solid #000;
+            box-shadow: none;
+        }
+        
+        .button_sw.selected {
+            box-shadow: 1px 2px 5px #000;
+        }
+    }
+}

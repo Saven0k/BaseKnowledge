@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Timer.css'
 
-const TimerNotification = ({ text, func, id, setState,filteredPostsList,setFilteredPostsLists }) => {
+const TimerNotification = ({ text, func, id, setState, filteredPostsList, setFilteredPostsLists }) => {
   const [timeLeft, setTimeLeft] = useState(10);
   const [isVisible, setIsVisible] = useState(true);
 
@@ -9,7 +9,7 @@ const TimerNotification = ({ text, func, id, setState,filteredPostsList,setFilte
     if (timeLeft <= 0 && isVisible) {
       func(id);
       setIsVisible(false);
-      setState(true)
+      setState(false)
       setFilteredPostsLists(filteredPostsList.filter(post => post.id !== id))
       return;
     }

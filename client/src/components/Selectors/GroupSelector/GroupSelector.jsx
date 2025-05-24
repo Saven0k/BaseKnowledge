@@ -87,7 +87,7 @@ const GroupSelector = ({ saveGroupList }) => {
     };
 
     return (
-        <div className="group-selector-container" style={{ position: 'relative', width: '200px' }}>
+        <div className="group-selector-container" style={{ position: 'relative' }}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="group_toggle-button"

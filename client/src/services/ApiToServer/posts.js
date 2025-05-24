@@ -48,94 +48,21 @@ export async function getPost(id) {
     }
 }
 
-/**
- * 🔍 Получает посты для указанного поля
- * @param {string} role - Поле для фильтрации
- * @returns {Promise<Array>} Отфильтрованные посты
- */
-export async function getPostFor(role) {
+export async function getPostsByContextByRoleByStatus(role, role_context, status) {
     try {
-        const response = await fetch("/api/posts/role", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ role })
-        });
-
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message || "Ошибка фильтрации");
         
-        return data.posts;
-    } catch (error) {
-        console.error("🚨 Ошибка получения постов:", error);
-        throw error;
-    }
-}
-
-/**
- * 👥 Получает публичные посты для роли
- * @param {string} role - Роль пользователя
- * @returns {Promise<Array>} Публичные посты
- */
-export async function getPublicPostOfRole(role) {
-    try {
-        const response = await fetch("/api/posts/public/role", {
+        const response = await fetch("http://localhost:5000/api/posts/status/context", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ forField: role })
+            body: JSON.stringify({ role, role_context, status })
         });
 
         const data = await response.json();
         if (!response.ok) throw new Error(data.message || "Ошибка загрузки");
-        
-        return data.posts;
-    } catch (error) {
-        console.error("🚨 Ошибка получения публичных постов:", error);
-        throw error;
-    }
-}
 
-/**
- * 🎓 Получает посты для студенческой группы
- * @param {string} group - Название группы
- * @returns {Promise<Array>} Посты группы
- */
-export async function getPostForStudent(group) {
-    try {
-        const response = await fetch("/api/posts/group", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ group })
-        });
-
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message || "Ошибка загрузки");
-        
         return data.posts;
     } catch (error) {
         console.error("🚨 Ошибка получения постов группы:", error);
-        throw error;
-    }
-}
-
-/**
- * 👀 Получает видимые посты для поля
- * @param {string} forField - Поле для фильтрации
- * @returns {Promise<Array>} Видимые посты
- */
-export async function getPostsForVisible(forField) {
-    try {
-        const response = await fetch("/api/posts/visible", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ forField })
-        });
-
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message || "Ошибка загрузки");
-        
-        return data.posts;
-    } catch (error) {
-        console.error("🚨 Ошибка получения видимых постов:", error);
         throw error;
     }
 }
@@ -167,62 +94,49 @@ export const updatePost = async (postId, updateName, updateText, updateForFieled
 
         const data = await response.json();
         if (!response.ok) throw new Error(data.message || "Ошибка обновления");
-        
+
         return data;
     } catch (error) {
         console.error(`🚨 Ошибка обновления поста ${postId}:`, error);
         throw error;
     }
 };
-
-/**
- * ➕ Создает новый пост
- * @param {string} newName - Название
- * @param {string} newText - Текст
- * @param {string} forField - Поле
- * @param {boolean} visible - Видимость
- * @param {string} group - Группа
- * @returns {Promise<Object>} Созданный пост
- */
-export async function addPost(newName, newText, forField, visible, group) {
+export const updatePostStatus = async (postId, status) => {
     try {
-        const response = await fetch("/api/posts/add", {
-            method: "POST",
+        const response = await fetch(`http://localhost:5000/api/posts/update/status`, {
+            method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                name: newName,
-                text: newText,
-                forField,
-                visible,
-                group
+                id: postId,
+                status: status,
             })
         });
 
         const data = await response.json();
-        if (!response.ok) throw new Error(data.message || "Ошибка создания");
-        
+        if (!response.ok) throw new Error(data.message || "Ошибка обновления");
+
         return data;
     } catch (error) {
-        console.error("🚨 Ошибка создания поста:", error);
+        console.error(`🚨 Ошибка обновления статуса у поста ${postId}:`, error);
         throw error;
     }
-}
+};
+
 
 /**
  * 🖼️ Создает пост с изображением
  * @param {FormData} data - Данные формы с изображением
  * @returns {Promise<Object>} Созданный пост
  */
-export async function addPostWithImage(data) {
+export async function addPost(data) {
     try {
-        const response = await fetch("/api/posts/addWithImage", {
+        const response = await fetch("http://localhost:5000/api/posts/new", {
             method: "POST",
             body: data
         });
 
         const result = await response.json();
         if (!response.ok) throw new Error(result.message || "Ошибка загрузки");
-        
         return result;
     } catch (error) {
         console.error("🚨 Ошибка создания поста с изображением:", error);
@@ -244,7 +158,7 @@ export async function deletePost(id) {
 
         const data = await response.json();
         if (!response.ok) throw new Error(data.message || "Ошибка удаления");
-        
+
         return true;
     } catch (error) {
         console.error(`🚨 Ошибка удаления поста ${id}:`, error);

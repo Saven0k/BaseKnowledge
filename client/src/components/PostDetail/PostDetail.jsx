@@ -31,9 +31,9 @@ const PostDetail = ({ id }) => {
 
     return (
         <div className='detail_box'>
-            <h1>{post[0].title}</h1>
-            <div className='content' dangerouslySetInnerHTML={{ __html: post[0].content }} />
-            <p>{post[0].date_created}</p>
+            <h1>{post.title}</h1>
+            <div className='content' dangerouslySetInnerHTML={{ __html: post.content }} />
+            <p>{post.date_created}</p>
             {
                 localStorage.getItem('role') === null ?
                     <Link to="/student">Перейти к записям</Link>

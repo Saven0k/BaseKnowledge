@@ -3,7 +3,7 @@ import "./style.css";
 import { Link, useNavigate } from "react-router-dom";
 import EditPostModal from "../../EditPostModal/EditPostModel";
 import TimerNotification from '../../TimerNotification/TimerNotification';
-import { deletePost } from "../../../services/ApiToServer/posts";
+import { deletePost, updatePostStatus } from "../../../services/ApiToServer/posts";
 
 
 /**
@@ -47,6 +47,25 @@ const PostsListOkView = ({ filteredPostsList, setFilteredPostsLists }) => {
         }
     };
 
+    const publishPost = async (id) => {
+        const updatedPost = await updatePostStatus(id, "1");
+        if (updatedPost) {
+            const updatedList = filteredPostsList.filter(post =>
+                post.id !== id
+            );
+            setFilteredPostsLists(updatedList);
+        }
+    }
+    const hidePost = async (id) => {
+        const updatedPost = await updatePostStatus(id, "0");
+        if (updatedPost) {
+            const updatedList = filteredPostsList.filter(post =>
+                post.id !== id
+            );
+            setFilteredPostsLists(updatedList);
+        }
+    }
+
 
     const handleClick = (index) => {
         setActiveIndex(activeIndex === index ? null : index);
@@ -76,7 +95,6 @@ const PostsListOkView = ({ filteredPostsList, setFilteredPostsLists }) => {
 
                 <div className="accordion_posts-item" key={index}>
                     <button
-                    // backgroundColor: activeIndex === index ? "#92918b" : "#fff"
                         className="accordion_posts-button"
                         onClick={() => handleClick(index)}
                         style={{ position: activeIndex === index ? "static" : "relative" }}
@@ -92,9 +110,30 @@ const PostsListOkView = ({ filteredPostsList, setFilteredPostsLists }) => {
                         <p style={{ fontSize: '12px', marginTop: '10px' }}>{post.date_created}</p>
                         {
                             localStorage.getItem('role') === 'admin' &&
-                            <div className="button_box">
-                                <button className="delete_post_button" onClick={() => deletePostA(post.id)}>Удалить</button>
-                                <button className="change_post_button" onClick={() => changePost(post.id)}>Реадктировать</button>
+                            <div className="settings">
+                                <div className="button_box">
+                                    <button className="delete_post_button" onClick={() => deletePostA(post.id)}>Удалить</button>
+                                    <button className="change_post_button" onClick={() => changePost(post.id)}>Реадктировать</button>
+                                </div>
+                                <div className="button_box">
+                                    {
+                                        post.status === "1" ?
+                                            <button
+                                                className="hide_button button_hp"
+                                                onClick={() => hidePost(post.id)}
+                                            >
+                                                Скрыть пост
+                                            </button>
+                                            :
+                                            <button
+                                                className="publish_button button_hp"
+                                                onClick={() => publishPost(post.id)}
+                                            >
+                                                Опубликовать пост
+                                            </button>
+                                    }
+                                </div>
+
                             </div>
                         }
                         <Link className="Link_more" to={`/post/${post.id}`}>Подробнее</Link>

@@ -2,16 +2,17 @@ import './CreatePostComponent.css'
 import React, { useState, useRef, useEffect } from 'react';
 import GroupSelector from '../Selectors/GroupSelector/GroupSelector';
 import { addPost } from '../../services/ApiToServer/posts';
-import { getStudentGroups } from '../../services/ApiToServer/groups';
 import CitySelector from '../Selectors/CitySelector/CitySelector';
+import FormSelector from '../Selectors/FormSelector/FormSelector';
 
 
 const CreatePostComponent = () => {
 
-    const [typeVisible, setTypeVisible] = useState(''); //UseState for type of visible
+    const [role, setRole] = useState(''); //UseState for type of visible
     const [title, setTitle] = useState(''); // UseState for Posts title
     const [content, setContent] = useState(''); // UseState for Posts content
-    const [publicPost, setPublicPost] = useState(false); // UseState for visible content
+    const [status, setStatus] = useState(false); // UseState for visible content
+    const [role_context, setRoleContext] = useState(["null"])
     const [styles, setStyles] = useState({
         color: '#000000',
         fontSize: '16px',
@@ -21,24 +22,15 @@ const CreatePostComponent = () => {
 
     const editorRef = useRef(null); // UseRef for edit content
     const lastSelectionRef = useRef(null); // Сохраняем последнюю позицию курсора
-    // const [imagePreview, setImagePreview] = useState(null); // Для превью изображения
-    // const [image, setImage] = useState(null)
+    const [imagePreview, setImagePreview] = useState(''); // Для превью изображения
+    const [image, setImage] = useState('')
 
-    const [groupList, setGroupList] = useState([])
-
-    const [city, setCity] = useState([])
-
-    // const [group, setGroup] = useState('none')
-    const [groups, setGroups] = useState(null)
-
-    // Сохраняем выделение (курсор)
     const saveSelection = () => {
         const selection = window.getSelection();
         if (selection.rangeCount > 0) {
             lastSelectionRef.current = selection.getRangeAt(0);
         }
     };
-
     // Восстанавливаем выделение (курсор)
     const restoreSelection = () => {
         if (lastSelectionRef.current) {
@@ -47,6 +39,9 @@ const CreatePostComponent = () => {
             selection.addRange(lastSelectionRef.current);
         }
     };
+    const handleContentChange = () => {
+        setContent(editorRef.current)
+    }
 
     // Применить стиль к выделенному тексту
     const applyStyleToSelection = () => {
@@ -75,26 +70,16 @@ const CreatePostComponent = () => {
 
     };
 
-    // const handleFileChange = (e) => {
-    //     if (e.target.files[0]) {
-    //         const selectedFile = e.target.files[0];
-    //         setImage(e.target.files[0])
-    //         const reader = new FileReader();
-    //         reader.onload = (event) => {
-    //             // setImage(event.target.result)
-    //             setImagePreview(event.target.result); // Сохраняем Data URL для превью
-    //         };
-    //         reader.readAsDataURL(selectedFile);
-    //     }
-    // }
-
-    const sectionHandleClick = async () => {
-        if (groupList.length !== 0) {
-            return ''
-        }
-        else {
-            const groups = await getStudentGroups();
-            setGroupList(groups.map(obj => obj.name));
+    const handleFileChange = (e) => {
+        if (e.target.files[0]) {
+            const selectedFile = e.target.files[0];
+            setImage(e.target.files[0])
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                // setImage(event.target.result)
+                setImagePreview(event.target.result); // Сохраняем Data URL для превью
+            };
+            reader.readAsDataURL(selectedFile);
         }
     }
 
@@ -106,38 +91,30 @@ const CreatePostComponent = () => {
     // Сохраняем пост на сервер
     const savePost = () => {
 
-        // if (image !== null) {
-        //     const data = new FormData();
-        //     data.append('title', title);
-        //     data.append('content', content);
-        //     data.append('typeVisible', typeVisible);
-        //     data.append('student_group', group);
-        //     data.append('public_post', publicPost);
-        //     // data.append('image', image);
-        //     addPostWithImage(data)
-        // }
-        // else {
-        if (typeVisible === 'city') {
-            addPost(title, content, city, publicPost, groups)
-        } else {
-
-            addPost(title, content, typeVisible, publicPost, groups)
+        if (image !== null) {
+            console.log("+++++", typeof role_context, role_context)
+            const data = new FormData();
+            data.append('title', title);
+            data.append('content', content);
+            data.append('role', role);
+            data.append('role_context', role_context);
+            data.append('status', status ? "1" : "0");
+            data.append('file', image);
+            addPost(data)
         }
-        // }
+
         setTitle('');
         setContent('');
-        // setImage(null);
-        // setImagePreview('');
-        // setGroup("none")
-        setGroups(null)
+        setImage("");
+        setImagePreview('');
+        setRole("null")
+        setRoleContext("null")
     };
-    const handleContentChange = () => {
-        setContent(editorRef.current)
-    }
+
 
     return (
         <div className='addPost_component'>
-            {/* <div>
+            <div className='image_load'>
                 <label htmlFor="">Image</label>
                 <input
                     type="file"
@@ -147,8 +124,8 @@ const CreatePostComponent = () => {
                     accept="image/*"
                 />
                 {imagePreview &&
-                    <img src={imagePreview} alt="dadada" />}
-            </div> */}
+                    <img src={imagePreview} alt="image preview" className='image_preview' />}
+            </div>
             <input
                 type="text"
                 placeholder="Заголовок поста"
@@ -208,21 +185,24 @@ const CreatePostComponent = () => {
             <div className='selection_component'>
                 <select
                     className='visible_select'
-                    value={typeVisible}
-                    onChange={(e) => setTypeVisible(e.target.value)}
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
                 >
-
-                    <option value="none">Не выбрано</option>
+                    <option value="a">Не выбрано</option>
+                    <option value="form">По форме обучения</option>
                     <option value="student">Студентам</option>
                     <option value="teacher">Учителям</option>
                     <option value="all">Всем</option>
                     <option value="city">Городу</option>
                 </select>
-                {typeVisible === 'student' &&
-                    <GroupSelector saveGroupList={setGroups} />
+                {role === 'student' &&
+                    <GroupSelector saveGroupList={setRoleContext} />
                 }
-                {typeVisible === 'city' &&
-                    <CitySelector saveCity={setCity} />
+                {role === 'city' &&
+                    <CitySelector saveCity={setRoleContext} />
+                }
+                {role === 'form' &&
+                    <FormSelector saveForm={setRoleContext} />
                 }
             </div>
             <div className="modal-form-group">
@@ -230,13 +210,13 @@ const CreatePostComponent = () => {
                     <input
                         type="checkbox"
                         name="publicPost"
-                        checked={publicPost} // Добавляем привязку к состоянию
-                        onChange={(e) => setPublicPost(e.target.checked)}
+                        checked={status} // Добавляем привязку к состоянию
+                        onChange={(e) => setStatus(e.target.checked)}
                     />
                     Публичный пост
                 </label>
             </div>
-            <button className='button_save_post' onClick={savePost}>Сохранить пост</button>
+            <button className='button_save_post' disabled={image ? false: true} onClick={savePost}>Сохранить пост</button>
         </div>
     );
 };

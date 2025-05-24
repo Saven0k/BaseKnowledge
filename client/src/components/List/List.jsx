@@ -4,14 +4,14 @@ import { filterPost } from "../../services/filterFunc";
 import SearchComponent from "../SearchComponent/SearchComponent";
 import NothingNot from '../PostList/NothingNot/NothingNot'
 import PostsListOkView from "../PostList/PostsListOkView/PostsListOkView";
-import { getPostFor, getPostForStudent, getPublicPostOfRole } from "../../services/ApiToServer/posts";
+import { getPostsByContextByRoleByStatus } from "../../services/ApiToServer/posts";
 import { useMyContext } from "../../services/MyProvider/MyProvider";
 
 /**
  * React component, which creates a platform for working with student posts.
  * @returns post board
  */
-const List = ({ ready, type }) => {
+const List = ({ ready, type, data }) => {
 	// State for posts list
 	const [postsList, setPostsLists] = useState([]);
 
@@ -22,41 +22,60 @@ const List = ({ ready, type }) => {
 
 	// State for search item.
 	const [searchItem, setSearchItem] = useState("");
-
 	const prepareData = async () => {
-		if (type === 'city') {
-			const posts = await getPostFor(contextState.city)
-			setPostsLists(posts)
-			setFilteredPostsLists(posts)
-			return ''
-		}
-		if (type === 'student') {
-			const posts = await getPostForStudent(localStorage.getItem('group'))
-			setPostsLists(posts);
-			setFilteredPostsLists(posts);
-			return ''
-		}
-		if (type === 'teacher') {
-			const posts = await getPublicPostOfRole("teacher");
-			setPostsLists(posts);
-			setFilteredPostsLists(posts);
-			return ''
-		}
-		if (type === 'all') {
-			const posts = await getPublicPostOfRole("all");
-			setPostsLists(posts);
-			setFilteredPostsLists(posts);
-			return ''
-		}
-		if (localStorage.getItem('role') == 'admin') {
-			if (type === 'student') {
-				const posts = await getPostFor("student");
+		if (contextState.role === 'admin') {
+			if (data.role === 'student') {
+				const posts = await getPostsByContextByRoleByStatus(data.role, data.role_context, data.status);
 				setPostsLists(posts);
 				setFilteredPostsLists(posts);
 				return ''
 			}
-			if (type === 'techer') {
-				const posts = await getPostFor("teacher");
+			if (data.role === 'teacher') {
+				const posts = await getPostsByContextByRoleByStatus(data.role, null, data.status);
+				setPostsLists(posts);
+				setFilteredPostsLists(posts);
+				return ''
+			}
+			if (data.role === 'city') {
+				const posts = await getPostsByContextByRoleByStatus(data.role, data.role_context, data.status);
+				setPostsLists(posts);
+				setFilteredPostsLists(posts);
+				return ''
+			}
+			if (data.role === 'form') {
+				const posts = await getPostsByContextByRoleByStatus(data.role, data.role_context, data.status);
+				setPostsLists(posts);
+				setFilteredPostsLists(posts);
+				return ''
+			}
+			if (data.role === 'all') {
+				const posts = await getPostsByContextByRoleByStatus(data.role, null, data.status);
+				setPostsLists(posts);
+				setFilteredPostsLists(posts);
+				return ''
+			}
+		}
+		else {
+			if (type === 'city') {
+				const posts = await getPostsByContextByRoleByStatus('city', contextState.city, "1")
+				setPostsLists(posts)
+				setFilteredPostsLists(posts)
+				return ''
+			}
+			if (type === 'student') {
+				const posts = await getPostsByContextByRoleByStatus('student', localStorage.getItem('group'), "1")
+				setPostsLists(posts);
+				setFilteredPostsLists(posts);
+				return ''
+			}
+			if (type === 'teacher') {
+				const posts = await getPostsByContextByRoleByStatus("teacher", "null", "1");
+				setPostsLists(posts);
+				setFilteredPostsLists(posts);
+				return ''
+			}
+			if (type === 'all') {
+				const posts = await getPostsByContextByRoleByStatus("all", "null", "1");
 				setPostsLists(posts);
 				setFilteredPostsLists(posts);
 				return ''
@@ -64,16 +83,14 @@ const List = ({ ready, type }) => {
 		}
 	}
 
-	useEffect(() => {
-		prepareData()
-	}, [contextState.city])
+	// useEffect(() => {
+	// 	prepareData()
+	// }, [contextState.city])
 
 	// After the page loads, return prepareData()
 	useEffect(() => {
-		if (ready) {
-			prepareData()
-		}
-	}, [ready]);
+		prepareData()
+	}, [data]);
 
 	// Function to record the value, define and modify the filtered list.
 	function handleSearch(value) {

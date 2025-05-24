@@ -1,4 +1,4 @@
-const { db, getPublicPostsOfRole, createPostWithImage, addStudentGroup, deleteGroup, UpdateGroup, getCities, addCity, UpdateCity, deleteCity, getRoles, addRole, updateRole, deleteRole } = require("./db"); // Importing the createPost function and the db object
+const { db, getPublicPostsOfRole, createPostWithImage, addStudentGroup, deleteGroup, UpdateGroup, getCities, addCity, UpdateCity, deleteCity, getRoles, addRole, updateRole, deleteRole, getPublicPostsForStudentByGroup, getAllPostsForStudentByGroup } = require("./db"); // Importing the createPost function and the db object
 const express = require("express");
 const path = require('path');
 const app = express();
@@ -26,10 +26,11 @@ const {
 	findUser,
 	addStudentVisitors,
 	getCountAllStudentVisitors,
-} = require('./db')
+} = require('./db');
+const { log } = require("console");
 
 // Port used
-const PORT = 5000;
+const PORT = 5001;
 
 /**
  * Middleware for JSON parsing
@@ -95,12 +96,26 @@ app.post("/api/posts/public/role", async (req, res) => {
 
 /**
  * Получить посты для группы студентов
+ * POST /api/posts/public/group
+ */
+app.post("/api/posts/public/group", async (req, res) => {
+	const { group } = req.body;
+	try {
+		const posts = await getPublicPostsForStudentByGroup(group);
+		res.json({ posts });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+});
+
+/**
+ * Получить посты для группы студентов
  * POST /api/posts/group
  */
 app.post("/api/posts/group", async (req, res) => {
 	const { group } = req.body;
 	try {
-		const posts = await getPostsForStudent(group);
+		const posts = await getAllPostsForStudentByGroup(group);
 		res.json({ posts });
 	} catch (error) {
 		res.status(500).json({ message: error.message });
@@ -134,8 +149,6 @@ app.post("/api/posts/add", async (req, res) => {
 		res.status(500).json({ message: error.message });
 	}
 });
-
-
 // Настройка multer для обработки multipart/form-data
 const upload = multer({
 	storage: multer.memoryStorage(),
@@ -144,25 +157,31 @@ const upload = multer({
 	},
 });
 
-
-
 /**
  * Создать пост с изображением
  * POST /api/posts/addWithImage
  */
 app.post("/api/posts/addWithImage", upload.single('image'), async (req, res) => {
 	try {
+		console.log("1");
+		// console.log(req);
+		// console.log("---------------------------");
+		
+		// console.log(req.file);
+		console.log(req.body);
+		
 		const { title, content, typeVisible, group, publicPost } = req.body;
-		const imagePath = req.file ? req.file.path : null;
-
-		const post = await createPostWithImage({
+		const imagePath = req.file;
+		console.log(imagePath);
+		
+		const post = await createPostWithImage(
 			title,
 			content,
 			typeVisible,
 			group,
 			publicPost,
-			image_path: imagePath ? path.relative(__dirname, imagePath) : null
-		});
+			imagePath
+		);
 
 		res.status(201).json(post);
 	} catch (error) {
@@ -170,20 +189,6 @@ app.post("/api/posts/addWithImage", upload.single('image'), async (req, res) => 
 		res.status(500).json({ error: 'Internal server error' });
 	}
 });
-
-/**
- * Update post, api
- */
-// app.put("/api/posts/update/:id", async (req, res) => {
-// 	const { id, name, text, forField, visible, group } = req.body;
-// 	try {
-// 		await updatePost(id, name, text, forField, visible, group);
-// 		res.json({ message: "Пост обновлен" });
-// 	} catch (error) {
-// 		res.status(500).json({ message: error.message });
-// 	}
-// });
-
 /**
  * Обновить пост
  * PUT /api/posts/update/:id

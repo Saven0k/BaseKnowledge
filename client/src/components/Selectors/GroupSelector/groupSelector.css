@@ -22,7 +22,7 @@
 .group-selector-popup {
     position: absolute;
     /* top: 100%; */
-    top: -50px;
+    top: -10px;
     max-height: 250px;
     left: 0;
     width: 250px;
