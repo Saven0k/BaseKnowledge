@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./style.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import EditPostModal from "../../EditPostModal/EditPostModel";
 import TimerNotification from '../../TimerNotification/TimerNotification';
 import { deletePost, updatePostStatus } from "../../../services/ApiToServer/posts";

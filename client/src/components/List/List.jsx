@@ -57,13 +57,13 @@ const List = ({ ready, type, data }) => {
 		}
 		else {
 			if (type === 'city') {
-				const posts = await getPostsByContextByRoleByStatus('city', contextState.city, "1")
+				const posts = await getPostsByContextByRoleByStatus('city', contextState.city.split(), "1")
 				setPostsLists(posts)
 				setFilteredPostsLists(posts)
 				return ''
 			}
 			if (type === 'student') {
-				const posts = await getPostsByContextByRoleByStatus('student', localStorage.getItem('group'), "1")
+				const posts = await getPostsByContextByRoleByStatus('student', localStorage.getItem('group').split(' '), "1")
 				setPostsLists(posts);
 				setFilteredPostsLists(posts);
 				return ''
@@ -80,12 +80,18 @@ const List = ({ ready, type, data }) => {
 				setFilteredPostsLists(posts);
 				return ''
 			}
+			if (type === 'form') {
+				const posts = await getPostsByContextByRoleByStatus("form", localStorage.getItem('form'), "1");
+				setPostsLists(posts);
+				setFilteredPostsLists(posts);
+				return ''
+			}
 		}
 	}
 
-	// useEffect(() => {
-	// 	prepareData()
-	// }, [contextState.city])
+	useEffect(() => {
+		prepareData()
+	}, [contextState.city])
 
 	// After the page loads, return prepareData()
 	useEffect(() => {

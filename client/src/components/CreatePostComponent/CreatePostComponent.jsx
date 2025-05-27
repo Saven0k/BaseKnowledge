@@ -92,7 +92,6 @@ const CreatePostComponent = () => {
     const savePost = () => {
 
         if (image !== null) {
-            console.log("+++++", typeof role_context, role_context)
             const data = new FormData();
             data.append('title', title);
             data.append('content', content);

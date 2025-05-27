@@ -5,18 +5,19 @@ import { getPost, updatePost } from '../../services/ApiToServer/posts';
 import { getStudentGroups } from '../../services/ApiToServer/groups';
 import GroupSelector from '../Selectors/GroupSelector/GroupSelector';
 import CitySelector from '../Selectors/CitySelector/CitySelector';
+import FormSelector from '../Selectors/FormSelector/FormSelector';
 
 const EditPostModal = ({ postId, onClose, onSave }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [IdPost, setIdPost] = useState()
-  const [typeVisible, setTypeVisible] = useState(''); //UseState for type of visible
+  const [role, setRole] = useState(''); //UseState for type of visible
 
   const [editedPost, setEditedPost] = useState({
     title: '',
     content: '',
-    typeVisible: '',
-    publicPost: false,
-    group: 'none'
+    role: '',
+    status: false,
+    role_context: 'none'
   });
 
 
@@ -46,14 +47,16 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
         setIsLoading(true);
         const postData = await getPost(postId); // Ваш метод для получения поста по ID
         setIdPost(postId)
+        console.log("---------------------", postData)
+        setRole(postData.role)
         setEditedPost({
-          title: postData.title || '',
-          content: postData.content || '',
-          typeVisible: postData.role || '',
-          publicPost: postData.public_post === "1" ? true : false,
-          group: postData.student_group || 'none'
+          title: postData.title,
+          content: postData.content,
+          role: postData.role,
+          status: postData.status === "1" ? true : false,
+          role_context: postData.role_context
         });
-
+        console.log(editedPost)
         setIsLoading(false);
       } catch (error) {
         console.error('Ошибка загрузки данных поста:', error);
@@ -73,7 +76,7 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
       setGroupList(groups.map(obj => obj.name));
     };
     loadGroups();
-  }, [editedPost.typeVisible]);
+  }, [editedPost.role]);
 
   // Сохраняем выделение текста
   const saveSelection = () => {
@@ -134,18 +137,11 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
 
   // Обработчик сохранения поста
   const handleSave = async () => {
-    const updatedPost = null;
     try {
-      if (typeVisible === 'city') {
-        const updatedPost = await updatePost(IdPost, editedPost.title, editedPost.content, city, editedPost.publicPost, editedPost.group);
-
-      } else {
-        const updatedPost = await updatePost(IdPost, editedPost.title, editedPost.content, editedPost.typeVisible, editedPost.publicPost, editedPost.group);
-
-      }
-      if (updatePost) {
-        // После успешного сохранения вызываем колбэк
-        onSave(updatedPost);
+      console.log("AAAA", editedPost)
+      const updatedPosts = await updatePost(IdPost, editedPost.title, editedPost.content, editedPost.role, editedPost.status, editedPost.role_context);
+      if (updatedPosts) {
+        onSave(updatedPosts);
         onClose();
       } else {
         navigate('/404')
@@ -161,6 +157,13 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
       onClose();
     }
   };
+
+  const setRoleContext = (type) => {
+    setEditedPost(prev => ({
+      ...prev,
+      role_context: type,
+    }))
+  }
 
   if (!postId) return null;
 
@@ -239,21 +242,24 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
             </div>
             <select
               className='visible_select'
-              value={typeVisible}
-              onChange={(e) => setTypeVisible(e.target.value)}
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
             >
-
               <option value="none">Не выбрано</option>
               <option value="student">Студентам</option>
               <option value="teacher">Учителям</option>
               <option value="all">Всем</option>
               <option value="city">Городу</option>
+              <option value="form">Форма обучения</option>
             </select>
-            {typeVisible === 'student' &&
-              <GroupSelector saveGroupList={setGroups} />
+            {role === 'student' &&
+              <GroupSelector saveGroupList={setRoleContext} />
             }
-            {typeVisible === 'city' &&
-              <CitySelector saveCity={setCity} />
+            {role === 'city' &&
+              <CitySelector saveCity={setRoleContext} />
+            }
+            {role === 'form' &&
+              <FormSelector saveForm={setRoleContext} />
             }
 
             <div className="modal-form-group">
@@ -261,8 +267,8 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
                 <input
                   type="checkbox"
                   name="publicPost"
-                  checked={editedPost.publicPost}
-                  onChange={(e) => setEditedPost({ ...editedPost, publicPost: e.target.checked })}
+                  checked={editedPost.status}
+                  onChange={(e) => setEditedPost({ ...editedPost, status: e.target.checked })}
                 />
                 Публичный пост
               </label>

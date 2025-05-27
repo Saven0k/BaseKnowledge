@@ -1,13 +1,33 @@
 .detail_box {
-    height: 80vh;
-    /* margin-top: 150px; */
+    height: auto;
+    gap: 30px;
+    margin-top: 120px;
     display: flex;
-    justify-content: center;
-    align-items: start;
-    gap:10px;
-    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
     padding: 0px 5%;
+    width: 100%;
+
+    .text_content {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-direction: column;
+
+
+    }
+
+    .image_content {
+        display: flex;
+        width: 30%;
+        min-width: 300px;
+    }
 }
+
+;
+
 
 .content {
     max-width: 60%;
@@ -21,11 +41,16 @@
     background-color: #fff;
     padding: 3px 4px;
     border-radius: 10px;
-    border:none;
+    border: none;
+    width: 50px;
     transition: 0.5s;
     box-shadow: 0 2px 2px #000;
 }
+
 .button_back:hover {
-    transform: scale(1.05);
     box-shadow: 2px 2px 2px #000;
+}
+
+.image_path {
+    width: 50%;
 }

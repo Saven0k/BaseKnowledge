@@ -19,7 +19,8 @@
     gap: 20px;
 }
 
-.button {
+
+.button, .button_study {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
@@ -62,4 +63,19 @@
 
 .listItemHover {
     background-color:  #f5f5f5;
+}
+
+.form_study {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 80vh;
+    gap: 25px;
+}
+
+.form_study_buttons {
+    display: flex;
+    gap: 10px;
+    height: 50px;
 }

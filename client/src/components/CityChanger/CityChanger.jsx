@@ -21,7 +21,7 @@ const CityChanger = () => {
     }
 
     useEffect(() => {
-        setSelectedCity(localStorage.getItem('city'))
+        setSelectedCity(localStorage.getItem('city') === null ? '': localStorage.getItem('city'))
     }, [])
 
     useEffect(() => {

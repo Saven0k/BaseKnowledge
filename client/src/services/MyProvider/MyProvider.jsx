@@ -12,6 +12,7 @@ export const MyProvider = ({ children }) => {
     const savedCity = localStorage.getItem('city') || '';
     const savedEmail = localStorage.getItem('email') || '';
     const savedGroup = localStorage.getItem('group') || '';
+    const savedForm = localStorage.getItem('form') || '';
 
 
     return {
@@ -19,6 +20,7 @@ export const MyProvider = ({ children }) => {
       city: savedCity,
       email: savedEmail,
       group: savedGroup,
+      form: savedForm,
     };
   });
 
@@ -31,10 +33,12 @@ export const MyProvider = ({ children }) => {
 
       return updatedState;
     });
+    console.log(contextState)
+    
   };
 
   useEffect(() => {
-    setContextState({ ...contextState, role: localStorage.getItem('role'), city: localStorage.getItem('city'), email: localStorage.getItem('email'), group: localStorage.getItem('group') })
+    setContextState({ ...contextState, role: localStorage.getItem('role'), city: localStorage.getItem('city'), email: localStorage.getItem('email'), group: localStorage.getItem('group'),form: localStorage.getItem('form')  })
   }, [])
 
   // console.log(contextState)

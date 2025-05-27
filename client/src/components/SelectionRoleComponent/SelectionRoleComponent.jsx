@@ -2,12 +2,16 @@ import './SelectionRoleComponent.css'
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getStudentGroups } from '../../services/ApiToServer/groups';
+import { useMyContext } from '../../services/MyProvider/MyProvider';
 
 const SelectionRoleComponent = () => {
     const [role, setRole] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [group, setGroup] = useState([]);
     const [filteredGroups, setFilteredGroups] = useState([]);
+    const [studyType, setStudyType] = useState('');
+    const { contextState, updateContextState } = useMyContext();
+
 
     const navigate = useNavigate()
 
@@ -18,11 +22,13 @@ const SelectionRoleComponent = () => {
     }
 
     useEffect(() => {
-        prepareData();
-        const startRole = localStorage.getItem('role')
-    }, []);
+        if (role === 'student') {
+            prepareData();
+        }
+    }, [role]);
+
     useEffect(() => {
-        localStorage.setItem('role', role)
+        updateContextState('role', role)
     }, [role]);
 
     // Фильтрация специальностей при изменении поискового запроса
@@ -38,18 +44,28 @@ const SelectionRoleComponent = () => {
         }
     }, [searchTerm, group]);
 
+    const handleStudyTypeClick = (type) => {
+        console.log(studyType.length)
+        setStudyType(type);
+        updateContextState('form', type)
+        console.log(studyType.length)
+    };
+
 
     const handleSpecialtySelect = (groupName) => {
-        localStorage.setItem('group', groupName);
+        updateContextState('group', groupName)
         navigate('/student')
-        // console.log(`Group ${groupName} selected, redirecting...`);
     };
 
     const handleTeacherClick = () => {
-        if (!localStorage.getItem('role') === 'admin') {
-            localStorage.setItem('role', 'teacher')
-        }
+        updateContextState('role', 'teacher')
         navigate('/login');
+    };
+
+
+    const resetSelection = () => {
+        setRole(null);
+        setStudyType(null);
     };
 
     if (role === null) {
@@ -74,7 +90,21 @@ const SelectionRoleComponent = () => {
         );
     }
 
-    if (role === 'student') {
+    if (role === 'student' && studyType.length === 0) {
+        return (
+
+            <div className='form_study'>
+                <h2>Выберите форму обучения</h2>
+                <div className="form_study_buttons">
+                    <button className='button_study' onClick={() => handleStudyTypeClick('Очное')}>Очное</button>
+                    <button className='button_study' onClick={() => handleStudyTypeClick('Заочное')}>Заочное</button>
+                    <button className='button_study' onClick={() => handleStudyTypeClick('Дистанционное')}>Дистанционное</button>
+                    <button className='button_study' onClick={resetSelection} style={{ marginTop: '10px' }}>Назад</button>
+                </div>
+            </div>)
+    }
+
+    if (studyType.length > 0) {
         return (
             <div className='container'>
                 <div className='searchContainer'>

@@ -70,32 +70,31 @@ export async function getPostsByContextByRoleByStatus(role, role_context, status
 /**
  * ✏️ Обновляет существующий пост
  * @param {string|number} postId - ID поста
- * @param {string} updateName - Новое название
- * @param {string} updateText - Новый текст
- * @param {string} updateForFieled - Новое поле
- * @param {boolean} updateVisible - Видимость
- * @param {string} updateForGroup - Группа
+ * @param {string} updatedTitle - Новое название
+ * @param {string} updatedContent - Новый текст
+ * @param {string} updatedRole - Новое поле
+ * @param {boolean} updatedStatus - Видимость
+ * @param {string} updatedRoleContext - Группа
  * @returns {Promise<Object>} Обновленный пост
  */
-export const updatePost = async (postId, updateName, updateText, updateForFieled, updateVisible, updateForGroup) => {
+export const updatePost = async (postId, updatedTitle, updatedContent, updatedRole, updatedStatus, updatedRoleContext) => {
     try {
         const response = await fetch(`/api/posts/update/${postId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 id: postId,
-                name: updateName,
-                text: updateText,
-                forField: updateForFieled,
-                visible: updateVisible,
-                group: updateForGroup
+                title: updatedTitle,
+                content: updatedContent,
+                role: updatedRole,
+                status: updatedStatus,
+                role_context: updatedRoleContext
             })
         });
 
         const data = await response.json();
         if (!response.ok) throw new Error(data.message || "Ошибка обновления");
-
-        return data;
+        return data.post;
     } catch (error) {
         console.error(`🚨 Ошибка обновления поста ${postId}:`, error);
         throw error;
@@ -163,5 +162,23 @@ export async function deletePost(id) {
     } catch (error) {
         console.error(`🚨 Ошибка удаления поста ${id}:`, error);
         return false;
+    }
+}
+
+
+export async function getImage(filename) {
+    try {
+        const response = await fetch(`http://localhost:5000/api/posts/image`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({filename:filename})
+        });
+
+        const result = await response.blob();
+        if (!response.ok) throw new Error(result.message || "Ошибка загрузки");
+        return URL.createObjectURL(result);
+    } catch (error) {
+        console.error("🚨 Ошибка создания поста с изображением:", error);
+        throw error;
     }
 }

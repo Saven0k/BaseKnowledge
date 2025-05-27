@@ -34,6 +34,7 @@ export default defineConfig({
 			'/api/roles':  "http://localhost:5000",
 			'api/posts/status/context':  "http://localhost:5000",
 			'api/posts/update/status':  "http://localhost:5000",
+			'api/posts/image':  "http://localhost:5000",
 		},
 	},
 });
