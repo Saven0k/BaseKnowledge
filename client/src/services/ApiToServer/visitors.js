@@ -13,7 +13,7 @@
  */
 export async function addVisitor() {
     try {
-        const response = await fetch("/api/visitors/add", {
+        const response = await fetch("https://hexletkb.ru:5002/api/visitors/add", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -45,7 +45,7 @@ export async function addVisitor() {
  */
 export async function getVisitorsCount() {
     try {
-        const response = await fetch("/api/visitors/all");
+        const response = await fetch("https://hexletkb.ru:5002/api/visitors/all");
         const data = await response.json();
 
         if (!response.ok) {

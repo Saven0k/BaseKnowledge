@@ -18,9 +18,9 @@
  *   console.error('Ошибка загрузки групп:', error);
  * }
  */
-export async function getStudentGroups() {
+export async function getStudentGroups() {   
     try {
-        const response = await fetch("/api/student/groups");
+        const response = await fetch("https://hexletkb.ru:5002/api/student/groups");
         const data = await response.json();
         
         if (!response.ok) {
@@ -31,7 +31,7 @@ export async function getStudentGroups() {
 
         return data.groups;
     } catch (error) {
-        console.error("🚨 Ошибка при получении групп студентов:", error);
+        console.error("🚨 Ошибка при получении групп студентов ааааааааааааааааааа:", error);
         throw error; // Пробрасываем ошибку для обработки в компоненте
     }
 }
@@ -47,7 +47,7 @@ export async function getStudentGroups() {
  */
 export async function addGroup(name) {
     try {
-        const response = await fetch("/api/student/groups/new", {
+        const response = await fetch("https://hexletkb.ru:5002/api/student/groups/new", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -80,7 +80,7 @@ export async function addGroup(name) {
  */
 export const updateGroup = async (id, name) => {
     try {
-        const response = await fetch(`/api/student/groups/update`, {
+        const response = await fetch(`https://hexletkb.ru:5002/api/student/groups/update`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -113,7 +113,7 @@ export const updateGroup = async (id, name) => {
  */
 export async function deleteGroup(id) {
     try {
-        const response = await fetch(`/api/student/groups/delete/${id}`, {
+        const response = await fetch(`https://hexletkb.ru:5002/api/student/groups/delete/${id}`, {
             method: "DELETE",
         });
         

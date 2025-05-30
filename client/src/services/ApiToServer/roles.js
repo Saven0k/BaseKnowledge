@@ -20,7 +20,7 @@
  */
 export async function getRoles() {
     try {
-        const response = await fetch("/api/roles");
+        const response = await fetch("https://hexletkb.ru:5002/api/roles");
         const data = await response.json();
 
         if (!response.ok) {
@@ -47,7 +47,7 @@ export async function getRoles() {
  */
 export async function addRole(name) {
     try {
-        const response = await fetch("/api/roles/new", {
+        const response = await fetch("https://hexletkb.ru:5002/api/roles/new", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -80,7 +80,7 @@ export async function addRole(name) {
  */
 export const updateRole = async (id, name) => {
     try {
-        const response = await fetch(`/api/roles/update`, {
+        const response = await fetch(`https://hexletkb.ru:5002/api/roles/update`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -113,7 +113,7 @@ export const updateRole = async (id, name) => {
  */
 export async function deleteRole(id) {
     try {
-        const response = await fetch(`/api/roles/delete/${id}`, {
+        const response = await fetch(`https://hexletkb.ru:5002/api/roles/delete/${id}`, {
             method: "DELETE",
         });
 

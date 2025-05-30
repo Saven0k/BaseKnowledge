@@ -33,8 +33,6 @@ export const MyProvider = ({ children }) => {
 
       return updatedState;
     });
-    console.log(contextState)
-    
   };
 
   useEffect(() => {
