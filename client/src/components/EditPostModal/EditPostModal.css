@@ -156,3 +156,23 @@
 .modal-button.save:hover {
     background-color: #2a2bb5;
 }
+
+
+.editor-wrapper {
+    position: relative;
+}
+
+.save-countdown {
+    position: relative;
+    bottom: -25px;
+    left: -10;
+    font-size: 12px;
+    color: #666;
+    background: #f5f5f5;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.save-countdown span {
+    font-style: italic;
+}

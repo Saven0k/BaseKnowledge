@@ -9,8 +9,16 @@ import FormSelector from '../Selectors/FormSelector/FormSelector';
 
 const EditPostModal = ({ postId, onClose, onSave }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [IdPost, setIdPost] = useState()
-  const [role, setRole] = useState(''); //UseState for type of visible
+  const [IdPost, setIdPost] = useState();
+  const [PostD, setPostD] = useState('');
+  const navigate = useNavigate();
+  const [role, setRole] = useState('');
+  const editorRef = useRef(null);
+  const lastSelectionRef = useRef(null);
+  const modalRef = useRef(null);
+  const saveTimeoutRef = useRef(null);
+  const countdownIntervalRef = useRef(null);
+  const [timeLeft, setTimeLeft] = useState(null);
 
   const [editedPost, setEditedPost] = useState({
     title: '',
@@ -20,14 +28,6 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
     role_context: 'none'
   });
 
-
-  const [city, setCity] = useState([])
-
-  // const [group, setGroup] = useState('none')
-  const [groups, setGroups] = useState(null)
-  1
-  const navigate = useNavigate()
-
   const [styles, setStyles] = useState({
     color: '#000000',
     fontSize: '16px',
@@ -35,19 +35,13 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
     fontStyle: 'normal',
   });
 
-  const editorRef = useRef(null);
-  const lastSelectionRef = useRef(null);
-  const modalRef = useRef(null);
-  const [groupList, setGroupList] = useState([]);
-
-  // Загрузка данных поста при открытии модального окна
   useEffect(() => {
     const loadPostData = async () => {
       try {
         setIsLoading(true);
-        const postData = await getPost(postId); // Ваш метод для получения поста по ID
+        const postData = await getPost(postId);
+        setPostD(postData)
         setIdPost(postId)
-        console.log("---------------------", postData)
         setRole(postData.role)
         setEditedPost({
           title: postData.title,
@@ -56,12 +50,11 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
           status: postData.status === "1" ? true : false,
           role_context: postData.role_context
         });
-        console.log(editedPost)
         setIsLoading(false);
       } catch (error) {
         console.error('Ошибка загрузки данных поста:', error);
         setIsLoading(false);
-        onClose(); // Закрываем модальное окно при ошибке
+        onClose();
       }
     };
 
@@ -70,21 +63,41 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
     }
   }, [postId, onClose]);
 
-  useEffect(() => {
-    const loadGroups = async () => {
-      const groups = await getStudentGroups();
-      setGroupList(groups.map(obj => obj.name));
-    };
-    loadGroups();
-  }, [editedPost.role]);
 
-  // Сохраняем выделение текста
-  const saveSelection = () => {
+  const startSaveTimer = () => {
     const selection = window.getSelection();
     if (selection.rangeCount > 0) {
       lastSelectionRef.current = selection.getRangeAt(0);
     }
+    
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
+
+    
+    setTimeLeft(2); 
+    countdownIntervalRef.current = setInterval(() => {
+      setTimeLeft(prev => prev - 1); 
+    }, 1000);
+
+    
+    saveTimeoutRef.current = setTimeout(() => {
+      if (editorRef.current && editorRef.current.innerHTML !== editedPost.content) {
+        const newContent = editorRef.current.innerHTML;
+        setEditedPost(prev => ({ ...prev, content: newContent }));
+        console.log('Автосохранение выполнено:', newContent);
+      }
+      setTimeLeft(null); 
+      clearInterval(countdownIntervalRef.current);
+    }, 2000);
   };
+
+  
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+      if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
+    };
+  }, []);
 
   // Восстанавливаем выделение текста
   const restoreSelection = () => {
@@ -114,19 +127,16 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
     range.deleteContents();
     range.insertNode(span);
 
-    // Обновляем состояние content
     if (editorRef.current) {
       setEditedPost(prev => ({ ...prev, content: editorRef.current.innerHTML }));
     }
     restoreSelection();
   };
 
-  // Автоматически применяем стили при их изменении
   useEffect(() => {
     applyStyleToSelection();
   }, [styles]);
 
-  // Обработчик изменений в полях формы
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setEditedPost(prev => ({
@@ -135,10 +145,8 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
     }));
   };
 
-  // Обработчик сохранения поста
   const handleSave = async () => {
     try {
-      console.log("AAAA", editedPost)
       const updatedPosts = await updatePost(IdPost, editedPost.title, editedPost.content, editedPost.role, editedPost.status, editedPost.role_context);
       if (updatedPosts) {
         onSave(updatedPosts);
@@ -151,7 +159,6 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
     }
   };
 
-  // Закрытие модального окна при клике вне его
   const handleBackdropClick = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
       onClose();
@@ -166,6 +173,10 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
   }
 
   if (!postId) return null;
+
+  const handleChangeSelectedRole = (role) => {
+    setEditedPost({ ...editedPost, role: role })
+  }
 
   return (
     <div className="modal-backdrop" onClick={handleBackdropClick}>
@@ -190,12 +201,21 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
 
             <div className="modal-form-group">
               <label>Содержание:</label>
+              {timeLeft !== null && (
+                <div className="save-countdown">
+                  {timeLeft > 0 ? (
+                    <span>Текст сохранится через {timeLeft} сек...</span>
+                  ) : (
+                    <span>✓ Сохранено</span>
+                  )}
+                </div>
+              )}
               <div
                 ref={editorRef}
                 contentEditable
-                onBlur={saveSelection}
-                onMouseUp={saveSelection}
-                onKeyUp={saveSelection}
+                onBlur={startSaveTimer}
+                onMouseUp={startSaveTimer}
+                onKeyUp={startSaveTimer}
                 dangerouslySetInnerHTML={{ __html: editedPost.content }}
                 className="modal-editor"
               />
@@ -242,8 +262,8 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
             </div>
             <select
               className='visible_select'
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
+              value={editedPost.role}
+              onChange={(e) => handleChangeSelectedRole(e.target.value)}
             >
               <option value="none">Не выбрано</option>
               <option value="student">Студентам</option>
@@ -252,13 +272,13 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
               <option value="city">Городу</option>
               <option value="form">Форма обучения</option>
             </select>
-            {role === 'student' &&
+            {editedPost.role === 'student' &&
               <GroupSelector saveGroupList={setRoleContext} />
             }
-            {role === 'city' &&
+            {editedPost.role === 'city' &&
               <CitySelector saveCity={setRoleContext} />
             }
-            {role === 'form' &&
+            {editedPost.role === 'form' &&
               <FormSelector saveForm={setRoleContext} />
             }
 

@@ -23,14 +23,45 @@ const CreatePostComponent = () => {
     const editorRef = useRef(null); // UseRef for edit content
     const lastSelectionRef = useRef(null); // Сохраняем последнюю позицию курсора
     const [imagePreview, setImagePreview] = useState(''); // Для превью изображения
-    const [image, setImage] = useState('')
+    const [image, setImage] = useState(null);
+    const saveTimeoutRef = useRef(null);
+    const countdownIntervalRef = useRef(null);
+    const [timeLeft, setTimeLeft] = useState(null);
 
-    const saveSelection = () => {
+
+    const startSaveTimer = () => {
         const selection = window.getSelection();
         if (selection.rangeCount > 0) {
             lastSelectionRef.current = selection.getRangeAt(0);
         }
+
+        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+        if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
+
+
+        setTimeLeft(2);
+        countdownIntervalRef.current = setInterval(() => {
+            setTimeLeft(prev => prev - 1);
+        }, 1000);
+
+
+        saveTimeoutRef.current = setTimeout(() => {
+            if (editorRef.current && editorRef.current.innerHTML !== content) {
+                const newContent = editorRef.current.innerHTML;
+                setContent(newContent);
+            }
+            setTimeLeft(null);
+            clearInterval(countdownIntervalRef.current);
+        }, 2000);
     };
+
+
+    useEffect(() => {
+        return () => {
+            if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+            if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
+        };
+    }, []);
     // Восстанавливаем выделение (курсор)
     const restoreSelection = () => {
         if (lastSelectionRef.current) {
@@ -39,9 +70,6 @@ const CreatePostComponent = () => {
             selection.addRange(lastSelectionRef.current);
         }
     };
-    const handleContentChange = () => {
-        setContent(editorRef.current)
-    }
 
     // Применить стиль к выделенному тексту
     const applyStyleToSelection = () => {
@@ -70,18 +98,27 @@ const CreatePostComponent = () => {
 
     };
 
+    const fileInputRef = useRef(null);
     const handleFileChange = (e) => {
         if (e.target.files[0]) {
             const selectedFile = e.target.files[0];
-            setImage(e.target.files[0])
+            setImage(selectedFile);
             const reader = new FileReader();
             reader.onload = (event) => {
-                // setImage(event.target.result)
-                setImagePreview(event.target.result); // Сохраняем Data URL для превью
+                setImagePreview(event.target.result);
             };
             reader.readAsDataURL(selectedFile);
         }
-    }
+    };
+    // Функция для очистки
+    const clearImage = () => {
+        setImage("");
+        setImagePreview('');
+        // Сбрасываем значение инпута через ref
+        if (fileInputRef.current) {
+            fileInputRef.current.value = ''; // Это разблокирует повторный выбор файла
+        }
+    };
 
     // Автоматически применяем стили при их изменении
     useEffect(() => {
@@ -104,8 +141,7 @@ const CreatePostComponent = () => {
 
         setTitle('');
         setContent('');
-        setImage("");
-        setImagePreview('');
+        clearImage()
         setRole("null")
         setRoleContext("null")
     };
@@ -114,16 +150,21 @@ const CreatePostComponent = () => {
     return (
         <div className='addPost_component'>
             <div className='image_load'>
-                <label htmlFor="">Image</label>
+                <label htmlFor="image">Image</label>
                 <input
+                    ref={fileInputRef} // Привязываем ref
                     type="file"
                     name="image"
                     id="image"
                     onChange={(e) => handleFileChange(e)}
                     accept="image/*"
                 />
-                {imagePreview &&
-                    <img src={imagePreview} alt="image preview" className='image_preview' />}
+                {imagePreview && (
+                    <>
+                        <img src={imagePreview} alt="preview" className='image_preview' />
+                        <button className="button_delete_photo" onClick={clearImage}>Удалить</button>
+                    </>
+                )}
             </div>
             <input
                 type="text"
@@ -132,15 +173,23 @@ const CreatePostComponent = () => {
                 className='title_input'
                 onChange={(e) => setTitle(e.target.value)}
             />
+            {timeLeft !== null && (
+                <div className="save-countdown">
+                    {timeLeft > 0 ? (
+                        <span>Текст сохранится через {timeLeft} сек...</span>
+                    ) : (
+                        <span>✓ Сохранено</span>
+                    )}
+                </div>
+            )}
             <div
                 ref={editorRef}
-                onChange={handleContentChange}
                 contentEditable
-                onBlur={saveSelection} // Сохраняем позицию при потере фокуса
-                onMouseUp={saveSelection} // Сохраняем позицию при выделении мышью
-                onKeyUp={saveSelection} // Сохраняем позицию при вводе с клавиатуры
+                onBlur={startSaveTimer}
+                onMouseUp={startSaveTimer}
+                onKeyUp={startSaveTimer}
                 dangerouslySetInnerHTML={{ __html: content }}
-                className='content_input'
+                className="content_input"
             />
             <div className='style_component'>
                 <h3>Стили:</h3>
@@ -215,7 +264,7 @@ const CreatePostComponent = () => {
                     Публичный пост
                 </label>
             </div>
-            <button className='button_save_post' disabled={image ? false: true} onClick={savePost}>Сохранить пост</button>
+            <button className='button_save_post' disabled={image ? false : true} onClick={savePost}>Сохранить пост</button>
         </div>
     );
 };

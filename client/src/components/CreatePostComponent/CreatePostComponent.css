@@ -25,6 +25,7 @@
     input[type="file"] {
         color: transparent;
     }
+
     .image_preview {
         width: 100px;
     }
@@ -123,4 +124,14 @@
         content: 'неопубликован';
         font-size: 12px;
     }
+}
+
+.button_delete_photo {
+    margin-top: 8px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
 }

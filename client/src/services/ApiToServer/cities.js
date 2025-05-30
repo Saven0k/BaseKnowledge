@@ -5,7 +5,7 @@
  */
 export async function getCities() {
     try {
-        const response = await fetch("https://hexletkb.ru:5002/api/cities");
+        const response = await fetch("http://localhost:5000/api/cities");
         const data = await response.json();
 
         if (!response.ok) {
@@ -29,7 +29,7 @@ export async function getCities() {
  */
 export async function addCity(name) {
     try {
-        const response = await fetch("https://hexletkb.ru:5002/api/cities/new", {
+        const response = await fetch("http://localhost:5000/api/cities/new", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -61,7 +61,7 @@ export async function addCity(name) {
  */
 export const updateCity = async (id, name) => {
     try {
-        const res = await fetch(`https://hexletkb.ru:5002/api/cities/update/${id}`, {
+        const res = await fetch(`http://localhost:5000/api/cities/update/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -94,7 +94,7 @@ export const updateCity = async (id, name) => {
  */
 export async function deleteCity(id) {
     try {
-        const response = await fetch(`https://hexletkb.ru:5002/api/cities/delete/${id}`, {
+        const response = await fetch(`http://localhost:5000/api/cities/delete/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",

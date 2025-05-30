@@ -5,7 +5,7 @@
  */
 export async function getUsers() {
     try {
-        const response = await fetch("https://hexletkb.ru:5002/api/users");
+        const response = await fetch("http://localhost:5000/api/users");
         const data = await response.json();
 
         if (!response.ok) {
@@ -28,7 +28,7 @@ export async function getUsers() {
  */
 export const updateUser = async (userId, email, password, countVisit, role) => {
     try {
-        const response = await fetch(`https://hexletkb.ru:5002/api/users/update/${userId}`, {
+        const response = await fetch(`http://localhost:5000/api/users/update/${userId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: userId, email, password, countVisit, role })
@@ -53,7 +53,7 @@ export const updateUser = async (userId, email, password, countVisit, role) => {
  */
 export async function addUser(email, password, role) {
     try {
-        const response = await fetch("https://hexletkb.ru:5002/api/users/new", {
+        const response = await fetch("http://localhost:5000/api/users/new", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password, role })
@@ -76,7 +76,7 @@ export async function addUser(email, password, role) {
  */
 export async function deleteUser(id) {
     try {
-        const response = await fetch(`https://hexletkb.ru:5002/api/users/delete/${id}`, {
+        const response = await fetch(`http://localhost:5000/api/users/delete/${id}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" }
         });
@@ -99,7 +99,7 @@ export async function deleteUser(id) {
  */
 export async function findUser(email, password) {
     try {
-        const response = await fetch(`https://hexletkb.ru:5002/api/users/find`, {
+        const response = await fetch(`http://localhost:5000/api/users/find`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
@@ -122,7 +122,7 @@ export async function findUser(email, password) {
  */
 export async function getTotalVisits() {
     try {
-        const response = await fetch("https://hexletkb.ru:5002/api/users/visit/all");
+        const response = await fetch("http://localhost:5000/api/users/visit/all");
         const data = await response.json();
 
         if (!response.ok) {
@@ -144,7 +144,7 @@ export async function getTotalVisits() {
  */
 export async function getTeacherVisits(teacherEmail) {
     try {
-        const response = await fetch("https://hexletkb.ru:5002/api/users/visitors", {
+        const response = await fetch("http://localhost:5000/api/users/visitors", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: teacherEmail })
@@ -170,7 +170,7 @@ export async function getTeacherVisits(teacherEmail) {
  */
 export const updateTeacherVisits = async (teacherEmail, countVisit) => {
     try {
-        const response = await fetch(`https://hexletkb.ru:5002/api/users/visit/update`, {
+        const response = await fetch(`http://localhost:5000/api/users/visit/update`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: teacherEmail, countVisit })

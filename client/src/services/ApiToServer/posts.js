@@ -12,7 +12,7 @@
  */
 export async function getPosts() {
     try {
-        const response = await fetch("https://hexletkb.ru:5002/api/posts");
+        const response = await fetch("http://localhost:5000/api/posts");
         const data = await response.json();
 
         if (!response.ok) {
@@ -34,7 +34,7 @@ export async function getPosts() {
  */
 export async function getPost(id) {
     try {
-        const response = await fetch(`https://hexletkb.ru:5002/api/posts/${id}`);
+        const response = await fetch(`http://localhost:5000/api/posts/${id}`);
         const data = await response.json();
 
         if (!response.ok) {
@@ -51,7 +51,7 @@ export async function getPost(id) {
 export async function getPostsByContextByRoleByStatus(role, role_context, status) {
     try {
         
-        const response = await fetch("http://hexletkb.ru:5002/api/posts/status/context", {
+        const response = await fetch("http://localhost:5000/api/posts/status/context", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ role, role_context, status })
@@ -79,7 +79,7 @@ export async function getPostsByContextByRoleByStatus(role, role_context, status
  */
 export const updatePost = async (postId, updatedTitle, updatedContent, updatedRole, updatedStatus, updatedRoleContext) => {
     try {
-        const response = await fetch(`https://hexletkb.ru:5002/api/posts/update/${postId}`, {
+        const response = await fetch(`http://localhost:5000/api/posts/update/${postId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -102,7 +102,7 @@ export const updatePost = async (postId, updatedTitle, updatedContent, updatedRo
 };
 export const updatePostStatus = async (postId, status) => {
     try {
-        const response = await fetch(`https://hexletkb.ru:5002/api/posts/update/status`, {
+        const response = await fetch(`http://localhost:5000/api/posts/update/status`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -129,7 +129,7 @@ export const updatePostStatus = async (postId, status) => {
  */
 export async function addPost(data) {
     try {
-        const response = await fetch("https://hexletkb.ru:5002/api/posts/new", {
+        const response = await fetch("http://localhost:5000/api/posts/new", {
             method: "POST",
             body: data
         });
@@ -150,7 +150,7 @@ export async function addPost(data) {
  */
 export async function deletePost(id) {
     try {
-        const response = await fetch(`https://hexletkb.ru:5002/api/posts/delete/${id}`, {
+        const response = await fetch(`http://localhost:5000/api/posts/delete/${id}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" }
         });
@@ -168,7 +168,7 @@ export async function deletePost(id) {
 
 export async function getImage(filename) {
     try {
-        const response = await fetch(`https://hexletkb.ru:5002/api/posts/image`, {
+        const response = await fetch(`http://localhost:5000/api/posts/image`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({filename:filename})
