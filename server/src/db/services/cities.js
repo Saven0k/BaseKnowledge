@@ -39,6 +39,7 @@ async function addCity(cityName) {
             console.log("City added");
             resolve({
                 cityId,
+                cityName,
             })
         })
     })

@@ -39,6 +39,7 @@ async function addStudentGroup(groupName) {
             console.log("Group added with", groupName);
             resolve({
                 groupId,
+                groupName,
             })
         })
     })

@@ -24,22 +24,23 @@ async function getRoles() {
 
 /**
  * Добавляет новую роль в базу данных.
- * @param {string} role - Название новой роли
+ * @param {string} roleName - Название новой роли
  * @returns {Promise<Object>} Промис, который разрешается объектом с ID созданной роли
  * @throws {Error} Если произошла ошибка при добавлении роли
  */
-async function addRole(role) {
+async function addRole(roleName) {
     const roleId = generateUniqueId('role');
     const sql = 'INSERT INTO roles (id, name) VALUES ( ?, ? )'
     return new Promise((resolve, reject) => {
-        db.run(sql, [roleId, role], function (err) {
+        db.run(sql, [roleId, roleName], function (err) {
             if (err) {
                 console.error('Ошибка базы данных:', err.message);
                 return reject(new Error('Ошибка добавления роли'));
             }
-            console.log("Role added:", role);
+            console.log("Role added:", roleName);
             resolve({
                 roleId: roleId,
+                roleName, role: roleName
             })
         })
     })

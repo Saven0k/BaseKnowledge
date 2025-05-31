@@ -4,28 +4,28 @@ import trash from './red_trash.svg'
 import { addRole, deleteRole, getRoles } from '../../../services/ApiToServer/roles'
 
 const ControlRoles = () => {
-    const [roles, setRoles] = useState()
-    const [isDelete, setIsDelete] = useState(false)
-    const [roleId, setRoleId] = useState()
-
+    const [roles, setRoles] = useState([])
     const [newRoleName, setNewRoleName] = useState('')
 
     const prepairData = async () => {
         const rolesB = await getRoles();
-        setRoles(rolesB)
+        if (rolesB.legnth === 0) {
+            setRoles([])
+        } else {
+            setRoles(rolesB)
+        }
     }
-
 
     useEffect(() => {
         prepairData()
     }, [])
 
-    const handleSaveRole = () => {
-        addRole(newRoleName)
-        setNewRoleName('')
-        prepairData()
-    }
+    const handleSaveRole = async () => {
+        const data = await addRole(newRoleName)
+        setRoles([...roles, { name: data.response.roleName, id: data.response.roleId }])
 
+        setNewRoleName('')
+    }
 
     const handleDeleteRole = (id) => {
         setRoles(roles.filter(role => role.id !== id))
@@ -36,7 +36,7 @@ const ControlRoles = () => {
         <div className='roles_component'>
 
             <div className="role_list">
-                {roles &&
+                {roles.length !== 0 ?
                     roles.map((role, index) => (
                         <div className="role_block" key={index}>
                             <h3>{role.name}</h3>
@@ -50,6 +50,8 @@ const ControlRoles = () => {
                             </div>
                         </div>
                     ))
+                    :
+                    <p>Ролей нет</p>
                 }
             </div>
             <div className="role_create">

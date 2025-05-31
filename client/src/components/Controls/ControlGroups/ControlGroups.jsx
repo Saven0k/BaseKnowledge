@@ -4,23 +4,28 @@ import trash from './red_trash.svg'
 import { addGroup, deleteGroup, getStudentGroups } from '../../../services/ApiToServer/groups'
 
 const ControlGroups = () => {
-    const [groups, setGroups] = useState()
+    const [groups, setGroups] = useState([])
     const [newGroupName, setNewGroupName] = useState('')
 
 
     const prepairData = async () => {
         const groupsB = await getStudentGroups();
-        setGroups(groupsB)
+        if (groupsB.length === 0) {
+            setGroups([])
+        }
+        else {
+            setGroups(groupsB)
+        }
     }
 
     useEffect(() => {
         prepairData()
     }, [])
 
-    const handleSaveGroup = () => {
-        addGroup(newGroupName)
+    const handleSaveGroup = async () => {
+        const data = await addGroup(newGroupName)
+        setGroups([...groups, { name: data.response.groupName, id: data.response.groupId }])
         setNewGroupName('')
-        prepairData()
     }
 
     const handleDeleteGroup = (id) => {
@@ -32,7 +37,7 @@ const ControlGroups = () => {
         <div className='groups_component'>
 
             <div className="group_list">
-                {groups &&
+                {groups.length !== 0 ?
                     groups.map((group, index) => (
                         <div className="group_block" key={index}>
                             <h3>{group.name}</h3>
@@ -46,6 +51,8 @@ const ControlGroups = () => {
                             </div>
                         </div>
                     ))
+                    :
+                    <p>Ничего нет</p>
                 }
             </div>
             <div className="group_create">

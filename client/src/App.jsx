@@ -20,7 +20,7 @@ function App() {
 						<Route path="/post/:id" element={<PostPage />} />
 						<Route path="/teacher" element={<TeacherPage />} />
 						<Route path="/login" element={<LoginPage />} />
-						<Route path="/admin/a" element={<AdminPage />} />
+						<Route path="/admin/page" element={<AdminPage />} />
 						<Route path="/selection" element={<SelectionPage />} />
 						<Route path="*" element={<SelectionPage />} />
 						<Route path="/404" element={<ErrorPage />} />

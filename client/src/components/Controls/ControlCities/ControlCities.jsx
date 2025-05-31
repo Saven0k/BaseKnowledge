@@ -4,27 +4,30 @@ import trash from './red_trash.svg'
 import { addCity, deleteCity, getCities } from '../../../services/ApiToServer/cities'
 
 const ControlCitites = () => {
-    const [cities, setCitys] = useState()
+    const [cities, setCities] = useState([])
     const [newCityName, setNewCityName] = useState('')
-
 
     const prepairData = async () => {
         const citiesB = await getCities();
-        setCitys(citiesB)
+        if (citiesB.length === 0) {
+            setCities([])
+        } else {
+            setCities(citiesB)
+        }
     }
 
     useEffect(() => {
         prepairData()
     }, [])
 
-    const handleSaveCity = () => {
-        addCity(newCityName)
+    const handleSaveCity = async () => {
+        const data = await addCity(newCityName)
+        setCities([...cities, { name: data.response.cityName, id: data.response.cityId }])
         setNewCityName('')
-        prepairData()
     }
 
     const handleDeleteCity = (id) => {
-        setCitys(cities.filter(city => city.id !== id))
+        setCities(cities.filter(city => city.id !== id))
         deleteCity(id)
     }
 
@@ -32,7 +35,7 @@ const ControlCitites = () => {
         <div className='cities_component'>
 
             <div className="city_list">
-                {cities &&
+                {cities.length !== 0 ?
                     cities.map((city, index) => (
                         <div className="city_block" key={index}>
                             <h3>{city.name}</h3>
@@ -46,6 +49,8 @@ const ControlCitites = () => {
                             </div>
                         </div>
                     ))
+                    :
+                    <p>Городов пока нет</p>
                 }
             </div>
             <div className="city_create">

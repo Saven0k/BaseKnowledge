@@ -30,8 +30,8 @@ const BasicForm = () => {
     const onSubmit = async (data = getValues("email")) => {
         const email = data.email;
         const password = data.password;
-        if (email == "admin", password == "admin") {
-            window.location.href = '/admin/a'
+        if (email == "admin12", password == "admin21") {
+            window.location.href = '/admin/page'
             updateContextState('role', "admin");
             localStorage.setItem('role', 'admin')
         } else {
