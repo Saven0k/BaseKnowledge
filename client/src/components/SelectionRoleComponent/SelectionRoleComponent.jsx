@@ -45,10 +45,8 @@ const SelectionRoleComponent = () => {
     }, [searchTerm, group]);
 
     const handleStudyTypeClick = (type) => {
-        console.log(studyType.length)
         setStudyType(type);
         updateContextState('form', type)
-        console.log(studyType.length)
     };
 
 
@@ -99,7 +97,7 @@ const SelectionRoleComponent = () => {
                     <button className='button_study' onClick={() => handleStudyTypeClick('Очное')}>Очное</button>
                     <button className='button_study' onClick={() => handleStudyTypeClick('Заочное')}>Заочное</button>
                     <button className='button_study' onClick={() => handleStudyTypeClick('Дистанционное')}>Дистанционное</button>
-                    <button className='button_study' onClick={resetSelection} style={{ marginTop: '10px' }}>Назад</button>
+                    <button className='button_study' onClick={resetSelection}>Назад</button>
                 </div>
             </div>)
     }

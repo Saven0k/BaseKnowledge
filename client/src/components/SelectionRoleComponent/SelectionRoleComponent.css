@@ -77,5 +77,8 @@
 .form_study_buttons {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
     height: 50px;
 }

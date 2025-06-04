@@ -8,15 +8,21 @@ const PostDetail = ({ id }) => {
     const [error, setError] = useState(null);
     const [image, setImage] = useState('');
 
-    
+
 
     useEffect(() => {
         const loadPost = async () => {
             try {
                 const data = await getPost(id);
+                
+                if( !data.image_path) {
+                    setImage(null)
+                    setPost(data);
+                    return ''
+                }
                 const s1 = await getImage(data.image_path);
-                setImage(s1)
-                console.log(s1.replace('blob:', ''))
+                
+                
                 setPost(data);
             } catch (err) {
                 setError(err.message);
@@ -31,7 +37,7 @@ const PostDetail = ({ id }) => {
     if (!post) return <div>Пост не найден</div>;
     if (error) return <div>Ошибка: {error}</div>;
 
-    
+
 
 
     const previusPage = document.referrer;
@@ -51,12 +57,14 @@ const PostDetail = ({ id }) => {
                 }
             </div>
             <div className="image_content">
-                <img 
-                    src={`${image}`}
-                    className='image_path'
-                    alt="Image"
-                    loading='lazy'
+                {image !== null &&
+                    <img
+                        src={`${image}`}
+                        className='image_path'
+                        alt="Image"
+                        loading='lazy'
                     />
+                }
             </div>
         </div>
     );

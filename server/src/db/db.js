@@ -96,8 +96,24 @@ const db = new sqlite3.Database(dbPath, (err) => {
 
 		db.run(
 			`CREATE TABLE IF NOT EXISTS visitors (
-		    id TEXT AUTO_INCREMENT PRIMARY KEY,
+		    id TEXT  PRIMARY KEY,
 			date_visit TEXT
+		)`,
+			(err) => {
+				if (err) {
+					console.error("Ошибка при создании таблицы:", err.message);
+				} else {
+					console.log(
+						"Таблица visitors успешно создана или уже существует."
+					);
+				}
+			}
+		);
+		
+		db.run(
+			`CREATE TABLE IF NOT EXISTS classes (
+		    id TEXT PRIMARY KEY,
+			name TEXT
 		)`,
 			(err) => {
 				if (err) {

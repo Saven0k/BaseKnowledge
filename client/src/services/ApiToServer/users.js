@@ -108,7 +108,7 @@ export async function findUser(email, password) {
         const data = await response.json();
         if (!response.ok) throw new Error(data.message || "Ошибка поиска пользователя");
 
-        return !!data.response;
+        return data.response;
     } catch (error) {
         console.error("Ошибка при поиске пользователя:", error);
         return false;

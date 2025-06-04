@@ -33,14 +33,19 @@ const BasicForm = () => {
         if (email == "admin12", password == "admin21") {
             window.location.href = '/admin/page'
             updateContextState('role', "admin");
-            localStorage.setItem('role', 'admin')
         } else {
             const res = await findUser(email, password);
             if (res) {
-                updateContextState("teacher");
+                if (res.role === 'Редактор') {
+                    console.log('редактор')
+                    updateContextState('role', res.role);
+                    updateContextState('email', res.email);
+                    window.location.href = '/editor'
+                    return ''
+                }
+                updateContextState('role', res.role);
+                updateContextState('email', res.email);
                 window.location.href = '/teacher'
-                localStorage.setItem('email', email) 
-                localStorage.setItem('role', 'teacher') 
                 await new Promise((resolve) => setTimeout(resolve, 1000))
             }
             if (attempts >= 1) {

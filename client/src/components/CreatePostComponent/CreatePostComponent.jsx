@@ -62,6 +62,8 @@ const CreatePostComponent = () => {
             if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
         };
     }, []);
+
+
     // Восстанавливаем выделение (курсор)
     const restoreSelection = () => {
         if (lastSelectionRef.current) {
@@ -98,6 +100,32 @@ const CreatePostComponent = () => {
 
     };
 
+    // Автоматически применяем стили при их изменении
+    useEffect(() => {
+        applyStyleToSelection();
+    }, [styles.color, styles.fontSize, styles.fontWeight, styles.fontStyle]);
+
+
+    // Сохраняем пост на сервер
+    const savePost = () => {
+        const data = new FormData();
+        data.append('title', title);
+        data.append('content', content);
+        data.append('role', role);
+        data.append('role_context', role_context);
+        data.append('status', status ? "1" : "0");
+        data.append('file', image === null ? null : image);
+        console.log(image === null ? null : image)
+        addPost(data)
+
+
+        setTitle('');
+        setContent('');
+        clearImage()
+        setRole("null")
+        setRoleContext("null")
+    };
+
     const fileInputRef = useRef(null);
     const handleFileChange = (e) => {
         if (e.target.files[0]) {
@@ -119,33 +147,6 @@ const CreatePostComponent = () => {
             fileInputRef.current.value = ''; // Это разблокирует повторный выбор файла
         }
     };
-
-    // Автоматически применяем стили при их изменении
-    useEffect(() => {
-        applyStyleToSelection();
-    }, [styles.color, styles.fontSize, styles.fontWeight, styles.fontStyle]);
-
-    // Сохраняем пост на сервер
-    const savePost = () => {
-
-        if (image !== null) {
-            const data = new FormData();
-            data.append('title', title);
-            data.append('content', content);
-            data.append('role', role);
-            data.append('role_context', role_context);
-            data.append('status', status ? "1" : "0");
-            data.append('file', image);
-            addPost(data)
-        }
-
-        setTitle('');
-        setContent('');
-        clearImage()
-        setRole("null")
-        setRoleContext("null")
-    };
-
 
     return (
         <div className='addPost_component'>
@@ -264,7 +265,7 @@ const CreatePostComponent = () => {
                     Публичный пост
                 </label>
             </div>
-            <button className='button_save_post' disabled={image ? false : true} onClick={savePost}>Сохранить пост</button>
+            <button className='button_save_post' onClick={savePost}>Сохранить пост</button>
         </div>
     );
 };

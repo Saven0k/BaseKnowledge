@@ -18,13 +18,17 @@ const fs = require('fs');
  */
 async function createPostWithImage(title, content, role, status, role_context, image) {
     const userId = generateUniqueId('post');
+    console.log(image)
     let image_path = '';
     try {
-        if (image) {
+        if (image !== undefined) {
             const ext = path.extname(image.originalname);
             const filename = `${Date.now()}${ext}`;
             image_path = path.join('uploads', filename);
             await fs.promises.writeFile(path.join(__dirname, image_path), image.buffer);
+        } 
+        else {
+            image_path === 'null'
         }
 
         const sql = `INSERT INTO posts (id, title, content, role, role_context, status, date_created, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
@@ -45,7 +49,7 @@ async function createPostWithImage(title, content, role, status, role_context, i
     } catch (error) {
         console.log("some image error");
 
-        if (image_path) {
+        if (image_path !== undefined) {
             try {
                 await fs.promises.unlink(path.join(__dirname, image_path));
             } catch (unlinkError) {
