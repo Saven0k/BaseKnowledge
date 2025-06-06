@@ -1,0 +1,12 @@
+.editorQ {
+    min-width: 250px;
+    width: 90%;
+}
+
+.ql-toolbar {
+    width: 90%;
+    min-width: 250px;
+}
+.ql-container {
+    height: auto;
+}

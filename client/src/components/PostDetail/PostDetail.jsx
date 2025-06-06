@@ -14,16 +14,17 @@ const PostDetail = ({ id }) => {
         const loadPost = async () => {
             try {
                 const data = await getPost(id);
-                
-                if( !data.image_path) {
+
+                if (!data.image_path) {
                     setImage(null)
                     setPost(data);
                     return ''
                 }
-                const s1 = await getImage(data.image_path);
-                
-                
-                setPost(data);
+                else {
+                    const s1 = await getImage(data.image_path);
+                    setImage(s1)
+                    setPost(data);
+                }
             } catch (err) {
                 setError(err.message);
             } finally {

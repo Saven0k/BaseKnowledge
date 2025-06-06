@@ -1,12 +1,11 @@
 .accordion_posts {
-    width: 100%;
+    width: 125%;
     display: flex;
     flex-direction: column;
-    /* gap: 30px; */
 }
 
 .accordion_posts-item {
-    margin-left: 25px;
+    margin-left: 10px;
     margin-bottom: 10px;
 }
 
@@ -31,9 +30,14 @@
 .accordion_posts-content {
     max-height: 0;
     overflow: hidden;
+    width: 100%;
     transition: max-height 0.3s ease-out, padding 0.3s ease-out;
-    padding: 0 10px;
+    padding: 0 5px;
     font-size: 16px;
+
+    div {
+        padding-left: 10px;
+    }
 }
 
 .accordion_posts-content.open {
@@ -79,12 +83,12 @@
         }
     }
 
-    .button_hp{
+    .button_hp {
         background-color: #fff;
         padding: 2px 3px;
-        border:none;
+        border: none;
     }
-    
+
 
 }
 

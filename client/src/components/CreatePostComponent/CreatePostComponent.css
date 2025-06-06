@@ -7,6 +7,7 @@
     align-items: start;
     flex-direction: column;
     gap: 5px;
+    margin-bottom: 50px;
 }
 
 .photo_input input {
@@ -50,31 +51,6 @@
     direction: ltr;
 }
 
-.style_component {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-
-    .styles_buttons {
-        gap: 5px;
-        /* flex-direction: column; */
-        display: flex;
-
-    }
-
-    button,
-    select {
-        font-size: 14px;
-        padding: 2px 4px;
-        background-color: #fff;
-        border: none;
-    }
-
-    button:hover,
-    select:hover {
-        border: 1px solid #000;
-    }
-}
 
 .selection_component {
     margin: 10px 0;

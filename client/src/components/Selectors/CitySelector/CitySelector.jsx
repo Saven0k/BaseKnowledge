@@ -47,14 +47,13 @@ const CitySelector = ({ saveCity }) => {
     useEffect(() => {
         if (selectedCity.length === 0) {
             setSelectionMode('none');
-        }  else {
+        } else {
             setSelectionMode('some');
         }
     }, [selectedCity, cities.length]);
 
     const handleSave = async () => {
         try {
-            console.log('Город выбран: ', selectedCity)
             saveCity(selectedCity)
             setIsOpen(false);
         } catch (error) {
@@ -70,8 +69,8 @@ const CitySelector = ({ saveCity }) => {
                 className="city_toggle-button"
             >
                 {selectedCity.length > 0
-                        ? `Выбрано: ${selectedCity}`
-                        : 'Выбрать город'}
+                    ? `Выбрано: ${selectedCity}`
+                    : 'Выбрать город'}
             </button>
 
             {isOpen && (

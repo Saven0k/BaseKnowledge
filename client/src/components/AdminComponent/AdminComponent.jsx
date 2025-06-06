@@ -15,7 +15,7 @@ import PostsSelector from "../Selectors/PostsSelector/PostsSelector";
  * @returns 
  */
 const AdminComponent = () => {
-	const [page, setPage] = useState(0);0
+	const [page, setPage] = useState(0);
 
 	return (
 		<div className="admin_comp">

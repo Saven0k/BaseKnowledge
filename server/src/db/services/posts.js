@@ -18,17 +18,13 @@ const fs = require('fs');
  */
 async function createPostWithImage(title, content, role, status, role_context, image) {
     const userId = generateUniqueId('post');
-    console.log(image)
-    let image_path = '';
+    let image_path = 'null';
     try {
         if (image !== undefined) {
             const ext = path.extname(image.originalname);
             const filename = `${Date.now()}${ext}`;
             image_path = path.join('uploads', filename);
             await fs.promises.writeFile(path.join(__dirname, image_path), image.buffer);
-        } 
-        else {
-            image_path === 'null'
         }
 
         const sql = `INSERT INTO posts (id, title, content, role, role_context, status, date_created, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
@@ -47,8 +43,6 @@ async function createPostWithImage(title, content, role, status, role_context, i
             });
         });
     } catch (error) {
-        console.log("some image error");
-
         if (image_path !== undefined) {
             try {
                 await fs.promises.unlink(path.join(__dirname, image_path));
@@ -93,26 +87,6 @@ async function getPostById(id) {
     });
 }
 
-
-
-// async function getPostsByRoleByStatusByContext(role, status, context) {
-//     console.log(role, context, status)
-//     if (context === null) {
-//         context = '"null"'
-
-//     }
-//     const sql = `SELECT * FROM posts WHERE role = ? AND status = ? AND role_context = ?`;
-
-//     return new Promise((resolve, reject) => {
-//         db.all(sql, [role, status, context], function (err, rows) {
-//             if (err) {
-//                 console.error("Ошибка базы данных:", err.message);
-//                 return reject(new Error("Ошибка получения постов по роли"));
-//             }
-//             resolve(rows);
-//         });
-//     });
-// }
 async function getPostsByRoleByStatusByContext(role, status, role_context) {
     return new Promise((resolve, reject) => {
         db.all(
@@ -129,7 +103,6 @@ async function getPostsByRoleByStatusByContext(role, status, role_context) {
                         try {
                             // Если у поста нет role_context - пропускаем
                             if (post.role_context === "null") {
-                                console.log("FALSEEE")
                                 return false;
                             }
                             // Парсим JSON строку в массив
@@ -201,22 +174,6 @@ async function updatePostStatus(id, status) {
         });
     });
 }
-
-/**
- * Удаляет пост по его идентификатору.
- * @param {string} id - ID поста для удаления
- * @returns {Promise<string>} Сообщение об успешном удалении
- * @throws {Error} При ошибке удаления
- */
-// async function deletePost(id) {
-//     const sql = "DELETE FROM posts WHERE id = ?";
-//     return new Promise((resolve, reject) => {
-//         db.run(sql, [id], (err) => {
-//             if (err) return reject(new Error(`Ошибка удаления поста с id: ${id}`));
-//             resolve("OK");
-//         });
-//     });
-// }
 
 async function deletePost(id) {
     // Сначала получаем информацию о посте, чтобы узнать путь к изображению

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import './style.css'
 import MediumTitle from '../CustomTitles/MediumTitle/MediumTitle';
 import { useMyContext } from '../../services/MyProvider/MyProvider';
-import { findUser } from '../../services/ApiToServer/users';
+import { findUser, updateTeacherVisits } from '../../services/ApiToServer/users';
 
 const BasicForm = () => {
     const [attempts, setAttempts] = useState(5);
@@ -40,11 +40,13 @@ const BasicForm = () => {
                     console.log('редактор')
                     updateContextState('role', res.role);
                     updateContextState('email', res.email);
+                    updateTeacherVisits(res.email, res.countVisit + 1)
                     window.location.href = '/editor'
                     return ''
                 }
                 updateContextState('role', res.role);
                 updateContextState('email', res.email);
+                updateTeacherVisits(res.email,res.countVisit + 1 )
                 window.location.href = '/teacher'
                 await new Promise((resolve) => setTimeout(resolve, 1000))
             }

@@ -7,19 +7,19 @@
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
-    align-items: center;
     z-index: 1000;
     backdrop-filter: blur(5px);
 }
-
+.toolbar {
+    width: 400px;
+}
 .modal-content {
     background-color: white;
     padding: 25px;
     border-radius: 8px;
-    width: 80%;
-    max-width: 700px;
-    max-height: 90vh;
+    width: 90%;
     overflow-y: auto;
+    height: 80%;
     position: relative;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
@@ -80,42 +80,10 @@
     font-size: 16px;
     background-color: white;
 }
-
-.style-controls {
-    display: flex;
-    gap: 10px;
-    align-items: center;
+.visible_select {
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
-
-.style-input {
-    width: 50px;
-    height: 30px;
-    padding: 0;
-    border: 1px solid #ddd;
-}
-
-.style-select {
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.style-button {
-    width: 30px;
-    height: 30px;
-    border: 1px solid #ddd;
-    background: white;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.style-button.active {
-    background-color: #f0f0f0;
-    border-color: #3739dd;
-    color: #3739dd;
-}
-
 .modal-actions {
     display: flex;
     justify-content: flex-end;
