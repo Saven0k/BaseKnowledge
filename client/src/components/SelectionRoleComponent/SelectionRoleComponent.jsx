@@ -1,135 +1,111 @@
 import './SelectionRoleComponent.css'
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getStudentGroups } from '../../services/ApiToServer/groups';
 import { useMyContext } from '../../services/MyProvider/MyProvider';
+import SelectionBox from './SelectionBox/SelectionBox';
+import BackButton from '../CustomButtons/BackButton/BackButton';
+import ChooseCity from '../EntitySelectors/ChooseCity/ChooseCity';
+import ChooseSpeciality from '../EntitySelectors/ChooseSpeciality/ChooseSpeciality';
+import ChooseStudyType from '../EntitySelectors/ChooseStudyType/ChooseStudyType';
+import ChooseGroup from '../EntitySelectors/ChooseGroup/ChooseGroup';
+import ChooseSchoolClass from '../EntitySelectors/ChooseSchoolClass/ChooseSchoolClass';
 
 const SelectionRoleComponent = () => {
+
+    const [classSchool, setClassSchool] = useState(null)
+
     const [role, setRole] = useState(null);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [group, setGroup] = useState([]);
-    const [filteredGroups, setFilteredGroups] = useState([]);
-    const [studyType, setStudyType] = useState('');
+    const [group, setGroup] = useState(null);
+    const [city, setCity] = useState(null)
+    const [studyType, setStudyType] = useState(null);
+    const [levelEducation, setLevelEducation] = useState(null)
+    const [speciality, setSpeciality] = useState(null)
+    const [course, setCourse] = useState(null)
     const { contextState, updateContextState } = useMyContext();
-
-
     const navigate = useNavigate()
 
-    async function prepareData() {
-        const mockS = await getStudentGroups();
-        setGroup(mockS.map(obj => obj.name));
-        setFilteredGroups(mockS.map(obj => obj.name));
-    }
-
     useEffect(() => {
-        if (role === 'student') {
-            prepareData();
+        if (role === 'studentSchool' && classSchool !== null) {
+            updateContextState('role', role)
+            updateContextState('studentClass', classSchool)
+            updateContextState('city', city)
+            updateContextState('educationLevel', levelEducation)
+
+            navigate('/studentSchool')
         }
-    }, [role]);
+    }, [role, classSchool])
 
     useEffect(() => {
-        updateContextState('role', role)
-    }, [role]);
-
-    // Фильтрация специальностей при изменении поискового запроса
-    useEffect(() => {
-        if (searchTerm === '') {
-            setFilteredGroups(group);
-        } else {
-            const filtered = group.filter(
-                (spec) =>
-                    spec.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            setFilteredGroups(filtered);
+        if ((role === 'studentCollege' || role === 'studentUniversity') && group !== null && city !== null) {
+            updateContextState('role', role)
+            updateContextState('city', city)
+            updateContextState('studyType', studyType)
+            updateContextState('course', course)
+            updateContextState('group', group)
+            updateContextState('speciality', speciality)
+            updateContextState('educationLevel', levelEducation)
+            navigate('/student')
         }
-    }, [searchTerm, group]);
+    }, [role, group])
 
-    const handleStudyTypeClick = (type) => {
-        setStudyType(type);
-        updateContextState('form', type)
-    };
-
-
-    const handleSpecialtySelect = (groupName) => {
-        updateContextState('group', groupName)
-        navigate('/student')
-    };
-
-    const handleTeacherClick = () => {
-        updateContextState('role', 'teacher')
-        navigate('/login');
-    };
-
-
-    const resetSelection = () => {
-        setRole(null);
-        setStudyType(null);
-    };
-
-    if (role === null) {
+    if (levelEducation === null) {
         return (
-            <div className='container' >
-                <h1 className='title'>Выберите свою роль</h1>
-                <div className='buttonsContainer' >
-                    <button
-                        className='button'
-                        onClick={() => setRole('student')}
-                    >
-                        Студент
-                    </button>
-                    <button
-                        className='button'
-                        onClick={handleTeacherClick}
-                    >
-                        Учитель
-                    </button>
-                </div>
+            <div className="levelEducation__box box">
+                <SelectionBox title={"Школа"} setEducationLevel={setLevelEducation} setRole={setRole} roleList={[{ title: "studentSchool", role: "Ученик" }, { title: "teacherSchool", role: "Преподаватель" }, { title: "curatorSchool", role: "Куратор" }, { title: "parantSchool", role: "Родитель" }]} />
+                <SelectionBox title={"Колледж"} setEducationLevel={setLevelEducation} setRole={setRole} roleList={[{ title: "studentCollege", role: "Студент" }, { title: "teacherCollege", role: "Преподаватель" }, { title: "curatorCollege", role: "Куратор" }, { title: "parantCollege", role: "Родитель" }]} />
+                <SelectionBox title={"Университет"} setEducationLevel={setLevelEducation} setRole={setRole} roleList={[{ title: "studentUniversity", role: "Студент" }, { title: "teacherUniversity", role: "Преподаватель" }, { title: "curatorUniversity", role: "Куратор" }, { title: "parantUniversity", role: "Родитель" }]} />
             </div>
-        );
+        )
     }
-
-    if (role === 'student' && studyType.length === 0) {
+    if (role === 'studentSchool' && classSchool === null) {
         return (
-
-            <div className='form_study'>
-                <h2>Выберите форму обучения</h2>
-                <div className="form_study_buttons">
-                    <button className='button_study' onClick={() => handleStudyTypeClick('Очное')}>Очное</button>
-                    <button className='button_study' onClick={() => handleStudyTypeClick('Заочное')}>Заочное</button>
-                    <button className='button_study' onClick={() => handleStudyTypeClick('Дистанционное')}>Дистанционное</button>
-                    <button className='button_study' onClick={resetSelection}>Назад</button>
-                </div>
-            </div>)
-    }
-
-    if (studyType.length > 0) {
-        return (
-            <div className='container'>
-                <div className='searchContainer'>
-                    <input
-                        type="text"
-                        placeholder="Поиск по группе..."
-                        className='searchInput'
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <ul className='list'>
-                        {filteredGroups.map((specialty, index) => (
-                            <li
-                                key={index}
-                                className='listItem'
-                                onClick={() => handleSpecialtySelect(specialty)}
-                            >
-                                {specialty}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+            <div className="classes_box box">
+                <ChooseSchoolClass saveSchoolClass={setClassSchool} />
+                <BackButton setRole={setRole} />
             </div>
-        );
-    }
 
+        )
+    }
+    if (role !== null && levelEducation !== null && city === null) {
+        return (
+            <div className="city_box box"> 
+                <ChooseCity saveCity={setCity} />
+                <BackButton setRole={setLevelEducation} />
+            </div>
+        )
+    }
+    if (city !== null && role !== null && levelEducation !== null && speciality === null) {
+        return (
+            <div className="speciality_box box">
+                <ChooseSpeciality saveSpeciality={setSpeciality} saveCourse={setCourse} />
+                <BackButton setRole={setCity} />
+            </div>
+        )
+    }
+    if (course !== null && city !== null && role !== null && levelEducation !== null && studyType === null) {
+        return (
+            <div className="studyType_box box">
+                <ChooseStudyType saveStudyType={setStudyType} />
+                <BackButton setRole={setSpeciality} />
+            </div>
+        )
+    }
+    if (course !== null && city !== null && role === 'studentCollege' && levelEducation !== null && studyType !== null && group === null) {
+        return (
+            <div className="group_box box">
+                <ChooseGroup saveGroup={setGroup} type={role} course={course} studyType={studyType} speciality={speciality}/>
+                <BackButton setRole={setStudyType} />
+            </div>
+        )
+    }
+    if (course !== null && city !== null && role === 'studentUniversity' && levelEducation !== null && studyType !== null && group === null) {
+        return (
+            <div className="group_box box">
+                <ChooseGroup saveGroup={setGroup} type={role} course={course} studyType={studyType} speciality={speciality} />
+                <BackButton setRole={setStudyType} />
+            </div>
+        )
+    }
     return null;
 }
-
 export default SelectionRoleComponent;

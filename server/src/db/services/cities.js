@@ -15,6 +15,8 @@ async function getCities() {
                 console.error("Ошибка базы данных:", err.message);
                 return reject(new Error("Ошибка вывода всех городов"));
             }
+            console.log("Вернули города")
+
             resolve(rows);
         });
     });

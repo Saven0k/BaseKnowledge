@@ -6,32 +6,33 @@ import TeacherPage from "./pages/TeacherPage";
 import StudentPage from "./pages/StudentPage";
 import SelectionPage from "./pages/SelectionPage";
 import { MyProvider } from "./services/MyProvider/MyProvider";
-import { MyTheme } from "./services/MyThemeProvider/MyThemeProvider";
 import { CuratorPage } from './pages/CuratorPage';
 import PostPage from "./pages/PostPage";
 import EditorPage from "./pages/EditorPage";
+import WorthPage from "./pages/WorthPage";
+import MissionsPage from "./pages/MissionsPage";
 
 function App() {
 	return (
-		<MyTheme>
-			<MyProvider>
-				<BrowserRouter>
-					<Routes>
-						<Route path="/student" element={<StudentPage />} />
-						<Route path="/post/:id" element={<PostPage />} />
-						<Route path="/teacher" element={<TeacherPage />} />
-						<Route path="/login" element={<LoginPage />} />
-						<Route path="/admin/page" element={<AdminPage />} />
-						<Route path="/selection" element={<SelectionPage />} />
-						<Route path="*" element={<SelectionPage />} />
-						<Route path="/404" element={<ErrorPage />} />
-						<Route path="/curatorPage" element={<CuratorPage />} />					
-						<Route path="/editor" element={<EditorPage />} />								
-					</Routes>
-				</BrowserRouter>
-			</MyProvider>
-		</MyTheme>
-
+		<MyProvider>
+			<BrowserRouter>
+				<Routes>
+					<Route path="/student" element={<StudentPage />} />
+					<Route path="/post/:id" element={<PostPage />} />
+					<Route path="/teacher" element={<TeacherPage />} />
+					<Route path="/login" element={<LoginPage />} />
+					<Route path="/admin/page" element={<AdminPage />} />
+					<Route path="/selection" element={<SelectionPage />} />
+					<Route path="*" element={<SelectionPage />} />
+					<Route path="/404" element={<ErrorPage />} />
+					<Route path="/curatorPage" element={<CuratorPage />} />
+					<Route path="/editor" element={<EditorPage />} />
+					<Route path="/missions" element={<MissionsPage />} />
+					<Route path="/worth" element={<WorthPage />} />
+					<Route path="/studentSchool" element={<StudentPage />} />
+				</Routes>
+			</BrowserRouter>
+		</MyProvider>
 	);
 
 }

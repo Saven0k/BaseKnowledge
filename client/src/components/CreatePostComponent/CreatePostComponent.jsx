@@ -1,12 +1,12 @@
 import './CreatePostComponent.css'
 import React, { useState, useRef, useEffect } from 'react';
-import GroupSelector from '../Selectors/GroupSelector/GroupSelector';
 import { addPost } from '../../services/ApiToServer/posts';
-import CitySelector from '../Selectors/CitySelector/CitySelector';
-import FormSelector from '../Selectors/FormSelector/FormSelector';
 import '../../../node_modules/react-quill/dist/quill.snow.css';
 import Quill from "quill";
 import QuillTextEditor from '../QuillTextEditor/QuillTextEditor';
+import GroupSelector from '../EntitWidgets/GroupSelector/GroupSelector';
+import CitySelector from '../EntitWidgets/CitySelector/CitySelector';
+import FormSelector from '../EntitWidgets/FormSelector/FormSelector';
 
 const CreatePostComponent = () => {
     const [role, setRole] = useState(''); //UseState for type of visible

@@ -15,6 +15,8 @@ async function getRoles() {
                 console.error("Ошибка базы данных:", err.message);
                 return reject(new Error("Ошибка вывода всех ролей"));
             }
+            console.log("Вернули роли")
+
             resolve(rows);
         });
     });
@@ -37,10 +39,10 @@ async function addRole(roleName) {
                 console.error('Ошибка базы данных:', err.message);
                 return reject(new Error('Ошибка добавления роли'));
             }
-            console.log("Role added:", roleName);
+            console.log("Роль добавлена:", roleName);
             resolve({
                 roleId: roleId,
-                roleName, role: roleName
+                role: roleName
             })
         })
     })

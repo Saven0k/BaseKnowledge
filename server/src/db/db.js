@@ -49,7 +49,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
 			}
 		);
 		db.run(
-			`CREATE TABLE IF NOT EXISTS groups (
+			`CREATE TABLE IF NOT EXISTS collegeGroups (
 				id TEXT PRIMARY KEY,
 				name TEXT
 		)`,
@@ -58,7 +58,22 @@ const db = new sqlite3.Database(dbPath, (err) => {
 					console.error("Ошибка при создании таблицы:", err.message);
 				} else {
 					console.log(
-						"Таблица groups успешно создана или уже существует."
+						"Таблица collegeGroups успешно создана или уже существует."
+					);
+				}
+			}
+		);
+		db.run(
+			`CREATE TABLE IF NOT EXISTS universityGroups (
+				id TEXT PRIMARY KEY,
+				name TEXT
+		)`,
+			(err) => {
+				if (err) {
+					console.error("Ошибка при создании таблицы:", err.message);
+				} else {
+					console.log(
+						"Таблица universityGroups успешно создана или уже существует."
 					);
 				}
 			}
@@ -120,7 +135,22 @@ const db = new sqlite3.Database(dbPath, (err) => {
 					console.error("Ошибка при создании таблицы:", err.message);
 				} else {
 					console.log(
-						"Таблица visitors успешно создана или уже существует."
+						"Таблица classes успешно создана или уже существует."
+					);
+				}
+			}
+		);
+		db.run(
+			`CREATE TABLE IF NOT EXISTS specialities (
+		    id TEXT PRIMARY KEY,
+			name TEXT
+		)`,
+			(err) => {
+				if (err) {
+					console.error("Ошибка при создании таблицы:", err.message);
+				} else {
+					console.log(
+						"Таблица specialities успешно создана или уже существует."
 					);
 				}
 			}

@@ -1,19 +1,18 @@
 import "./style.css";
 
-import ControlUsers from "../ControlUsers/ControlUsers";
 import Statistics from "../Statistics/Statistics";
 import { useState } from "react";
 import Header from '../header/Header'
 import CreatePostComponent from "../CreatePostComponent/CreatePostComponent";
 import ControlRoles from "../Controls/ControlRoles/ControlRoles";
-import ControlGroups from "../Controls/ControlGroups/ControlGroups";
+import ControlCollegeGroups from "../Controls/ControlCollegeGroups/ControlCollegeGroups";
 import ControlCitites from "../Controls/ControlCities/ControlCities";
-import PostsSelector from "../Selectors/PostsSelector/PostsSelector";
+import PostsSelector from "../EntitWidgets/PostsSelector/PostsSelector";
+import ControlSpecialities from "../Controls/ControlSpecialities/ControlSpecialities";
+import ControlUniversityGroups from "../Controls/ControlUniversityGroups/ControlUniversityGroups";
+import ControlClasses from "../Controls/ControlClasses/ControlClasses";
+import ControlUsers from "../Controls/ControlUsers/ControlUsers";
 
-/**
- * React component, which creates AdminComponent with some details.
- * @returns 
- */
 const AdminComponent = () => {
 	const [page, setPage] = useState(0);
 
@@ -54,7 +53,22 @@ const AdminComponent = () => {
 				<button
 					onClick={() => setPage(6)}
 					className={`menu__button ${page == 6 ? 'active' : ' '}`}
-				> Группы
+				> Группы колледжа
+				</button>
+				<button
+					onClick={() => setPage(7)}
+					className={`menu__button ${page == 7 ? 'active' : ' '}`}
+				> Группы университета
+				</button>
+				<button
+					onClick={() => setPage(8)}
+					className={`menu__button ${page == 8 ? 'active' : ' '}`}
+				> Специальности
+				</button>
+				<button
+					onClick={() => setPage(9)}
+					className={`menu__button ${page == 9 ? 'active' : ' '}`}
+				> Классы
 				</button>
 			</div>
 			<div className="slider_block">
@@ -65,7 +79,10 @@ const AdminComponent = () => {
 					{page === 3 && <PostsSelector />}
 					{page === 4 && <ControlRoles />}
 					{page === 5 && <ControlCitites />}
-					{page === 6 && <ControlGroups />}
+					{page === 6 && <ControlCollegeGroups />}
+					{page === 7 && <ControlUniversityGroups />}
+					{page === 8 && <ControlSpecialities />}
+					{page === 9 && <ControlClasses />}
 				</div>
 			</div>
 		</div>

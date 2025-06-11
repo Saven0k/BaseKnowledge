@@ -1,0 +1,68 @@
+.choose_speciality {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px;
+    width: 100vw;
+
+    .choose_title {
+        font-size: 22px;
+        font-weight: 800;
+    }
+    
+    .p {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .speciality_list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 30px;
+        justify-content: center;
+        width: 100%;
+
+
+        .speciality_box {
+            border: 1px solid #000;
+            display: flex;
+            width: 20%;
+            height: 200px;
+            gap: 20px;
+            flex-direction: column;
+
+            .speciality_title {
+                background-color: #562dd2;
+                width: 100%;
+                color: #fff;
+                font-size: 20px;
+                text-align: center;
+                border-bottom: 1px solid #000;
+            }
+
+            .course_buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 3px;
+                justify-content: center;
+                width: 100%;
+                align-items: center;
+
+
+                .specialitiy_box {
+                    width: 80%;
+                    text-align: center;
+                    font-size: 16px;
+                    font-weight: 500;
+                    background-color: #fff;
+                }
+                .specialitiy_box:hover {
+                    background-color: #562dd2;
+                }
+            }
+        }
+    }
+}

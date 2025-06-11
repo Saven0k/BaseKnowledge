@@ -1,9 +1,18 @@
-export const filterPost = (text, posts) => {
-    if (!text) {
-        return posts;
-    }
-    const regex = new RegExp(`(^|\\s)${text}`, "iu");
-    return posts.filter(({ title }) => regex.test(title.toLowerCase()));
+export const filterPost = (text, posts, fields = ['title', 'content']) => {
+    if (!text?.trim()) return posts;
+
+    const searchTerms = text.toLowerCase().split(/\s+/).filter(Boolean);
+    if (!searchTerms.length) return posts;
+
+    return posts.filter(post => {
+        const fieldValues = fields.map(f =>
+            String(post[f] || '').toLowerCase()
+        ).join(' ');
+
+        return searchTerms.every(term =>
+            fieldValues.includes(term)
+        );
+    });
 };
 export const filterUser = (text, users) => {
     if (!text) {

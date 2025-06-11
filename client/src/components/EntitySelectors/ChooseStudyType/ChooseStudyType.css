@@ -1,0 +1,28 @@
+.form_study {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 80vh;
+    gap: 25px;
+}
+
+.form_study_buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+}
+
+.button, .button_study {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    color: #fff;
+    border: 1px solid #000;
+    border-radius: 5px;
+    color: #000;
+    background-color: #fff;
+}

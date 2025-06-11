@@ -3,7 +3,7 @@ import "./style.css";
 import { useState } from "react";
 import Header from '../header/Header'
 import CreatePostComponent from "../CreatePostComponent/CreatePostComponent";
-import PostsSelector from "../Selectors/PostsSelector/PostsSelector";
+import PostsSelector from "../EntitWidgets/PostsSelector/PostsSelector";
 
 
 const EditorComponent = () => {

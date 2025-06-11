@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import './EditPostModal.css';
 import { useNavigate } from 'react-router-dom';
 import { getPost, updatePost } from '../../services/ApiToServer/posts';
-import GroupSelector from '../Selectors/GroupSelector/GroupSelector';
-import CitySelector from '../Selectors/CitySelector/CitySelector';
-import FormSelector from '../Selectors/FormSelector/FormSelector';
 import QuillTextEditor from '../QuillTextEditor/QuillTextEditor';
+import GroupSelector from '../EntitWidgets/GroupSelector/GroupSelector';
+import CitySelector from '../EntitWidgets/CitySelector/CitySelector';
+import FormSelector from '../EntitWidgets/FormSelector/FormSelector';
 
 const EditPostModal = ({ postId, onClose, onSave }) => {
   const [isLoading, setIsLoading] = useState(true);

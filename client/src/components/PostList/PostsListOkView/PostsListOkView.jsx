@@ -2,7 +2,6 @@ import { useState } from "react";
 import "./style.css";
 import { Link } from "react-router-dom";
 import EditPostModal from "../../EditPostModal/EditPostModel";
-import TimerNotification from '../../TimerNotification/TimerNotification';
 import { deletePost, updatePostStatus } from "../../../services/ApiToServer/posts";
 
 
@@ -13,29 +12,24 @@ import { deletePost, updatePostStatus } from "../../../services/ApiToServer/post
  */
 const PostsListOkView = ({ filteredPostsList, setFilteredPostsLists }) => {
     const [activeIndex, setActiveIndex] = useState(null);
-    const [isDelete, setIsDelete] = useState(false);
-    const [postId, setPostId] = useState();
     const [editingPost, setEditingPost] = useState(null); // Добавляем состояние для редактирования
 
-    const deletePostA = (id) => {
-        setIsDelete(true);
-        setPostId(id);
+    const deletePostA = async (id) => {
+        await deletePost(id)
+        setFilteredPostsLists(filteredPostsList.filter(item => item.id !== id))
     };
 
     const changePost = (idPost) => {
-        setEditingPost(idPost); // Устанавливаем пост для редактирования
+        setEditingPost(idPost); 
     };
 
     const handleCloseModal = () => {
-        setEditingPost(null); // Закрываем модальное окно
+        setEditingPost(null); 
     };
 
     const handleSavePost = async (updatedPost) => {
         try {
-            // Здесь ваш запрос на обновление поста
-            // await updatePost(updatedPost);
 
-            // Обновляем список постов
             const updatedList = filteredPostsList.map(post =>
                 post.id === updatedPost.id ? updatedPost : post
             );
@@ -72,17 +66,6 @@ const PostsListOkView = ({ filteredPostsList, setFilteredPostsLists }) => {
     };
     return (
         <div className="accordion_posts">
-            {isDelete && (
-                <TimerNotification
-                    text="Запись удалится через"
-                    func={deletePost}
-                    id={postId}
-                    setState={setIsDelete}
-                    filteredPostsList={filteredPostsList}
-                    setFilteredPostsLists={setFilteredPostsLists}
-                />
-            )}
-            {/* Модальное окно редактирования */}
             {editingPost && (
                 <EditPostModal
                     postId={editingPost}

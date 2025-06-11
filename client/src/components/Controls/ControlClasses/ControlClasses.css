@@ -1,0 +1,59 @@
+.classes_component {
+    width: 50vw;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+
+    .class_list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 5px 10px;
+
+        .class_block {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            border-bottom: 1px solid #000;
+            gap: 10px;
+
+            .button_delete_class {
+                background-color: #fff;
+                border: none;
+                transition: 0.3s;
+            }
+
+            .button_delete_class:hover {
+                transform: rotate(20deg);
+            }
+        }
+    }
+
+    .class_create {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .new_class_block {
+            display: flex;
+            gap: 10px;
+
+            .class_name {
+                padding: 2px 3px;
+                color: #000;
+                background-color: #fff;
+                border: none;
+                border-bottom: 1px solid #000;
+            }
+
+            .button_done {
+                padding: 2px 3px;
+                color: #000;
+                background-color: #fff;
+                border: 1px solid #000;
+                font-size: 13px;
+            }
+        }
+    }
+}

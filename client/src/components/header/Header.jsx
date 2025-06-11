@@ -6,10 +6,15 @@ const Header = () => {
     return (
         <header className="header">
             <Link to={'/'}>
-                <img height='28px' src={hexlet} alt="Тут будет иконка" />
+                <img height='28px' src={hexlet} alt="icons" />
             </Link>
-            {/* Реализовать поиск по сайту */}
-            <Link to={'/login'}  className='header_link'>Преподавателям</Link>
+            <Link to={'/worth'}>
+                <p className="header_link">Ценности</p>
+            </Link>
+            <Link to={'/missions'}>
+                <p className="header_link">Миссии</p>
+            </Link>
+            <Link to={'/login'}  className='header_link'>Вход</Link>
         </header>
     )
 }
