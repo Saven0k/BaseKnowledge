@@ -101,7 +101,7 @@ async function findUser(email, password) {
                 console.error("Ошибка базы данных:", err.message);
                 reject(false);
             } else {
-                console.log(`Пользователь был найден\n`);
+                console.log(`Пользователь был найден`);
                 resolve(rows);
             }
         });

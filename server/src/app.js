@@ -2,12 +2,13 @@ const express = require('express');
 const cors = require('cors');
 const apiRouter = require('./routes/api'); // Главный роутер
 const path = require('path');
-
+const morgan = require('morgan')
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 // Статическое обслуживание загруженных изображений
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
