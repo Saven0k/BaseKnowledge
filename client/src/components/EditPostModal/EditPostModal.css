@@ -10,10 +10,9 @@
     z-index: 1000;
     backdrop-filter: blur(5px);
 }
-.toolbar {
-    width: 400px;
-}
-.modal-content {
+
+
+.modal__content {
     background-color: white;
     padding: 25px;
     border-radius: 8px;
@@ -24,7 +23,7 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
-.modal-close-button {
+.modal__close-button {
     position: absolute;
     top: 15px;
     right: 15px;
@@ -35,21 +34,21 @@
     color: #666;
 }
 
-.modal-close-button:hover {
+.modal__close-button:hover {
     color: #333;
 }
 
-.modal-form-group {
+.modal__form-group {
     margin-bottom: 20px;
 }
 
-.modal-form-group label {
+.modal__form-group label {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
 }
 
-.modal-input {
+.modal__input {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
@@ -72,26 +71,19 @@
     border-color: #3739dd;
 }
 
-.modal-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-    background-color: white;
-}
 .visible_select {
     margin-top: 20px;
     margin-bottom: 20px;
 }
-.modal-actions {
+
+.modal__actions {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
     margin-top: 20px;
 }
 
-.modal-button {
+.modal__button {
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
@@ -100,47 +92,27 @@
     transition: background-color 0.2s;
 }
 
-.modal-button.cancel {
+.modal__button.cancel {
     background-color: #f0f0f0;
     color: #333;
 }
 
-.modal-button.cancel:hover {
+.modal__button.cancel:hover {
     background-color: #e0e0e0;
 }
 
-.modal-loading {
+.modal__loading {
     text-align: center;
     padding: 40px;
     font-size: 18px;
     color: #666;
 }
 
-.modal-button.save {
+.modal__button.save {
     background-color: #3739dd;
     color: white;
 }
 
-.modal-button.save:hover {
+.modal__button.save:hover {
     background-color: #2a2bb5;
-}
-
-
-.editor-wrapper {
-    position: relative;
-}
-
-.save-countdown {
-    position: relative;
-    bottom: -25px;
-    left: -10;
-    font-size: 12px;
-    color: #666;
-    background: #f5f5f5;
-    padding: 3px 8px;
-    border-radius: 4px;
-}
-
-.save-countdown span {
-    font-style: italic;
 }

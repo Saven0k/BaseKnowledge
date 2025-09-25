@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import './EditPostModal.css';
 import { useNavigate } from 'react-router-dom';
 import { getPost, updatePost } from '../../services/ApiToServer/posts';
@@ -8,12 +8,13 @@ import CitySelector from '../EntitWidgets/CitySelector/CitySelector';
 import FormSelector from '../EntitWidgets/FormSelector/FormSelector';
 
 const EditPostModal = ({ postId, onClose, onSave }) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [IdPost, setIdPost] = useState();
-  const [PostD, setPostD] = useState('');
   const navigate = useNavigate();
-  const [role, setRole] = useState('');
   const modalRef = useRef(null);
+
+  const [role, setRole] = useState('');
+  const [postId, setPostD] = useState('');
+  const [IdPost, setIdPost] = useState();
+  const [isLoading, setIsLoading] = useState(true);
 
   const [editedPost, setEditedPost] = useState({
     title: '',
@@ -24,27 +25,31 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
   });
 
   useEffect(() => {
-    const loadPostData = async () => {
+    const loadPostData = useCallback(async () => {
       try {
         setIsLoading(true);
+
         const postData = await getPost(postId);
+
         setPostD(postData)
         setIdPost(postId)
         setRole(postData.role)
+
         setEditedPost({
-          title: postData.title,
-          content: postData.content,
-          role: postData.role,
+          title: postData.title || '',
+          content: postData.content || '',
+          role: postData.role || '',
           status: postData.status === "1" ? true : false,
-          role_context: postData.role_context
+          role_context: postData.role_context || 'null'
         });
-        setIsLoading(false);
       } catch (error) {
         console.error('Ошибка загрузки данных поста:', error);
         setIsLoading(false);
         onClose();
+      } finally {
+        setIsLoading(false);
       }
-    };
+    });
 
     if (postId) {
       loadPostData();
@@ -61,7 +66,15 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
 
   const handleSave = async () => {
     try {
-      const updatedPosts = await updatePost(IdPost, editedPost.title, editedPost.content, editedPost.role, editedPost.status, editedPost.role_context);
+      const updatedPosts = await updatePost(
+        IdPost,
+        editedPost.title,
+        editedPost.content,
+        editedPost.role,
+        editedPost.status,
+        editedPost.role_context
+      );
+
       if (updatedPosts) {
         onSave(updatedPosts);
         onClose();
@@ -73,11 +86,22 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
     }
   };
 
-  const handleBackdropClick = (e) => {
+  const handleBackdropClick = useCallback((e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
       onClose();
     }
-  };
+  });
+
+  useEffect(() => {
+    const handleEscapeKey = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscapeKey);
+    return () => document.removeEventListener('keydown', handleEscapeKey);
+  }, [onClose]);
 
   const setRoleContext = (type) => {
     setEditedPost(prev => ({
@@ -93,30 +117,35 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
   }
 
   const setContentText = (newContent) => {
-    setEditedPost({...editedPost, content: newContent})
+    setEditedPost({ ...editedPost, content: newContent })
   }
 
   return (
     <div className="modal-backdrop" onClick={handleBackdropClick}>
-      <div className="modal-content" ref={modalRef}>
-        <button className="modal-close-button" onClick={onClose}>×</button>
+      <div className="modal__content" ref={modalRef}>
+        <button
+          className="modal__close-button"
+          onClick={onClose}
+        >
+          ×
+        </button>
         <h2>Редактирование поста</h2>
 
         {isLoading ? (
-          <div className="modal-loading">Загрузка данных...</div>
+          <div className="modal__loading">Загрузка данных...</div>
         ) : (
           <>
-            <div className="modal-form-group">
+            <div className="modal__form-group">
               <label>Заголовок:</label>
               <input
                 type="text"
                 name="title"
                 value={editedPost.title}
                 onChange={handleChange}
-                className="modal-input"
+                className="modal__input"
               />
             </div>
-            <QuillTextEditor setContent={setContentText}  value={editedPost.content}/>
+            <QuillTextEditor setContent={setContentText} value={editedPost.content} />
 
             <select
               className='visible_select'
@@ -140,7 +169,7 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
               <FormSelector saveForm={setRoleContext} />
             }
 
-            <div className="modal-form-group">
+            <div className="modal__form-group">
               <label>
                 <input
                   type="checkbox"
@@ -152,9 +181,9 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
               </label>
             </div>
 
-            <div className="modal-actions">
-              <button className="modal-button cancel" onClick={onClose}>Отмена</button>
-              <button className="modal-button save" onClick={handleSave}>Сохранить</button>
+            <div className="modal__actions">
+              <button className="modal__button cancel" onClick={onClose}>Отмена</button>
+              <button className="modal__button save" onClick={handleSave}>Сохранить</button>
             </div>
           </>
         )}
