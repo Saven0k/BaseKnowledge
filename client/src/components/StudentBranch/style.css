@@ -1,32 +1,26 @@
-.student_branch {
+.student-branch {
     display: flex;
     flex-direction: column;
     height: 100vh;
+}
 
-    .menu_navigatio {
-        margin: 30px 0 30px 20px;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 5px;
+.navigation-menu {
+    margin: 30px 0 30px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+}
 
-        .button__swipe {
-            padding: 3px 4px;
-            border: 0px solid #fff;
-            color: #000;
-            background-color: #fff;
-            font-size: 15px;
-            border-bottom: 1px solid #333333;
-        }
-        .button__swipe.border {
-            border: 1px solid #000;
-        }
-    }
+.button__swipe {
+    padding: 3px 4px;
+    border: 0px solid #fff;
+    color: #000;
+    background-color: #fff;
+    font-size: 15px;
+    border-bottom: 1px solid #333333;
+}
 
-    .general_inforamtion {
-        margin-top: 25px;
-        margin-left: 20px;
-    }
-
-
+.button__swipe.border {
+    border: 1px solid #000;
 }
