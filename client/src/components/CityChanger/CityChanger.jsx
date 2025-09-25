@@ -5,73 +5,136 @@ import { useMyContext } from '../../services/MyProvider/MyProvider';
 
 
 const CityChanger = () => {
-    const { contextState, updateContextState } = useMyContext();
+    const { updateContextState } = useMyContext();
 
     const [selectedCity, setSelectedCity] = useState('');
     const [isOpen, setIsOpen] = useState(false);
-    const [cities, setCities] = useState([])
+    const [cities, setCities] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
+    /**
+     * Загружает список городов из API
+     */
     const loadCities = async () => {
-        const downloadCities = await getCities()
-        setCities(downloadCities)
-    }
-    const selectCity = (city) => {
-        setIsOpen(false)
-        setSelectedCity(city)
-    }
-
-    useEffect(() => {
-        setSelectedCity(localStorage.getItem('city') === null ? '': localStorage.getItem('city'))
-    }, [])
-
-    useEffect(() => {
-        if (isOpen) {
-            loadCities()
+        try {
+            setIsLoading(true);
+            const downloadCities = await getCities();
+            setCities(downloadCities);
+        } catch (error) {
+            console.error('Ошибка при загрузке городов:', error);
+        } finally {
+            setIsLoading(false);
         }
-    }, [isOpen])
+    };
 
-    const menuSelect = () => {
+    /**
+     * Обрабатывает выбор города пользователем
+     * @param {string} city - Название выбранного города
+     */
+    const handleCitySelect = (city) => {
+        // Закрываем меню выбора
+        setIsOpen(false);
+
+        // Если выбран вариант "Не выбрано", очищаем выбор
+        if (city === 'none') {
+            setSelectedCity('');
+            return;
+        }
+
+        // Устанавливаем выбранный город
+        setSelectedCity(city);
+    };
+
+    /**
+     * Переключает состояние открытия/закрытия меню выбора города
+     */
+    const toggleMenu = () => {
+        setIsOpen(!isOpen);
+    };
+
+    // Эффект для загрузки сохраненного города при монтировании компонента
+    useEffect(() => {
+        const savedCity = localStorage.getItem('city');
+        setSelectedCity(savedCity ?? '');
+    }, []);
+
+    // Эффект для загрузки городов при открытии меню
+    useEffect(() => {
+        if (isOpen && cities.length === 0) {
+            loadCities();
+        }
+    }, [isOpen, cities.length]);
+
+    /**
+     * Рендерит выпадающий список для выбора города
+     */
+    const renderCitySelect = () => {
         return (
-            <div className="menu_select">
-                <select className='select_city' onChange={(e) => selectCity(e.target.value)}>
+            <div className="city-changer__select-menu">
+                <select
+                    className='city-changer__select'
+                    onChange={(e) => handleCitySelect(e.target.value)}
+                    value={selectedCity || 'none'}
+                    disabled={isLoading}
+                >
                     <option value="none">Не выбрано</option>
-                    {
-                        cities.map(city => (
-                            <option
-                                value={city.name}
-                                className='city_name'
-                                key={city.id}
-                            >{city.name}</option>
-                        ))
-                    }
+                    {cities.map(city => (
+                        <option
+                            value={city.name}
+                            className='city-changer__option'
+                            key={city.id}
+                        >
+                            {city.name}
+                        </option>
+                    ))}
                 </select>
+                {isLoading && <div className="city-changer__loading">Загрузка...</div>}
             </div>
-        )
-    }
-    useEffect(() => {
-        if (selectedCity.length !== 0) {
-            updateContextState('city', selectedCity)
-        }
-    }, [selectedCity])
+        );
+    };
 
+    // Эффект для сохранения выбранного города в контекст и localStorage
+    useEffect(() => {
+        if (selectedCity && selectedCity.length !== 0) {
+            // Обновляем глобальное состояние
+            updateContextState('city', selectedCity);
+            // Сохраняем в localStorage для persistence
+            localStorage.setItem('city', selectedCity);
+        } else {
+            // Если город очищен, удаляем из localStorage
+            localStorage.removeItem('city');
+            updateContextState('city', '');
+        }
+    }, [selectedCity, updateContextState]);
 
     return (
-        <div className="info_block">
-            <div className="city_block">
-                {
-                    isOpen === false ?
-                        <button
-                            className='change_city_button button_city'
-                            onClick={() => setIsOpen(!isOpen)}
-                        >
-                            Изменить город
-                        </button>
-                        :
-                        menuSelect()
-                }
+        <div className="city-changer">
+            <div className="city-changer__container">
+                {!isOpen ? (
+                    <button
+                        className='city-changer__button'
+                        onClick={toggleMenu}
+                        type="button"
+                    >
+                        {selectedCity ? `Город: ${selectedCity}` : 'Выбрать город'}
+                    </button>
+                ) : (
+                    renderCitySelect()
+                )}
+
+                {/* Кнопка для закрытия меню, если оно открыто */}
+                {isOpen && (
+                    <button
+                        className='city-changer__close-button'
+                        onClick={toggleMenu}
+                        type="button"
+                    >
+                        ✕
+                    </button>
+                )}
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default CityChanger;

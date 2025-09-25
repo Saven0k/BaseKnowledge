@@ -1,28 +1,25 @@
 .menu_select {
-    
     position: relative;
-
-    .select_city {
-        padding: 3px 5px;
-    }
-
 }
 
-.info_block {
+.select_city {
+    padding: 3px 5px;
+}
+
+.city-changer {
     display: flex;
     align-items: center;
     gap: 15px;
-
-    .city_block {
-        display: flex;
-        gap: 10px;  
-        align-items: center;
-    }
 }
 
-.button_city {
+.city-changer__select {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.city-changer__select-button {
     padding: 3px 5px;
     font-size: 14px;
     background-color: #fff;
-
 }
