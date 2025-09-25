@@ -1,14 +1,10 @@
 import './style.css'
-/**
- * React component, which create platform to work with search.
- * @param {string} searchItem 
- * @param {function} handleSearch 
- * @returns serach field.
- */
+
 const SearchComponent = ({ searchItem, handleSearch }) => {
     return (
-        <div className="inputTab">
+        <div className="search-component">
             <svg
+                aria-label='Иконка поиска'
                 xmlns="http://www.w3.org/2000/svg"
                 x="0px"
                 y="0px"
@@ -29,7 +25,7 @@ const SearchComponent = ({ searchItem, handleSearch }) => {
                 type="text"
                 autoComplete="off"
                 placeholder="Введите что-то"
-                className="input"
+                className="search-component__input"
                 maxLength={15}
                 onChange={(e) => handleSearch(e.target.value)}
             />

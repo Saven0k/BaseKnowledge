@@ -1,21 +1,18 @@
-.inputTab {
+.search-component {
     min-width: 250px;
-    margin-top: 25px;
     max-width: 350px;
     width: auto;
     display: flex;
-    /* justify-content: center;
-    align-items: center; */
     gap: 15px;
     margin-bottom: 10px;
     height: 24px;
+}
 
-    input {
-        height: 24px;
-        outline: none;
-        width: 50%;
-        border: none;
-        font-size: 18px;
-        border-bottom: 1px solid black;
-    }
+.search-component__input {
+    height: 24px;
+    outline: none;
+    width: 50%;
+    border: none;
+    font-size: 18px;
+    border-bottom: 1px solid black;
 }
