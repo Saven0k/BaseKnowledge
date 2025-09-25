@@ -1,42 +1,55 @@
 import './CreatePostComponent.css'
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { addPost } from '../../services/ApiToServer/posts';
 import '../../../node_modules/react-quill/dist/quill.snow.css';
-import Quill from "quill";
 import QuillTextEditor from '../QuillTextEditor/QuillTextEditor';
 import GroupSelector from '../EntitWidgets/GroupSelector/GroupSelector';
 import CitySelector from '../EntitWidgets/CitySelector/CitySelector';
 import FormSelector from '../EntitWidgets/FormSelector/FormSelector';
 
 const CreatePostComponent = () => {
-    const [role, setRole] = useState(''); //UseState for type of visible
-    const [title, setTitle] = useState(''); // UseState for Posts title
-    const [content, setContent] = useState(''); // UseState for Posts content
-    const [status, setStatus] = useState(false); // UseState for visible content
-    const [role_context, setRoleContext] = useState(["null"])
+    const [role, setRole] = useState('');
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const [status, setStatus] = useState(false);
+    const [role_context, setRoleContext] = useState([]); // ИСПРАВЛЕНО: начальное значение должно быть массивом, а не строкой
     const fileInputRef = useRef(null);
 
-    const [imagePreview, setImagePreview] = useState(''); // Для превью изображения
+    const [imagePreview, setImagePreview] = useState('');
     const [image, setImage] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Сохраняем пост на сервер
-    const savePost = () => {
-        const data = new FormData();
-        data.append('title', title);
-        data.append('content', content);
-        data.append('role', role);
-        data.append('role_context', role_context);
-        data.append('status', status ? "1" : "0");
-        data.append('file', image === null ? null : image);
-        addPost(data)
+    /**
+     * Сохраняет пост, отправляя данные на сервер
+     */
+    const savePost = async () => {
+        if (isSubmitting) return;
+        setIsSubmitting(true);
 
+        try {
+            const data = new FormData();
+            data.append('title', title.trim());
+            data.append('content', content);
+            data.append('role', role || 'null'); 
+            data.append('role_context', role_context); 
+            data.append('status', status ? "1" : "0");
+            data.append('file', image === null ? null : image);
 
-        setTitle('');
-        setContent('');
-        clearImage()
-        setRole("null")
-        setRoleContext("null")
-        
+            await addPost(data);
+
+            // Сброс формы после успешного сохранения
+            setTitle('');
+            setContent('');
+            setRole('null');
+            setRoleContext("null");
+            setStatus(false);
+            clearImage();
+        } catch (error) {
+            console.error('Ошибка при сохранении поста:', error);
+            alert('Произошла ошибка при сохранении поста'); 
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleFileChange = (e) => {
@@ -50,6 +63,7 @@ const CreatePostComponent = () => {
             reader.readAsDataURL(selectedFile);
         }
     };
+
     // Функция для очистки
     const clearImage = () => {
         setImage("");
@@ -60,11 +74,12 @@ const CreatePostComponent = () => {
     };
 
     return (
-        <div className='addPost_component'>
-            <div className='image_load'>
-                <label htmlFor="image">Image</label>
+        <div className='add-post'>
+            <div className='add-post__image-load'>
+                <label className='add-post__image-label' htmlFor="image">Image</label>
                 <input
-                    ref={fileInputRef} // Привязываем ref
+                    className='add-post__input-file'
+                    ref={fileInputRef}
                     type="file"
                     name="image"
                     id="image"
@@ -73,8 +88,8 @@ const CreatePostComponent = () => {
                 />
                 {imagePreview && (
                     <>
-                        <img src={imagePreview} alt="preview" className='image_preview' />
-                        <button className="button_delete_photo" onClick={clearImage}>Удалить</button>
+                        <img src={imagePreview} alt="preview" className='add-post__image-preview' />
+                        <button className="add-post__image-delete" onClick={clearImage}>Удалить</button>
                     </>
                 )}
             </div>
@@ -82,13 +97,13 @@ const CreatePostComponent = () => {
                 type="text"
                 placeholder="Заголовок поста"
                 value={title}
-                className='title_input'
+                className='add-post__title-input'
                 onChange={(e) => setTitle(e.target.value)}
             />
-            <QuillTextEditor setContent={setContent} newContent={content}/>
+            <QuillTextEditor setContent={setContent} newContent={content} />
             <div className='selection_component'>
                 <select
-                    className='visible_select'
+                    className='selection-component__select'
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
                 >
@@ -114,7 +129,7 @@ const CreatePostComponent = () => {
                     <input
                         type="checkbox"
                         name="publicPost"
-                        checked={status} // Добавляем привязку к состоянию
+                        checked={status}
                         onChange={(e) => setStatus(e.target.checked)}
                     />
                     Публичный пост

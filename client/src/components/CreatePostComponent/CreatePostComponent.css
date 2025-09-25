@@ -1,4 +1,4 @@
-.addPost_component {
+.add-post {
     width: 90%;
     position: relative;
     z-index: 100;
@@ -18,23 +18,24 @@
     margin: 15px 0;
 }
 
-.image_load {
+.add-post__image-load {
     display: flex;
     gap: 10px;
     flex-direction: column;
+}
 
-    input[type="file"] {
-        color: transparent;
-    }
+.add-post__input-file {
+    color: transparent;
+}
 
-    .image_preview {
-        width: 100px;
-    }
+.add-post__image-preview {
+    width: 100px;
 }
 
 
 
-.title_input {
+
+.add-post__title-input {
     font-size: var(--input-font-size);
     padding: 3px 5px;
     width: 80%;
@@ -59,14 +60,15 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 10px;
-
-    .visible_select,
-    .group_select {
-        padding: 2px 4px;
-        font-size: 14px;
-    }
-
 }
+
+.selection-component__select,
+.group_select {
+    padding: 2px 4px;
+    font-size: 14px;
+}
+
+
 
 .button_save_post {
     padding: 2px 4px;
@@ -83,26 +85,26 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
-
-    .visible-img,
-    .unvisible-img {
-        width: 100%;
-        height: 100%;
-    }
-
-    .visible-img:hover::after {
-        content: 'опубликован';
-        font-size: 12px;
-    }
-
-    .unvisible-img:hover::after {
-        content: 'неопубликован';
-        font-size: 12px;
-    }
 }
 
-.button_delete_photo {
+.visible-img,
+.unvisible-img {
+    width: 100%;
+    height: 100%;
+}
+
+.visible-img:hover::after {
+    content: 'опубликован';
+    font-size: 12px;
+}
+
+.unvisible-img:hover::after {
+    content: 'неопубликован';
+    font-size: 12px;
+}
+
+
+.add-post__image-delete {
     margin-top: 8px;
     background: #ff4444;
     color: white;
