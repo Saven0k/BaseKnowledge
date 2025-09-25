@@ -1,20 +1,22 @@
 import { Link } from 'react-router-dom';
 import './style.css';
-import hexlet from './hexlet.jpg';
+import icon from './icon.png';
 
 const Header = () => {
     return (
         <header className="header">
             <Link to={'/'}>
-                <img height='28px' src={hexlet} alt="icons" />
+                <img height='28px' src={icon} alt="Логотип сайта" />
             </Link>
-            <Link to={'/worth'}>
-                <p className="header_link">Ценности</p>
+            <Link to={'/worth'} className="header__link">
+                Ценности
             </Link>
-            <Link to={'/missions'}>
-                <p className="header_link">Миссии</p>
+            <Link to={'/missions'} className="header__link">
+                Миссии
             </Link>
-            <Link to={'/login'}  className='header_link'>Вход</Link>
+            <Link to={'/login'} className='header__link'>
+                Вход
+            </Link>
         </header>
     )
 }
