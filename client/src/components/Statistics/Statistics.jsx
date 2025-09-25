@@ -1,10 +1,11 @@
+import './style.css'
+
 import { useEffect, useState } from "react";
 
-import './style.css'
 import { getVisitorsCount } from "../../services/ApiToServer/visitors";
-import { getTeacherVisits, getTotalVisits } from "../../services/ApiToServer/users";
+import { getTotalVisits } from "../../services/ApiToServer/users";
 
-const Statistics = ({ ready }) => {
+const Statistics = () => {
     const [studentCount, setStudentCount] = useState()
     const [teacherCount, setTeacherCount] = useState()
 
@@ -20,10 +21,10 @@ const Statistics = ({ ready }) => {
     }, [])
 
     return (
-        <div className="statistic_block">
-            <h2>Статистика посещений: </h2>
-            <h3>Колличество посещений учителей: {teacherCount}</h3>
-            <h3>Колличество посещений студентов: {studentCount}</h3>
+        <div className="statistic-block">
+            <span className="statistic-block__text">Статистика посещений: </span>
+            <span className="statistic-block__text">Колличество посещений учителей: {teacherCount}</span>
+            <span className="statistic-block__text">Колличество посещений студентов: {studentCount}</span>
         </div>
 
     )
