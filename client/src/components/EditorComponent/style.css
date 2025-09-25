@@ -1,43 +1,44 @@
-.admin_component {
+.editor-component {
     display: flex;
     flex-direction: column;
     height: 100vh;
 }
 
-.menu_pages {
+.menu-pages {
     margin: 30px 0;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
     flex-wrap: wrap;
-
-    .menu__button {
-        min-width: 60px;
-        padding: 2px 3px;
-        background-color: #fff;
-        border: 0px solid #fff;
-        font-size: 16px;
-        text-wrap: nowrap;
-        transition: border 0.7s ease;
-    }
-
-    
-    .menu__button.active {
-        border: 1px solid #000;
-    }
 }
 
-.slider_block {
+.menu__button {
+    min-width: 60px;
+    padding: 2px 3px;
+    background-color: #fff;
+    border: 0px solid #fff;
+    font-size: 16px;
+    text-wrap: nowrap;
+    transition: border 0.7s ease;
+}
+
+
+.menu__button.active {
+    border: 1px solid #000;
+}
+
+
+.slider-block {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+}
 
-    .slide {
-        width: 80vw;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+.slide {
+    width: 80vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

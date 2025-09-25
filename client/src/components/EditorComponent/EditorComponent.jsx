@@ -10,9 +10,9 @@ const EditorComponent = () => {
     const [page, setPage] = useState(0);
 
     return (
-        <div className="admin_component">
+        <div className="editor-component">
             <Header />
-            <div className="menu_pages">
+            <nav className="menu-pages" aria-label="Навигация по редактору">
                 <button
                     onClick={() => setPage(0)}
                     className={`menu__button ${page === 0 ? 'active' : ' '}`}
@@ -23,13 +23,13 @@ const EditorComponent = () => {
                     className={`menu__button ${page === 1 ? 'active' : ' '}`}
                 > Посты
                 </button>
-            </div>
-            <div className="slider_block">
+            </nav>
+            <main className="slider-block">
                 <div className="slide">
                     {page === 0 && <CreatePostComponent />}
                     {page === 1 && <PostsSelector />}
                 </div>
-            </div>
+            </main>
         </div>
     );
 }
