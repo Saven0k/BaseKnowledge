@@ -1,15 +1,19 @@
 import './style.css'
 import { Link } from "react-router-dom"
 
-const Error = () => {
+const Error = ({
+    code = "404",
+    message = "Ошибочка......",
+    linkText = "На главную",
+    linkTo = "/"
+}) => {
     return (
-        <div className='all center'>
-
-            <div className="er">
-                <h1 className="h1">404</h1>
-                <h1 className='h2'>Ошибочка......</h1>
-                <Link  to={'/'}>
-                    <h3 className='h3'>На главную</h3>
+        <div className='error center'>
+            <div className="error__block">
+                <span className="error__title">{code}</span>
+                <span className='error__text'>{message}</span>
+                <Link to={linkTo} className='error__link'>
+                    {linkText}
                 </Link>
             </div>
         </div>
