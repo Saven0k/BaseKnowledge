@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import '../../../node_modules/react-quill/dist/quill.snow.css';
-import Quill from "quill";
 import './style.css';
+
+import { useEffect, useRef } from "react";
+import Quill from "quill";
+import '../../../node_modules/react-quill/dist/quill.snow.css';
 
 
 const QuillTextEditor = ({ setContent, value, newContent }) => {
