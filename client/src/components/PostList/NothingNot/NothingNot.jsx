@@ -1,11 +1,7 @@
-/**
- * React component, which create clear platform.
- * @returns information, what postList is clear;
- */
 const  NothingNot = () => {
     return (
-        <div>
-            <h1>Ничего не найдено</h1>
+        <div  className="nothing-not">
+            <h1 className="nothing-not__title">Ничего не найдено</h1>
         </div>
     );
 };
