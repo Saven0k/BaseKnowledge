@@ -64,7 +64,7 @@ REST API сервер для управления данными базы зна
 ```bash
 ## Клонирование репозитория
 git clone https://github.com/Saven0k/BaseKnowledge.git
-cd knowledge-base
+cd BaseKnowledge
 
 ## Установка зависимостей для всех частей
 npm run install:all

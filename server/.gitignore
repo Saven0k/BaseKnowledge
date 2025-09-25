@@ -1,5 +1,5 @@
 # Папка с зависимостями
-node_modules/
+node_modules
 
 # Логи и временные файлы
 npm-debug.log*
