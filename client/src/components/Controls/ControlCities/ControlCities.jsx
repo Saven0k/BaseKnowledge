@@ -3,69 +3,97 @@ import './ControlCities.css'
 import trash from './red_trash.svg'
 import { addCity, deleteCity, getCities } from '../../../services/ApiToServer/cities'
 
-const ControlCitites = () => {
+const ControlCities = () => {
     const [cities, setCities] = useState([])
     const [newCityName, setNewCityName] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
 
-    const prepairData = async () => {
-        const citiesB = await getCities();
-        if (citiesB.length === 0) {
+    // Загрузка списка городов
+    const loadCities = async () => {
+        try {
+            setIsLoading(true)
+            const citiesData = await getCities();
+            setCities(citiesData || [])
+        } catch (error) {
+            console.error('Ошибка при загрузке городов:', error)
             setCities([])
-        } else {
-            setCities(citiesB)
+        } finally {
+            setIsLoading(false)
         }
     }
 
     useEffect(() => {
-        prepairData()
+        loadCities()
     }, [])
 
     const handleSaveCity = async () => {
-        const data = await addCity(newCityName)
-        setCities([...cities, { name: data.response.cityName, id: data.response.cityId }])
-        setNewCityName('')
+        try {
+            const data = await addCity(newCityName.trim())
+            if (data.response) {
+                setCities(prevCities => [...prevCities, {
+                    name: data.response.cityName,
+                    id: data.response.cityId
+                }])
+                setNewCityName('')
+            }
+        } catch (error) {
+            console.error('Ошибка при добавлении города:', error)
+        }
     }
 
-    const handleDeleteCity = (id) => {
-        setCities(cities.filter(city => city.id !== id))
-        deleteCity(id)
+    const handleDeleteCity = async (id) => {
+        try {
+            await deleteCity(id)
+            setCities(prevCities => prevCities.filter(city => city.id !== id))
+        } catch (error) {
+            console.error('Ошибка при удалении города:', error)
+        }
+    }
+    
+    // Обработка нажатия Enter
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            handleSaveCity()
+        }
     }
 
     return (
-        <div className='cities_component'>
-
-            <div className="city_list">
-                {cities.length !== 0 ?
-                    cities.map((city, index) => (
-                        <div className="city_block" key={index}>
+        <div className='cities-component'>
+            <div className="cities-list">
+                {isLoading ? (
+                    <p>Загрузка городов...</p>
+                ) : cities.length > 0 ? (
+                    cities.map((city) => (
+                        <div className="cities-list__item" key={city.id}>
                             <h3>{city.name}</h3>
-                            <div className="delete_city">
+                            <div className="cities-list__delete">
                                 <button
-                                    className='button_delete_city'
+                                    className='cities-list__button'
                                     onClick={() => handleDeleteCity(city.id)}
                                 >
-                                    <img height={24} src={trash} alt="Delete" className='delete_city_img' />
+                                    <img height={24} src={trash} alt="delete city" aria-label={`Удалить город ${city.name}`} className='cities-list__img' />
                                 </button>
                             </div>
                         </div>
                     ))
-                    :
+                ) : (
                     <p>Городов пока нет</p>
-                }
+                )}
             </div>
-            <div className="city_create">
+            <div className="cities-create">
                 <h4>Добавление нового города </h4>
-                <div className="new_city_block">
+                <div className="cities-add">
                     <input
                         type="text"
-                        className="city_name"
+                        className="cities-add__input"
                         onChange={(e) => setNewCityName(e.target.value)}
                         value={newCityName}
+                        onKeyPress={handleKeyPress}
                         minLength={5}
                         maxLength={15}
                         placeholder='Что-то....'
                     />
-                    <button className='button_done' onClick={() => handleSaveCity()}>
+                    <button className='cities-add__button' onClick={() => handleSaveCity()}>
                         Сохранить
                     </button>
 
@@ -74,4 +102,4 @@ const ControlCitites = () => {
         </div>
     )
 }
-export default ControlCitites;
+export default ControlCities;

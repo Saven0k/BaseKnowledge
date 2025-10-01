@@ -10,16 +10,17 @@ const PostsSelector = () => {
     const [roleContext, setRoleContext] = useState(["null"]);
     const [status, setStatus] = useState('1');
 
+    // Смена роли
     const handleRoleChange = (role) => {
         setActiveRole(role);
-        setRoleContext(null); // Сбрасываем контекст при смене роли
+        setRoleContext(null);
 
-        // Для ролей teacher и all сразу обновляем данные
         if (role === 'teacher' || role === 'all') {
-            setRoleContext(["null"]); // Устанавливаем явное значение для немедленного рендера
+            setRoleContext(["null"]);
         }
     };
 
+    // Рендер селектора
     const renderSelectorComponent = () => {
         switch (activeRole) {
             case 'student':
@@ -33,90 +34,81 @@ const PostsSelector = () => {
         }
     };
 
+    // Проверка показа постов
     const shouldShowPosts = () => {
-        // Для teacher и all посты показываем сразу
         if (activeRole === 'teacher' || activeRole === 'all') return true;
-        // Для остальных ролей только если есть контекст
         return roleContext !== null && roleContext.length > 0;
     };
 
     return (
-        <div className="post_selector">
-            <div className="select_buttons">
-                {/* Кнопка для учителей */}
+        <div className="post-selector">
+            <div className="post-selector__buttons">
                 <button
-                    className={`select_button ${activeRole === 'teacher' ? 'selected' : ''}`}
+                    className={`post-selector__button ${activeRole === 'teacher' ? 'post-selector__button--selected' : ''}`}
                     onClick={() => handleRoleChange('teacher')}
                 >
                     Посты Учителей
                 </button>
 
-                {/* Кнопка для общих постов */}
                 <button
-                    className={`select_button ${activeRole === 'all' ? 'selected' : ''}`}
+                    className={`post-selector__button ${activeRole === 'all' ? 'post-selector__button--selected' : ''}`}
                     onClick={() => handleRoleChange('all')}
                 >
                     Общие посты
                 </button>
 
-                {/* Кнопка для студентов */}
                 <button
-                    className={`select_button ${activeRole === 'student' ? 'selected' : ''}`}
+                    className={`post-selector__button ${activeRole === 'student' ? 'post-selector__button--selected' : ''}`}
                     onClick={() => handleRoleChange('student')}
                 >
                     Посты студентов
                 </button>
 
-                {/* Кнопка для городов */}
                 <button
-                    className={`select_button ${activeRole === 'city' ? 'selected' : ''}`}
+                    className={`post-selector__button ${activeRole === 'city' ? 'post-selector__button--selected' : ''}`}
                     onClick={() => handleRoleChange('city')}
                 >
                     Посты по городам
                 </button>
 
-                {/* Кнопка для формы обучения */}
                 <button
-                    className={`select_button ${activeRole === 'form' ? 'selected' : ''}`}
+                    className={`post-selector__button ${activeRole === 'form' ? 'post-selector__button--selected' : ''}`}
                     onClick={() => handleRoleChange('form')}
                 >
                     Посты по форме обучения
                 </button>
             </div>
-            <div className="selectors">
-                {/* Отображаем селектор, если выбрана соответствующая роль */}
-                {['student', 'city', 'form'].includes(activeRole) && renderSelectorComponent()}
 
+            <div className="post-selector__selectors">
+                {['student', 'city', 'form'].includes(activeRole) && renderSelectorComponent()}
             </div>
 
-            {/* Переключатель статуса */}
-            <div className="status_switch">
+            <div className="post-selector__status">
                 <button
-                    className={`publish_posts__button button_sw ${status === "1" ? "selected" : ''}`}
+                    className={`post-selector__status-button ${status === "1" ? "post-selector__status-button--selected" : ''}`}
                     onClick={() => setStatus("1")}
                 >
                     Опубликованные посты
                 </button>
                 <button
-                    className={`hidden_posts__button button_sw ${status === "0" ? "selected" : ''}`}
+                    className={`post-selector__status-button ${status === "0" ? "post-selector__status-button--selected" : ''}`}
                     onClick={() => setStatus("0")}
                 >
                     Скрытые посты
                 </button>
             </div>
-            <div className="show_posts">
-                {/* Отображаем посты, если выполняется условие */}
+
+            <div className="post-selector__posts">
                 {shouldShowPosts() && (
                     <List
                         type={activeRole}
                         data={{
                             role: activeRole,
-                            role_context:  Array.isArray(roleContext) ? roleContext : roleContext.split(),
+                            role_context: Array.isArray(roleContext) ? roleContext : roleContext.split(),
                             status: status
                         }}
                     />
                 )}
-
             </div>
         </div>
     );

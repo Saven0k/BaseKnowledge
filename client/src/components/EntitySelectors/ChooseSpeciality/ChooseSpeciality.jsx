@@ -11,50 +11,51 @@ const ChooseSpeciality = ({ saveSpeciality, saveCourse }) => {
         { name: " 4 курс", code: 4 },
     ])
 
-    const preparationSpeciality = async () => {
+    // Загрузка специальностей
+    const loadSpecialities = async () => {
         const newSpeciality = await getSpecialities();
         setSpecialities(newSpeciality)
     }
 
     useEffect(() => {
-        preparationSpeciality()
+        loadSpecialities()
     }, [])
 
+    // Сохранение данных
     const saveInformation = (speciality, course) => {
         saveSpeciality(speciality)
         saveCourse(course)
     }
+
     return (
-        <div className="choose_speciality">
-            <p className="choose_title">
+        <div className="choose-speciality">
+            <p className="choose-speciality__title">
                 Выберете специальность и курс
             </p>
-            {
-                specialities.length === 0 ?
-                    <div className="p">Ничего нет</div>
-                    :
-                    <div className="speciality_list">
-                        {
-                            specialities.map((speciality, index) => (
-                                <div key={index} className="speciality_box">
-                                    <div className="speciality_title">
-                                        {speciality.name}
-                                    </div>
-                                    <div className="course_buttons">
-                                        {
-                                            courses.map((course, index) => (
-                                                <button key={index} onClick={() => saveInformation(speciality.name, course.code)} className="specialitiy_box">
-                                                    {course.name}
-                                                </button>
-
-                                            ))
-                                        }
-                                    </div>
-                                </div>
-                            ))
-                        }
-                    </div>
-            }
+            {specialities.length === 0 ? (
+                <div className="choose-speciality__empty">Ничего нет</div>
+            ) : (
+                <div className="choose-speciality__list">
+                    {specialities.map((speciality, index) => (
+                        <div key={index} className="choose-speciality__item">
+                            <div className="choose-speciality__name">
+                                {speciality.name}
+                            </div>
+                            <div className="choose-speciality__courses">
+                                {courses.map((course, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => saveInformation(speciality.name, course.code)}
+                                        className="choose-speciality__button"
+                                    >
+                                        {course.name}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     )
 }

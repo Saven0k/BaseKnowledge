@@ -3,16 +3,17 @@ import './FormSelector.css'
 
 const FormSelector = ({ saveForm, form }) => {
     const [forms, setForms] = useState(['Очное', 'Заочное', 'Дистанционное']);
-    const [selectedForm, setSelectedForm] = useState();
+    const [selectedForm, setSelectedForm] = useState('');
     const [isOpen, setIsOpen] = useState(false);
 
-
+    // Сброс выбора
     useEffect(() => {
         if (form === '') {
             setSelectedForm('')
         }
     }, [form])
 
+    // Сохранение формы
     const handleSave = async (form) => {
         setSelectedForm(form)
         try {
@@ -24,12 +25,11 @@ const FormSelector = ({ saveForm, form }) => {
         }
     };
 
-
     return (
-        <div className="form-selector-container" style={{ position: 'relative' }}>
+        <div className="form-selector">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="form_toggle-button"
+                className="form-selector__toggle"
             >
                 {selectedForm
                     ? `Выбрано: ${selectedForm}`
@@ -37,24 +37,22 @@ const FormSelector = ({ saveForm, form }) => {
             </button>
 
             {isOpen && (
-                <div className="form-selector-popup">
-                    <div className="forms-list">
-                        {
-                            <ul>
-                                {forms.map(form => (
-                                    <li
-                                        key={form}
-                                        className={`form-item ${selectedForm === form ? 'selected' : ''}`}
-                                        onClick={() => handleSave(form)}
-                                    >
-                                        <span className="form-name">{form}</span>
-                                        {selectedForm === form && (
-                                            <span className="checkmark">✓</span>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-                        }
+                <div className="form-selector__popup">
+                    <div className="form-selector__list">
+                        <ul className="form-selector__items">
+                            {forms.map(form => (
+                                <li
+                                    key={form}
+                                    className={`form-selector__item ${selectedForm === form ? 'form-selector__item--selected' : ''}`}
+                                    onClick={() => handleSave(form)}
+                                >
+                                    <span className="form-selector__name">{form}</span>
+                                    {selectedForm === form && (
+                                        <span className="form-selector__checkmark">✓</span>
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
             )}

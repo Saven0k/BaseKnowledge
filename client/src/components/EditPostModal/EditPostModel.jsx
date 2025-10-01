@@ -7,7 +7,7 @@ import GroupSelector from '../EntitWidgets/GroupSelector/GroupSelector';
 import CitySelector from '../EntitWidgets/CitySelector/CitySelector';
 import FormSelector from '../EntitWidgets/FormSelector/FormSelector';
 
-const EditPostModal = ({ postId, onClose, onSave }) => {
+const EditPostModal = ({ postId: Idpost, onClose, onSave }) => {
   const navigate = useNavigate();
   const modalRef = useRef(null);
 
@@ -29,10 +29,10 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
       try {
         setIsLoading(true);
 
-        const postData = await getPost(postId);
+        const postData = await getPost(Idpost);
 
         setPostD(postData)
-        setIdPost(postId)
+        setIdPost(Idpost)
         setRole(postData.role)
 
         setEditedPost({
@@ -51,10 +51,10 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
       }
     });
 
-    if (postId) {
+    if (Idpost) {
       loadPostData();
     }
-  }, [postId, onClose]);
+  }, [Idpost, onClose]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -110,7 +110,7 @@ const EditPostModal = ({ postId, onClose, onSave }) => {
     }))
   }
 
-  if (!postId) return null;
+  if (!Idpost) return null;
 
   const handleChangeSelectedRole = (role) => {
     setEditedPost({ ...editedPost, role: role })

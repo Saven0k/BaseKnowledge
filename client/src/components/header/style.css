@@ -1,13 +1,14 @@
 .header {
-    padding-top: 25px;
+    margin-top: 20px;
+    margin-bottom: 10px;
     height: 45px;
     display: flex;
     justify-content: space-around;
     align-items: center;
     width: 100%;
     flex-direction: row;
-    margin-bottom: 20px;
     flex-wrap: wrap;
+    height: 50px;
 }
 
 .header__link {
@@ -18,4 +19,14 @@
     padding: 3px 5px;
     position: relative;
     font-weight: 500;
+}
+
+.header__link-img {
+    height: 40px;
+}
+
+.header__link--button:hover {
+    box-shadow: 1px 2px 2px #000;
+    border-radius: 8px;
+
 }

@@ -24,7 +24,3 @@ npm install
 ```bash
 npm run start
 ```
-### Запуск тестов
-```bash
-npm test
-```

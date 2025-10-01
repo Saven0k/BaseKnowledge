@@ -3,9 +3,9 @@ const db = require('../db');
 const generateUniqueId = require('../utils/generateUniqueId');
 
 // Функция для получения всех групп колледжа из базы данных
-async function getCollegeGroups() {
-    // SQL-запрос для выборки всех записей из таблицы collegeGroups
-    const sql = `SELECT * FROM collegeGroups`;
+async function getGroups() {
+    // SQL-запрос для выборки всех записей из таблицы Groups
+    const sql = `SELECT * FROM Groups`;
 
     // Возвращаем Promise для асинхронной работы
     return new Promise((resolve, reject) => {
@@ -25,46 +25,46 @@ async function getCollegeGroups() {
 }
 
 // Функция для добавления новой группы колледжа
-async function addCollegeGroup(collegeGroupName) {
+async function addGroup(GroupName) {
     // Генерируем уникальный ID для новой группы
-    const groupId = generateUniqueId('collegeGroup');
+    const groupId = generateUniqueId('Group');
     // SQL-запрос для вставки новой записи
-    const sql = 'INSERT INTO collegeGroups (id, name) VALUES ( ?, ? )'
+    const sql = 'INSERT INTO Groups (id, name) VALUES ( ?, ? )'
 
     return new Promise((resolve, reject) => {
         // Выполняем запрос с параметрами
-        db.run(sql, [groupId, collegeGroupName], function (err) {
+        db.run(sql, [groupId, GroupName], function (err) {
             if (err) {
                 console.error('Ошибка базы данных:', err.message);
                 return reject(new Error('Ошибка добавления группы для колледжа'));
             }
-            console.log("Группа для колледжа добавлена", collegeGroupName);
+            console.log("Группа для колледжа добавлена", GroupName);
             // Возвращаем объект с данными добавленной группы
             resolve({
                 groupId,
-                collegeGroupName: collegeGroupName,
+                GroupName,
             })
         })
     })
 }
 
 // Функция для обновления существующей группы колледжа
-async function updateCollegeGroup(id, collegeGroupName) {
+async function updateGroup(id, GroupName) {
     // SQL-запрос для обновления имени группы по ID
-    const updateSql = `UPDATE collegeGroups SET name = ? WHERE id = ?`;
+    const updateSql = `UPDATE Groups SET name = ? WHERE id = ?`;
 
     return new Promise((resolve, reject) => {
         // Используем serialize для последовательного выполнения запросов
         db.serialize(() => {
             // Сначала обновляем запись
-            db.run(updateSql, [collegeGroupName, id], function (err) {
+            db.run(updateSql, [GroupName, id], function (err) {
                 if (err) {
                     console.error("Ошибка базы данных при обновлении:", err.message);
                     return reject(new Error("Ошибка обновления группы колледжа"));
                 }
 
                 // Затем получаем обновленную запись для проверки
-                db.get(`SELECT * FROM collegeGroups WHERE id = ?`, [id], (err, row) => {
+                db.get(`SELECT * FROM Groups WHERE id = ?`, [id], (err, row) => {
                     if (err) {
                         console.error("Ошибка базы данных при получении обновленной группы колледжа:", err.message);
                         return reject(new Error("Ошибка при получении обновленной группы колледжа"));
@@ -82,9 +82,9 @@ async function updateCollegeGroup(id, collegeGroupName) {
 }
 
 // Функция для удаления группы колледжа по ID
-async function deleteCollegeGroup(id) {
+async function deleteGroup(id) {
     // SQL-запрос для удаления записи
-    const sql = "DELETE FROM collegeGroups WHERE id = ?";
+    const sql = "DELETE FROM Groups WHERE id = ?";
 
     return new Promise((resolve, reject) => {
         // Выполняем запрос
@@ -105,8 +105,8 @@ async function deleteCollegeGroup(id) {
 
 // Экспорт функций для использования в других модулях
 module.exports = {
-    addCollegeGroup,
-    getCollegeGroups,
-    updateCollegeGroup,
-    deleteCollegeGroup,
+    addGroup,
+    getGroups,
+    updateGroup,
+    deleteGroup,
 }

@@ -1,24 +1,19 @@
 import { Link } from 'react-router-dom';
 import './style.css';
 import icon from './icon.png';
+import { memo } from 'react';
 
-const Header = () => {
+const Header = memo(() => {
     return (
         <header className="header">
             <Link to={'/'}>
-                <img height='28px' src={icon} alt="Логотип сайта" />
+                <img className='header__link-img' src={icon} alt="Логотип сайта" />
             </Link>
-            <Link to={'/worth'} className="header__link">
-                Ценности
-            </Link>
-            <Link to={'/missions'} className="header__link">
-                Миссии
-            </Link>
-            <Link to={'/login'} className='header__link'>
+            <Link to={'/login'} className='header__link header__link--button'>
                 Вход
             </Link>
         </header>
     )
-}
+});
 
 export default Header;

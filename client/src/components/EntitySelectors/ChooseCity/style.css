@@ -1,4 +1,4 @@
-.chooseCity_box {
+.choose-city {
     width: 250px;
     display: flex;
     justify-content: center;
@@ -6,28 +6,36 @@
     flex-direction: column;
     gap: 20px;
     border: 1px solid #000;
+    padding: 10px 15px;
+    border-radius: 8px;
+}
 
-    .info_title {
-        font-size: 22px;
-        font-weight: 800;
-    }
-    .cities_box {
-        width: 200px;
-        padding: 5px 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        gap: 3px;
-        button {
-            background-color: #fff;
-            width: 100%;
-            padding: 2px 3px;
-            height: 35px;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #562dd2;
-        }
-    }
+.choose-city__title {
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.choose-city__list {
+    width: 200px;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.choose-city__item {
+    background-color: #fff;
+    width: 100%;
+    padding: 2px 3px;
+    height: 35px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.choose-city__item:hover {
+    background-color: #562dd2;
+    color: white;
 }

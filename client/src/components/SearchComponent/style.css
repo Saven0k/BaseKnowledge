@@ -1,17 +1,14 @@
 .search-component {
     min-width: 250px;
-    max-width: 350px;
-    width: auto;
+    max-width: 550px;
     display: flex;
     gap: 15px;
-    margin-bottom: 10px;
-    height: 24px;
+    padding-bottom: 40px;
 }
 
 .search-component__input {
     height: 24px;
     outline: none;
-    width: 50%;
     border: none;
     font-size: 18px;
     border-bottom: 1px solid black;

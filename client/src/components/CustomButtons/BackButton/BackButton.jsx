@@ -1,8 +1,8 @@
 import './style.css'
 
-const BackButton = ({ setRole }) => {
+const BackButton = ({ onClick }) => {
     return (
-        <button className="button-back" onClick={() => setRole(null)}>
+        <button className="button-back" onClick={onClick}>
             Назад
         </button>
     )

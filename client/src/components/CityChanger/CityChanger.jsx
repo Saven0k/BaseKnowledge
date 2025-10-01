@@ -1,20 +1,17 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import './CityChanger.css';
 import { getCities } from '../../services/ApiToServer/cities';
 import { useMyContext } from '../../services/MyProvider/MyProvider';
 
 
-const CityChanger = () => {
-    const { updateContextState } = useMyContext();
+const CityChanger = memo(() => {
+    const { contextState, updateContextState } = useMyContext();
 
     const [selectedCity, setSelectedCity] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [cities, setCities] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    /**
-     * Загружает список городов из API
-     */
     const loadCities = async () => {
         try {
             setIsLoading(true);
@@ -27,27 +24,12 @@ const CityChanger = () => {
         }
     };
 
-    /**
-     * Обрабатывает выбор города пользователем
-     * @param {string} city - Название выбранного города
-     */
     const handleCitySelect = (city) => {
         // Закрываем меню выбора
         setIsOpen(false);
-
-        // Если выбран вариант "Не выбрано", очищаем выбор
-        if (city === 'none') {
-            setSelectedCity('');
-            return;
-        }
-
-        // Устанавливаем выбранный город
         setSelectedCity(city);
     };
 
-    /**
-     * Переключает состояние открытия/закрытия меню выбора города
-     */
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     };
@@ -105,7 +87,7 @@ const CityChanger = () => {
             localStorage.removeItem('city');
             updateContextState('city', '');
         }
-    }, [selectedCity, updateContextState]);
+    }, [selectedCity]);
 
     return (
         <div className="city-changer">
@@ -135,6 +117,6 @@ const CityChanger = () => {
             </div>
         </div>
     );
-};
+});
 
 export default CityChanger;

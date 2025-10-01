@@ -148,20 +148,17 @@ const PostsListOkView = ({ filteredPostsList, setFilteredPostsLists }) => {
             {/* Список постов */}
             {filteredPostsList.map((post, index) => {
                 const isActive = activeIndex === index;
-                const isProcessing = processingPosts.has(post.id);
+
 
                 return (
                     <div className="accordion-posts__item" key={post.id}>
                         <button
                             className={`accordion-posts__button ${isActive ? 'accordion-posts__button--active' : ''}`}
                             onClick={() => handleAccordionClick(index)}
-                            disabled={isProcessing}
+
                             aria-expanded={isActive}
                         >
                             {post.title}
-                            {isProcessing && (
-                                <span className="accordion-posts__processing">...</span>
-                            )}
                         </button>
 
                         <div

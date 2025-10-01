@@ -1,19 +1,17 @@
-
-import { getCollegeGroups } from '../../../services/ApiToServer/collegeGroups';
+import { getCollegeGroups } from '../../../services/ApiToServer/groups';
 import './groupSelector.css'
 import React, { useState, useEffect } from 'react';
-
 
 const GroupSelector = ({ saveGroupList }) => {
     const [groups, setGroups] = useState([]);
     const [filteredGroups, setFilteredGroups] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedGroups, setSelectedGroups] = useState([]);
-    const [selectionMode, setSelectionMode] = useState('none'); // 'none', 'some', 'all'
+    const [selectionMode, setSelectionMode] = useState('none');
     const [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
-    // Загрузка групп при открытии
+    // Загрузка групп
     useEffect(() => {
         if (isOpen && groups.length === 0) {
             const fetchGroups = async () => {
@@ -44,7 +42,7 @@ const GroupSelector = ({ saveGroupList }) => {
         }
     }, [searchTerm, groups]);
 
-    // Обновление режима выбора при изменении selectedGroups
+    // Обновление режима выбора
     useEffect(() => {
         if (selectedGroups.length === 0) {
             setSelectionMode('none');
@@ -55,6 +53,7 @@ const GroupSelector = ({ saveGroupList }) => {
         }
     }, [selectedGroups, groups.length]);
 
+    // Переключение выбора группы
     const toggleGroupSelection = (groupName) => {
         setSelectedGroups(prev =>
             prev.includes(groupName)
@@ -63,6 +62,7 @@ const GroupSelector = ({ saveGroupList }) => {
         );
     };
 
+    // Выбор всех групп
     const selectAllGroups = () => {
         if (selectionMode === 'all') {
             setSelectedGroups([]);
@@ -73,6 +73,7 @@ const GroupSelector = ({ saveGroupList }) => {
         }
     };
 
+    // Сохранение выбора
     const handleSave = async () => {
         try {
             let groupsToSave = selectedGroups;
@@ -88,10 +89,10 @@ const GroupSelector = ({ saveGroupList }) => {
     };
 
     return (
-        <div className="group-selector-container" style={{ position: 'relative' }}>
+        <div className="group-selector">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="group_toggle-button"
+                className="group-selector__toggle"
             >
                 {selectionMode === 'all'
                     ? 'Все группы'
@@ -101,42 +102,43 @@ const GroupSelector = ({ saveGroupList }) => {
             </button>
 
             {isOpen && (
-                <div className="group-selector-popup">
-                    <div className="search-box">
+                <div className="group-selector__popup">
+                    <div className="group-selector__search">
                         <input
                             type="text"
                             placeholder="Поиск..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             autoFocus
+                            className="group-selector__search-input"
                         />
                     </div>
 
-                    <div className="all-groups-button">
+                    <div className="group-selector__all">
                         <button
                             onClick={selectAllGroups}
-                            className={selectionMode === 'all' ? 'selected' : ''}
+                            className={`group-selector__all-button ${selectionMode === 'all' ? 'group-selector__all-button--selected' : ''}`}
                         >
                             {selectionMode === 'all' ? '✓ Все группы' : 'Все группы'}
                         </button>
                     </div>
 
-                    <div className="groups-list">
+                    <div className="group-selector__list">
                         {isLoading ? (
-                            <div className="loading">Загрузка...</div>
+                            <div className="group-selector__loading">Загрузка...</div>
                         ) : filteredGroups.length === 0 ? (
-                            <div className="no-results">Ничего не найдено</div>
+                            <div className="group-selector__empty">Ничего не найдено</div>
                         ) : (
-                            <ul>
+                            <ul className="group-selector__items">
                                 {filteredGroups.map(group => (
                                     <li
                                         key={group.id}
-                                        className={`group-item ${selectedGroups.includes(group.name) ? 'selected' : ''}`}
+                                        className={`group-selector__item ${selectedGroups.includes(group.name) ? 'group-selector__item--selected' : ''}`}
                                         onClick={() => toggleGroupSelection(group.name)}
                                     >
-                                        <span className="group-name">{group.name}</span>
+                                        <span className="group-selector__name">{group.name}</span>
                                         {selectedGroups.includes(group.name) && (
-                                            <span className="checkmark">✓</span>
+                                            <span className="group-selector__checkmark">✓</span>
                                         )}
                                     </li>
                                 ))}
@@ -144,17 +146,17 @@ const GroupSelector = ({ saveGroupList }) => {
                         )}
                     </div>
 
-                    <div className="popup-footer">
+                    <div className="group-selector__footer">
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="cancel-button"
+                            className="group-selector__cancel"
                         >
                             Отмена
                         </button>
                         <button
                             onClick={handleSave}
                             disabled={selectionMode === 'none'}
-                            className="save-button"
+                            className="group-selector__save"
                         >
                             Сохранить
                         </button>

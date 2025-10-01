@@ -86,9 +86,6 @@ const List = ({ ready, type, data }) => {
 		}
 	})
 
-	useEffect(() => {
-		prepareData()
-	}, [contextState.city])
 
 	useEffect(() => {
 		prepareData()

@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
+
 import './CitySelector.css'
 import { getCities } from '../../../services/ApiToServer/cities';
-
 
 const CitySelector = ({ saveCity }) => {
     const [cities, setCities] = useState([]);
     const [filteredCities, setFilteredCities] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCity, setSelectedCity] = useState([]);
-    const [selectionMode, setSelectionMode] = useState('none'); // 'none', 'some', 'all'
+    const [selectionMode, setSelectionMode] = useState('none');
     const [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
-    // Загрузка городов при открытии
+    // Загрузка городов
     useEffect(() => {
         if (isOpen && cities.length === 0) {
             const fetchCities = async () => {
@@ -43,7 +43,7 @@ const CitySelector = ({ saveCity }) => {
         }
     }, [searchTerm, cities]);
 
-    // Обновление режима выбора при изменении selectedGroups
+    // Обновление режима выбора
     useEffect(() => {
         if (selectedCity.length === 0) {
             setSelectionMode('none');
@@ -52,6 +52,7 @@ const CitySelector = ({ saveCity }) => {
         }
     }, [selectedCity, cities.length]);
 
+    // Сохранение выбора
     const handleSave = async () => {
         try {
             saveCity(selectedCity)
@@ -61,12 +62,11 @@ const CitySelector = ({ saveCity }) => {
         }
     };
 
-
     return (
-        <div className="city-selector-container" style={{ position: 'relative' }}>
+        <div className="city-selector">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="city_toggle-button"
+                className="city-selector__toggle"
             >
                 {selectedCity.length > 0
                     ? `Выбрано: ${selectedCity}`
@@ -74,32 +74,34 @@ const CitySelector = ({ saveCity }) => {
             </button>
 
             {isOpen && (
-                <div className="city-selector-popup">
-                    <div className="search-box">
+                <div className="city-selector__popup">
+                    <div className="city-selector__search">
                         <input
                             type="text"
                             placeholder="Поиск..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             autoFocus
+                            className="city-selector__search-input"
                         />
                     </div>
-                    <div className="cities-list">
+
+                    <div className="city-selector__list">
                         {isLoading ? (
-                            <div className="loading">Загрузка...</div>
+                            <div className="city-selector__loading">Загрузка...</div>
                         ) : filteredCities.length === 0 ? (
-                            <div className="no-results">Ничего не найдено</div>
+                            <div className="city-selector__empty">Ничего не найдено</div>
                         ) : (
-                            <ul>
+                            <ul className="city-selector__items">
                                 {filteredCities.map(city => (
                                     <li
                                         key={city.id}
-                                        className={`city-item ${selectedCity.includes(city.name) ? 'selected' : ''}`}
+                                        className={`city-selector__item ${selectedCity.includes(city.name) ? 'city-selector__item--selected' : ''}`}
                                         onClick={() => setSelectedCity(city.name)}
                                     >
-                                        <span className="city-name">{city.name}</span>
+                                        <span className="city-selector__name">{city.name}</span>
                                         {selectedCity.includes(city.name) && (
-                                            <span className="checkmark">✓</span>
+                                            <span className="city-selector__checkmark">✓</span>
                                         )}
                                     </li>
                                 ))}
@@ -107,17 +109,17 @@ const CitySelector = ({ saveCity }) => {
                         )}
                     </div>
 
-                    <div className="popup-footer">
+                    <div className="city-selector__footer">
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="cancel-button"
+                            className="city-selector__cancel"
                         >
                             Отмена
                         </button>
                         <button
                             onClick={handleSave}
                             disabled={selectionMode === 'none'}
-                            className="save-button"
+                            className="city-selector__save"
                         >
                             Сохранить
                         </button>

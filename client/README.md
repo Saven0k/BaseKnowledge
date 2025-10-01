@@ -33,8 +33,7 @@
 ![React](https://img.shields.io/badge/React-18.2+-61DAFB?style=for-the-badge&logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-4.9+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 
-### 🎯 State Management
-![Redux Toolkit](https://img.shields.io/badge/Redux_Toolkit-1.9+-764ABC?style=for-the-badge&logo=redux&logoColor=white)
+
 
 ### 🚀 Development Tools
 ![Vite](https://img.shields.io/badge/Vite-4.0+-646CFF?style=for-the-badge&logo=vite&logoColor=white)

@@ -9,18 +9,35 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 5px;
+    gap: 10px;
 }
 
 .button__swipe {
-    padding: 3px 4px;
-    border: 0px solid #fff;
+    padding: 8px 10px;
+    border: 1px solid #000;
     color: #000;
     background-color: #fff;
     font-size: 15px;
-    border-bottom: 1px solid #333333;
+    border-radius: 7px;
+    height: fit-content;
+    min-width: 200px;
 }
 
-.button__swipe.border {
-    border: 1px solid #000;
+.button__swipe.active {
+    background-color: #562dd2;
+    color: white;
+    border: none;
+}
+
+.button__swipe:hover {
+    background-color: #9877f9;
+    color: white;
+    border: none;
+}
+
+.navigation-menu__block {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    align-items: center;
 }

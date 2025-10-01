@@ -7,7 +7,7 @@ import { findUser, updateTeacherVisits } from '../../services/ApiToServer/users'
 
 const BasicForm = () => {
     const [attempts, setAttempts] = useState(5);
-    const { contextState,  updateContextState} = useMyContext();
+    const { contextState, updateContextState } = useMyContext();
     const [viewPassword, setViewPassword] = useState(false)
 
     // UseForm, use tags
@@ -46,7 +46,7 @@ const BasicForm = () => {
                 }
                 updateContextState('role', res.role);
                 updateContextState('email', res.email);
-                updateTeacherVisits(res.email,res.countVisit + 1 )
+                updateTeacherVisits(res.email, res.countVisit + 1)
                 window.location.href = '/teacher'
                 await new Promise((resolve) => setTimeout(resolve, 1000))
             }
@@ -62,7 +62,7 @@ const BasicForm = () => {
     return (
         <div className='basicForm'>
             <MediumTitle color="white">Вход</MediumTitle>
-            <form 
+            <form
                 action=""
                 onSubmit={handleSubmit(onSubmit)}>
                 <div className='form-element'>
@@ -86,13 +86,12 @@ const BasicForm = () => {
                         })}
                     />
                 </div>
-                {errors.email && <p className="error" style={{color: "red"}}>{errors.email.message || "Error"}</p>}
+                {/* {errors.email && <p className="error" style={{color: "red"}}>{errors.email.message || "Error"}</p>} */}
                 <div className='form-element'>
-
                     <label>Пароль</label>
                     <input
                         autoComplete='current-password'
-                        className='password'
+                        className='form-element__password'
                         placeholder='Пароль'
                         type={viewPassword ? 'text' : 'password'}
                         style={{ borderColor: errors.password ? "red" : "#000" }}
@@ -109,7 +108,7 @@ const BasicForm = () => {
                         })}
                     />
                 </div>
-                {errors.password && <p className="error">{errors.password.message || "Error"}</p>}
+                {/* {errors.password && <p className="error">{errors.password.message || "Error"}</p>} */}
                 <button className='button-log' disabled={!isValid}>Войти</button>
             </form>
         </div>

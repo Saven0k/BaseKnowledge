@@ -12,15 +12,15 @@ const EditorComponent = () => {
     return (
         <div className="editor-component">
             <Header />
-            <nav className="menu-pages" aria-label="Навигация по редактору">
+            <nav className="editor-menu" aria-label="Навигация по редактору">
                 <button
                     onClick={() => setPage(0)}
-                    className={`menu__button ${page === 0 ? 'active' : ' '}`}
+                    className={`menu__links ${page === 0 ? 'active' : ' '}`}
                 > Добавление поста
                 </button>
                 <button
                     onClick={() => setPage(1)}
-                    className={`menu__button ${page === 1 ? 'active' : ' '}`}
+                    className={`menu__links ${page === 1 ? 'active' : ' '}`}
                 > Посты
                 </button>
             </nav>

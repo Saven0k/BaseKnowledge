@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import './SpecialitySelector.css'
 import { getSpecialities } from '../../../services/ApiToServer/specialities';
 
-const SpecialitySelector = ({saveSpeciality, speciality}) => {
+const SpecialitySelector = ({ saveSpeciality, speciality }) => {
     const [specialities, setSpecialities] = useState([])
     const [selectedSpeciality, setSelectedSpeciality] = useState('');
     const [selectionMode, setSelectionMode] = useState('none');
     const [isOpen, setIsOpen] = useState(false);
 
+    // Загрузка специальностей
     useEffect(() => {
         if (isOpen && specialities.length === 0) {
             const fetchSpecialities = async () => {
@@ -22,12 +23,14 @@ const SpecialitySelector = ({saveSpeciality, speciality}) => {
         };
     }, [isOpen]);
 
+    // Сброс выбора
     useEffect(() => {
         if (speciality === '') {
             setSelectedSpeciality('')
         }
     }, [speciality])
 
+    // Обновление режима выбора
     useEffect(() => {
         if (selectedSpeciality.length === 0) {
             setSelectionMode('none');
@@ -36,6 +39,7 @@ const SpecialitySelector = ({saveSpeciality, speciality}) => {
         }
     }, [selectedSpeciality, specialities.length]);
 
+    // Сохранение выбора
     const handleSave = async () => {
         try {
             saveSpeciality(selectedSpeciality)
@@ -47,11 +51,11 @@ const SpecialitySelector = ({saveSpeciality, speciality}) => {
     };
 
     return (
-        <div className="speciality-selector-container" style={{ position: 'relative', width: '200px' }}>
+        <div className="speciality-selector">
             <button
                 type='button'
                 onClick={() => setIsOpen(!isOpen)}
-                className="speciality_toggle-button "
+                className="speciality-selector__toggle"
             >
                 {selectedSpeciality
                     ? `Выбрано: ${selectedSpeciality}`
@@ -59,35 +63,35 @@ const SpecialitySelector = ({saveSpeciality, speciality}) => {
             </button>
 
             {isOpen && (
-                <div className="speciality-selector-popup">
-                    <div className="specialities-list">
-                        <ul>
+                <div className="speciality-selector__popup">
+                    <div className="speciality-selector__list">
+                        <ul className="speciality-selector__items">
                             {specialities.map(speciality => (
                                 <li
                                     key={speciality.id}
-                                    className={`speciality-item ${selectedSpeciality.includes(speciality.name) ? 'selected' : ''}`}
+                                    className={`speciality-selector__item ${selectedSpeciality === speciality.name ? 'speciality-selector__item--selected' : ''}`}
                                     onClick={() => setSelectedSpeciality(speciality.name)}
                                 >
-                                    <span className="speciality-name">{speciality.name}</span>
-                                    {selectedSpeciality.includes(speciality.name) && (
-                                        <span className="checkmark">✓</span>
+                                    <span className="speciality-selector__name">{speciality.name}</span>
+                                    {selectedSpeciality === speciality.name && (
+                                        <span className="speciality-selector__checkmark">✓</span>
                                     )}
                                 </li>
                             ))}
                         </ul>
                     </div>
 
-                    <div className="popup-footer">
+                    <div className="speciality-selector__footer">
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="cancel-button"
+                            className="speciality-selector__cancel"
                         >
                             Отмена
                         </button>
                         <button
                             onClick={handleSave}
                             disabled={selectionMode === 'none'}
-                            className="save-button"
+                            className="speciality-selector__save"
                         >
                             Сохранить
                         </button>

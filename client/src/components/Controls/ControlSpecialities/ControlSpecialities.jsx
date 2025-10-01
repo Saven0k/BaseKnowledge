@@ -1,76 +1,105 @@
 import './ControlSpecialities.css'
+import trash from './red_trash.svg'
 
 import { useEffect, useState } from 'react'
-import trash from './red_trash.svg'
+
 import { addSpeciality, deleteSpeciality, getSpecialities } from '../../../services/ApiToServer/specialities'
 
 const ControlSpecialities = () => {
-    const [specialities, setRoles] = useState([])
+    const [specialities, setSpecialities] = useState([])
     const [newSpecialityName, setNewSpecialityName] = useState('')
 
-    const prepairData = async () => {
-        const specialitiesB = await getSpecialities();
-        if (specialitiesB.legnth === 0) {
-            setRoles([])
-        } else {
-            setRoles(specialitiesB)
+    // Загрузка списка специальностей
+    const loadSpecialities = async () => {
+        try {
+            const specialitiesData = await getSpecialities();
+            if (specialitiesData.length === 0) {
+                setSpecialities([])
+            } else {
+                setSpecialities(specialitiesData)
+            }
+        } catch (error) {
+            console.error('Ошибка при загрузке специальностей:', error)
+            setSpecialities([])
         }
     }
 
     useEffect(() => {
-        prepairData()
+        loadSpecialities()
     }, [])
 
-    const handleSaveRole = async () => {
-        const data = await addSpeciality(newSpecialityName)
-        setRoles([...specialities, { name: data.response.specialityName, id: data.response.specialityId }])
-
-        setNewSpecialityName('')
+    const handleSaveSpeciality = async () => {
+        try {
+            const data = await addSpeciality(newSpecialityName.trim())
+            if (data.response) {
+                setSpecialities(prevSpecialities => [...prevSpecialities, {
+                    name: data.response.specialityName,
+                    id: data.response.specialityId
+                }])
+                setNewSpecialityName('')
+            }
+        } catch (error) {
+            console.error('Ошибка при добавлении специальности:', error)
+        }
     }
 
-    const handleDeleteRole = (id) => {
-        setRoles(specialities.filter(speciality => speciality.id !== id))
-        deleteSpeciality(id)
+    const handleDeleteSpeciality = async (id) => {
+        try {
+            setSpecialities(prevSpecialities => prevSpecialities.filter(speciality => speciality.id !== id))
+            await deleteSpeciality(id)
+        } catch (error) {
+            console.error('Ошибка при удалении специальности:', error)
+            loadSpecialities()
+        }
     }
 
     return (
-        <div className='specialities_component'>
+        <div className='specialities-component'>
 
-            <div className="speciality_list">
+            <div className="specialities-list">
                 {specialities.length !== 0 ?
                     specialities.map((speciality, index) => (
-                        <div className="speciality_block" key={index}>
+                        <div className="specialities-list__item" key={speciality.id}>
                             <h3>{speciality.name}</h3>
-                            <div className="delete_speciality">
-                                <button
-                                    className='button_delete_speciality'
-                                    onClick={() => handleDeleteRole(speciality.id)}
-                                >
-                                    <img height={24} src={trash} alt="Delete" className='delete_speciality_img' />
-                                </button>
-                            </div>
+
+                            <button
+                                className='specialities-list__button'
+                                onClick={() => handleDeleteSpeciality(speciality.id)}
+                                aria-label={`Удалить специальность ${speciality.name}`}
+                            >
+                                <img
+                                    height={24}
+                                    src={trash}
+                                    alt="Удалить специальность"
+                                    className='specialities-list__delete-img'
+                                />
+                            </button>
+
                         </div>
                     ))
                     :
                     <p>Специальности нет</p>
                 }
             </div>
-            <div className="speciality_create">
+            <div className="specialities-create">
                 <h4>Создание новой специальности</h4>
-                <div className="new_speciality_block">
+                <div className="specialities-new">
                     <input
                         type="text"
-                        className="speciality_name"
+                        className="specialities-create__input"
                         onChange={(e) => setNewSpecialityName(e.target.value)}
                         value={newSpecialityName}
-                        minLength={5}
-                        maxLength={15}
-                        placeholder='Что-то....'
+                        minLength={2}
+                        maxLength={50}
+                        placeholder='Введите название специальности...'
                     />
-                    <button className='button_done' onClick={() => handleSaveRole()}>
+                    <button
+                        className='specialities-create__button'
+                        onClick={handleSaveSpeciality}
+                        disabled={!newSpecialityName.trim()}
+                    >
                         Сохранить
                     </button>
-
                 </div>
             </div>
         </div>

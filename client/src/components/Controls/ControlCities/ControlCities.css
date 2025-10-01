@@ -1,60 +1,59 @@
-.cities_component {
+.cities-component {
     width: 50vw;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 15px;
+}
 
-    .city_list {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        width: 60%;
-        /* border: 1px solid #000; */
-        padding: 5px 10px;
+.cities-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 60%;
+    padding: 5px 10px;
+}
 
-        .city_block {
-            display: flex;
-            width: 100%;
-            justify-content: space-between;
-            border-bottom: 1px solid #000;
+.cities-list__item {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    border-bottom: 1px solid #000;
+}
 
-            .button_delete_city {
-                background-color: #fff;
-                border: none;
-                transition: 0.3s;
-            }
+.cities-list__delete {
+    background-color: #fff;
+    border: none;
+    transition: 0.3s;
+}
 
-            .button_delete_city:hover {
-                transform: rotate(20deg);
-            }
-        }
-    }
+.cities-list__button:hover {
+    transform: rotate(20deg);
+}
 
-    .city_create {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+.cities-create {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
-        .new_city_block {
-            display: flex;
-            gap: 10px;
+.cities__add {
+    display: flex;
+    gap: 10px;
+}
 
-            .city_name {
-                padding: 2px 3px;
-                color: #000;
-                background-color: #fff;
-                border: none;
-                border-bottom: 1px solid #000;
-            }
+.cities-add__input {
+    padding: 2px 3px;
+    color: #000;
+    background-color: #fff;
+    border: none;
+    border-bottom: 1px solid #000;
+}
 
-            .button_done {
-                padding: 2px 3px;
-                color: #000;
-                background-color: #fff;
-                border: 1px solid #000;
-                font-size: 13px;
-            }
-        }
-    }
+.cities-add__button {
+    padding: 2px 3px;
+    color: #000;
+    background-color: #fff;
+    border: 1px solid #000;
+    font-size: 13px;
 }

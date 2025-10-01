@@ -6,7 +6,7 @@
 export async function getCollegeGroups() {
     try {
         // Отправляем GET-запрос к API для получения групп
-        const response = await fetch("http://localhost:5000/api/college/groups");
+        const response = await fetch("http://localhost:5000/api/groups");
         // Преобразуем ответ в JSON
         const data = await response.json();
 
@@ -35,13 +35,13 @@ export async function getCollegeGroups() {
 export async function addCollegeGroup(collegeGroupName) {
     try {
         // Отправляем POST-запрос для создания группы
-        const response = await fetch("http://localhost:5000/api/college/groups/new", {
+        const response = await fetch("http://localhost:5000/api/groups/new", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json", // Указываем формат JSON
             },
             // Передаем название группы в теле запроса
-            body: JSON.stringify({ collegeGroupName: collegeGroupName })
+            body: JSON.stringify({ collegeGroupName })
         });
 
         // Получаем и парсим ответ сервера
@@ -70,7 +70,7 @@ export async function addCollegeGroup(collegeGroupName) {
 export const updateCollegeGroup = async (collegeGroupId, collegeGroupName) => {
     try {
         // Отправляем PUT-запрос для обновления
-        const response = await fetch(`http://localhost:5000/api/college/groups/update`, {
+        const response = await fetch(`http://localhost:5000/api/groups/update`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -104,7 +104,7 @@ export const updateCollegeGroup = async (collegeGroupId, collegeGroupName) => {
 export async function deleteCollegeGroup(collegeGroupId) {
     try {
         // Отправляем DELETE-запрос
-        const response = await fetch(`http://localhost:5000/api/college/groups/delete/${collegeGroupId}`, {
+        const response = await fetch(`http://localhost:5000/api/groups/delete/${collegeGroupId}`, {
             method: "DELETE",
         });
 

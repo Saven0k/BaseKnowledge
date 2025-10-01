@@ -3,16 +3,17 @@ import './CourseSelector.css'
 
 const CourseSelector = ({ saveCourse, course }) => {
     const [courses, setCourses] = useState(['1', '2', '3', '4']);
-    const [selectedCourse, setSelectedCourse] = useState();
+    const [selectedCourse, setSelectedCourse] = useState('');
     const [isOpen, setIsOpen] = useState(false);
 
+    // Сброс выбора
     useEffect(() => {
         if (course === '') {
             setSelectedCourse('')
         }
     }, [course])
 
-
+    // Сохранение курса
     const handleSave = async (course) => {
         setSelectedCourse(course)
         try {
@@ -24,12 +25,11 @@ const CourseSelector = ({ saveCourse, course }) => {
         }
     };
 
-
     return (
-        <div className="course-selector-container" style={{ position: 'relative' }}>
+        <div className="course-selector">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="course_toggle-button"
+                className="course-selector__toggle"
             >
                 {selectedCourse
                     ? `Выбрано: ${selectedCourse} курс`
@@ -37,24 +37,22 @@ const CourseSelector = ({ saveCourse, course }) => {
             </button>
 
             {isOpen && (
-                <div className="course-selector-popup">
-                    <div className="courses-list">
-                        {
-                            <ul>
-                                {courses.map(course => (
-                                    <li
-                                        key={course}
-                                        className={`course-item ${selectedCourse === course ? 'selected' : ''}`}
-                                        onClick={() => handleSave(course)}
-                                    >
-                                        <span className="course-name">{course}</span>
-                                        {selectedCourse === course && (
-                                            <span className="checkmark">✓</span>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-                        }
+                <div className="course-selector__popup">
+                    <div className="course-selector__list">
+                        <ul className="course-selector__items">
+                            {courses.map(course => (
+                                <li
+                                    key={course}
+                                    className={`course-selector__item ${selectedCourse === course ? 'course-selector__item--selected' : ''}`}
+                                    onClick={() => handleSave(course)}
+                                >
+                                    <span className="course-selector__name">{course} курс</span>
+                                    {selectedCourse === course && (
+                                        <span className="course-selector__checkmark">✓</span>
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
             )}

@@ -1,5 +1,5 @@
 import './CreatePostComponent.css'
-import { useState, useRef } from 'react';
+import { useState, useRef, memo } from 'react';
 import { addPost } from '../../services/ApiToServer/posts';
 import '../../../node_modules/react-quill/dist/quill.snow.css';
 import QuillTextEditor from '../QuillTextEditor/QuillTextEditor';
@@ -7,7 +7,7 @@ import GroupSelector from '../EntitWidgets/GroupSelector/GroupSelector';
 import CitySelector from '../EntitWidgets/CitySelector/CitySelector';
 import FormSelector from '../EntitWidgets/FormSelector/FormSelector';
 
-const CreatePostComponent = () => {
+const CreatePostComponent = memo(() => {
     const [role, setRole] = useState('');
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -30,8 +30,8 @@ const CreatePostComponent = () => {
             const data = new FormData();
             data.append('title', title.trim());
             data.append('content', content);
-            data.append('role', role || 'null'); 
-            data.append('role_context', role_context); 
+            data.append('role', role || 'null');
+            data.append('role_context', role_context);
             data.append('status', status ? "1" : "0");
             data.append('file', image === null ? null : image);
 
@@ -46,7 +46,7 @@ const CreatePostComponent = () => {
             clearImage();
         } catch (error) {
             console.error('Ошибка при сохранении поста:', error);
-            alert('Произошла ошибка при сохранении поста'); 
+            alert('Произошла ошибка при сохранении поста');
         } finally {
             setIsSubmitting(false);
         }
@@ -138,6 +138,6 @@ const CreatePostComponent = () => {
             <button className='button_save_post' onClick={savePost}>Сохранить пост</button>
         </div>
     );
-};
+});
 
 export default CreatePostComponent;

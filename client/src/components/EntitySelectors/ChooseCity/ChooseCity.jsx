@@ -2,27 +2,28 @@ import { useEffect, useState } from "react"
 import { getCities } from "../../../services/ApiToServer/cities"
 import './style.css'
 
-const ChooseCity = ({saveCity}) => {
+const ChooseCity = ({ saveCity }) => {
     const [cities, setCities] = useState([])
 
-    const prepareCities = async () => {
+    // Загрузка городов
+    const loadCities = async () => {
         const newCities = await getCities()
         setCities(newCities)
     }
 
     useEffect(() => {
-        prepareCities()
-    },[])
+        loadCities()
+    }, [])
 
     return (
-        <div className="chooseCity_box">
-            <p className="info_title">
+        <div className="choose-city">
+            <p className="choose-city__title">
                 Выберете город
             </p>
-            <div className="cities_box">
+            <div className="choose-city__list">
                 {
-                    cities.map((city,index) => (
-                        <button key={index} className="city_box" onClick={() => saveCity(city.name)}>
+                    cities.map((city, index) => (
+                        <button key={index} className="choose-city__item" onClick={() => saveCity(city.name)}>
                             {city.name}
                         </button>
                     ))

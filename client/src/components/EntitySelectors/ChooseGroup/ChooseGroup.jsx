@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import './ChooseGroup.css'
 import { getUniversityGroups } from '../../../services/ApiToServer/universityGroups';
-import { getCollegeGroups } from '../../../services/ApiToServer/collegeGroups';
+import { getCollegeGroups } from '../../../services/ApiToServer/groups';
 
-
-const ChooseGroup = ({saveGroup, type, course, speciality, studyType}) => {
+const ChooseGroup = ({ saveGroup, type, course, speciality, studyType }) => {
     const [filteredGroups, setFilteredGroups] = useState([]);
     const [groups, setGroups] = useState([])
     const [searchTerm, setSearchTerm] = useState('')
 
+    // Фильтрация групп
     useEffect(() => {
         if (searchTerm === '') {
             setFilteredGroups(groups);
@@ -21,13 +21,13 @@ const ChooseGroup = ({saveGroup, type, course, speciality, studyType}) => {
         }
     }, [searchTerm, groups]);
 
-    async function prepareData() {
-
+    // Загрузка групп
+    async function loadGroups() {
         let groups = []
         if (type === 'studentCollege') {
             groups = await getCollegeGroups();
         }
-        if (type === 'studentUniversity') {            
+        if (type === 'studentUniversity') {
             groups = await getUniversityGroups();
         }
         setGroups(groups.map(obj => obj.name));
@@ -36,26 +36,25 @@ const ChooseGroup = ({saveGroup, type, course, speciality, studyType}) => {
     }
 
     useEffect(() => {
-        prepareData()
+        loadGroups()
     }, [])
 
-
     return (
-        <div className='container'>
-            <h2>Выберете группу</h2>
-            <div className='searchContainer'>
+        <div className='choose-group'>
+            <h2 className='choose-group__title'>Выберете группу</h2>
+            <div className='choose-group__search'>
                 <input
                     type="text"
                     placeholder="Поиск по группе..."
-                    className='searchInput'
+                    className='choose-group__input'
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <ul className='list'>
+                <ul className='choose-group__list'>
                     {filteredGroups.map((group, index) => (
                         <li
                             key={index}
-                            className='listItem'
+                            className='choose-group__item'
                             onClick={() => saveGroup(group)}
                         >
                             {group}
@@ -65,7 +64,6 @@ const ChooseGroup = ({saveGroup, type, course, speciality, studyType}) => {
             </div>
         </div>
     );
-
 }
 
 export default ChooseGroup;

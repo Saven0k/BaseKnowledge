@@ -54,6 +54,12 @@
 /* Анимации */
 .selection-container {
     transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 50px;
+    flex-direction: column;
+    gap: 30px;
 }
 
 .fade-in {

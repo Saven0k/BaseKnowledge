@@ -1,15 +1,12 @@
-.course-selector-container {
+.course-selector {
     display: inline-block;
     font-family: Arial, sans-serif;
     font-size: 13px;
     position: relative;
 }
 
-.course_toggle-button {
-    position: relative;
-
+.course-selector__toggle {
     padding: 5px 10px;
-    background-color: #000;
     background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 3px;
@@ -17,13 +14,12 @@
     font-size: 13px;
 }
 
-.toggle-button:hover {
+.course-selector__toggle:hover {
     background-color: #e0e0e0;
 }
 
-.course-selector-popup {
+.course-selector__popup {
     position: absolute;
-    /* top: 100%; */
     top: -10px;
     max-height: 250px;
     left: 0;
@@ -38,18 +34,18 @@
     will-change: transform;
 }
 
-.courses-list {
+.course-selector__list {
     max-height: 200px;
     overflow-y: auto;
 }
 
-.courses-list ul {
+.course-selector__items {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.course-item {
+.course-selector__item {
     padding: 5px 10px;
     cursor: pointer;
     display: flex;
@@ -57,61 +53,23 @@
     align-items: center;
 }
 
-.course-item:hover {
+.course-selector__item:hover {
     background-color: #f5f5f5;
 }
 
-.course-item.selected {
+.course-selector__item--selected {
     background-color: #e6f7e6;
 }
 
-.course-name {
+.course-selector__name {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 12px;
 }
 
-.checkmark {
+.course-selector__checkmark {
     color: green;
     font-weight: bold;
     font-size: 12px;
-}
-
-.loading,
-.no-results {
-    padding: 10px;
-    text-align: center;
-    color: #666;
-    font-size: 12px;
-}
-
-.popup-footer {
-    display: flex;
-    justify-content: space-between;
-    padding: 5px;
-    border-top: 1px solid #eee;
-}
-
-.popup-footer button {
-    padding: 5px 10px;
-    font-size: 12px;
-    border-radius: 2px;
-    cursor: pointer;
-}
-
-.cancel-button {
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-}
-
-.save-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-}
-
-.save-button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
 }

@@ -1,4 +1,4 @@
-.roles-component {
+.group-component {
     width: 50vw;
     display: flex;
     justify-content: space-between;
@@ -6,43 +6,44 @@
     gap: 15px;
 }
 
-.roles-list {
+.group-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    width: 60%;
     padding: 5px 10px;
 }
 
-.roles-list__item {
+.group-list__item {
     display: flex;
     width: 100%;
     justify-content: space-between;
     border-bottom: 1px solid #000;
+    gap: 10px;
 }
 
-.roles-list__delete {
+.group-list__delete {
     background-color: #fff;
     border: none;
     transition: 0.3s;
 }
 
-.roles-list__delete:hover {
+.group-list__delete:hover {
     transform: rotate(20deg);
 }
 
-.roles-create {
+.group-create {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.roles-create__new {
+.group-create__new {
     display: flex;
     gap: 10px;
+    flex-direction: column;
 }
 
-.roles-create__input {
+.group-create__input {
     padding: 2px 3px;
     color: #000;
     background-color: #fff;
@@ -50,10 +51,27 @@
     border-bottom: 1px solid #000;
 }
 
-.roles-create__button {
+.group-create__done {
     padding: 2px 3px;
     color: #000;
     background-color: #fff;
     border: 1px solid #000;
     font-size: 13px;
+}
+
+.group-create__button {
+    outline: none;
+    background-color: #fff;
+    padding: 6px 8px;
+    border-radius: 8px;
+    color: #000;
+    transition: 0.5s;
+    border: 1px solid #000;
+}
+
+.group-create__button:hover {
+    background-color: #562dd2;
+    color: #fff;
+    border: none;   
+    transform: scale(1.2)
 }
